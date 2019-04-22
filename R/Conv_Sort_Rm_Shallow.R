@@ -2,7 +2,7 @@
 #' 
 #' @param datapath A string or a variable referencing a string object. This is the path leading to your ICGC file.
 #' @param assembly A string or a variable referencing a string object. This indicates the assembly version used in your genome experiment. Default is set to NULL, but you really should specify this. If unspecified, the function will process all of the mutations in your file even if multiple assembly versions are present.
-#' @param Seq A string or a variable referencing string. This indicates the sequencing strategy/approach used in your genome experiment. Default is set to NULL, but you really should specify this. If unspecified, the function will process all of the mutations in your file even if multiple sequencing strategies are present.
+#' @param Seq A string or a variable referencing a string. This indicates the sequencing strategy/approach used in your genome experiment. Default is set to NULL, but you really should specify this. If unspecified, the function will process all of the mutations in your file even if multiple sequencing strategies are present.
 #'
 #' @return A mutation file containing 6 fields/variables: The ICGC sample ID, the chromosome ID, the chromosome start position, the chromosome end position, the reference allele, and the alternate allele
 #' 
