@@ -1,19 +1,7 @@
-
-# Run this to convert Roxygen comments to .Rd files
-devtools::document()
-
-# Write tests
-# Handle multiple types of inputs (ICGC and VCF)
-
-validdata <- read.table("../convSig-shallow/colorectal.txt")
-datapath <- "simple_somatic_mutation.open.COCA-CN.tsv"
-lol <- ICGC2Mut(datapath, "GRCh37", "WGS")
-data.table::fwrite(lol, "testfile3.csv")
-
 #' Converts an ICGC file into a Mutation file
 #' 
-#' @param datapath A string or a variable referencing string. This is the path leading to your ICGC file.
-#' @param assembly A string or a variable referencing string. This indicates the assembly version used in your genome experiment. Default is set to NULL, but you really should specify this. If unspecified, the function will process all of the mutations in your file even if multiple assembly versions are present.
+#' @param datapath A string or a variable referencing a string object. This is the path leading to your ICGC file.
+#' @param assembly A string or a variable referencing a string object. This indicates the assembly version used in your genome experiment. Default is set to NULL, but you really should specify this. If unspecified, the function will process all of the mutations in your file even if multiple assembly versions are present.
 #' @param Seq A string or a variable referencing string. This indicates the sequencing strategy/approach used in your genome experiment. Default is set to NULL, but you really should specify this. If unspecified, the function will process all of the mutations in your file even if multiple sequencing strategies are present.
 #'
 #' @return A mutation file containing 6 fields/variables: The ICGC sample ID, the chromosome ID, the chromosome start position, the chromosome end position, the reference allele, and the alternate allele
