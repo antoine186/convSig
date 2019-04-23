@@ -4,17 +4,19 @@
 \alias{ICGC2Mut}
 \title{Converts an ICGC file into a Mutation file}
 \usage{
-ICGC2Mut(datapath, assembly = NULL, Seq = NULL)
+ICGC2Mut(datapath, assembly = NULL, Seq = NULL, data.loaded = FALSE)
 }
 \arguments{
-\item{datapath}{A string or a variable referencing a string object. This is the path leading to your ICGC file.}
+\item{datapath}{A string or a variable referencing a string object. This is the path leading to your ICGC file (tsv or csv only).}
 
 \item{assembly}{A string or a variable referencing a string object. This indicates the assembly version used in your genome experiment. Default is set to NULL, but you really should specify this. If unspecified, the function will process all of the mutations in your file even if multiple assembly versions are present.}
 
 \item{Seq}{A string or a variable referencing a string. This indicates the sequencing strategy/approach used in your genome experiment. Default is set to NULL, but you really should specify this. If unspecified, the function will process all of the mutations in your file even if multiple sequencing strategies are present.}
+
+\item{data.loaded}{A boolean variable, which indicates whether your input data is already loaded in your environment. The default is set to FALSE therefore the function looks for a path. If set to TRUE, the function will work with your data directly in your environment. Make sure that your input data is not malformed; See \link[convSig]{loadICGCexample} for an example of an acceptable input.}
 }
 \value{
-A mutation file containing 6 fields/variables: The ICGC sample ID, the chromosome ID, the chromosome start position, the chromosome end position, the reference allele, and the alternate allele
+A mutation file containing 6 fields/variables: The ICGC sample ID, the chromosome ID, the chromosome start position, the chromosome end position, the reference allele, and the alternate allele.
 }
 \description{
 Converts an ICGC file into a Mutation file

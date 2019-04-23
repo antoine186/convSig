@@ -1,10 +1,11 @@
 #' Converts an ICGC file into a Mutation file
 #' 
-#' @param datapath A string or a variable referencing a string object. This is the path leading to your ICGC file.
+#' @param datapath A string or a variable referencing a string object. This is the path leading to your ICGC file (tsv or csv only).
 #' @param assembly A string or a variable referencing a string object. This indicates the assembly version used in your genome experiment. Default is set to NULL, but you really should specify this. If unspecified, the function will process all of the mutations in your file even if multiple assembly versions are present.
 #' @param Seq A string or a variable referencing a string. This indicates the sequencing strategy/approach used in your genome experiment. Default is set to NULL, but you really should specify this. If unspecified, the function will process all of the mutations in your file even if multiple sequencing strategies are present.
+#' @param data.loaded A boolean variable, which indicates whether your input data is already loaded in your environment. The default is set to FALSE therefore the function looks for a path. If set to TRUE, the function will work with your data directly in your environment. Make sure that your input data is not malformed; See \link[convSig]{loadICGCexample} for an example of an acceptable input.
 #'
-#' @return A mutation file containing 6 fields/variables: The ICGC sample ID, the chromosome ID, the chromosome start position, the chromosome end position, the reference allele, and the alternate allele
+#' @return A mutation file containing 6 fields/variables: The ICGC sample ID, the chromosome ID, the chromosome start position, the chromosome end position, the reference allele, and the alternate allele.
 #' 
 #' @section Details:
 #' Your input ICGC file must have a header abiding to the ICGC format. The presence of column headers 'mutated_from_allele' and 'mutated_to_allele' are absolute requirements for the usage of this function. You can also technically omit 'assembly_version' and 'sequencing_strategy' if you do not pass them as arguments. However, if you do, then they
@@ -16,15 +17,17 @@
 #' ICGC2Mut(datapath, "GRCh37", "WGS")
 #' 
 #' @export 
-ICGC2Mut <- function(datapath, assembly = NULL, Seq = NULL) {
+ICGC2Mut <- function(datapath, assembly = NULL, Seq = NULL, data.loaded = FALSE) {
   # Check that data is a string
-  if(!is.character(datapath)) {
-    stop("Data file path is not a string.")
+  if (data.loaded == FALSE) {
+    if(!is.character(datapath)) {
+      stop("Data file path is not a string.")
+    }
   }
-  if(!is.character(assembly)) {
+  if(!is.null(assembly) && !is.character(assembly)) {
     stop("Assembly supplied is not a string.")
   }
-  if(!is.character(Seq)) {
+  if(!is.null(Seq) && !is.character(Seq)) {
     stop("Sequencing strategy supplied is not a string.")
   }
   
@@ -32,7 +35,11 @@ ICGC2Mut <- function(datapath, assembly = NULL, Seq = NULL) {
   cat("Loading ICGC file\n")
   tryCatch(
     {
-      x <- data.table::fread(datapath)
+      if (data.loaded == FALSE) {
+        x <- data.table::fread(datapath)
+      } else {
+        x <- data.table::as.data.table(datapath)
+      }
     }, 
     error=function(cnd) {
       message(paste("There seems to be a problem with the filepath you supplied."))

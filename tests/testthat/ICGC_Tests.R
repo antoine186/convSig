@@ -21,8 +21,6 @@ test_that("base to number conversion works",
           }
 )
 
-# Should remove those later
-input_test_tsv <- data.table::fread("./inst/extdata/example_mutation_dataset.tsv")
 valid_test_tsv <- data.table::fread("./inst/extdata/result_mutation_dataset.tsv")
 
 test_that("ICGC2Mut is consistent for csv and tsv files",
@@ -34,7 +32,17 @@ test_that("ICGC2Mut is consistent for csv and tsv files",
 
 test_that("ICGC2Mut throws correct errors in erroneous argument scenarios",
           {
-            expect_equal(ICGC2Mut("./inst/extdata/example_mutation_dataset.tsv", "GRCh37", "WGS"), valid_test_tsv)
+            expect_error(ICGC2Mut("./inst/extdata/example_mutation_dataset.tsv", "GRCh399999", "WGS"))
+            expect_error(ICGC2Mut("./inst/extdata/example_mutation_dataset.tsv", "GRCh37", "WasdasdS"))
+            expect_error(ICGC2Mut("./inst/extdata/example_mutati.tsv", "GRCh37", "WGS"))
           }
+)
+
+test_that("ICGC2Mut throws warning when non-mission critical arguments are missing", 
+  {
+            expect_warning(ICGC2Mut("./inst/extdata/example_mutation_dataset.tsv"))
+            expect_warning(ICGC2Mut("./inst/extdata/example_mutation_dataset.tsv", assembly = "GRCh37"))
+            expect_warning(ICGC2Mut("./inst/extdata/example_mutation_dataset.tsv", Seq = "WGS"))
+  }
 )
 
