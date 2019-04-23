@@ -46,10 +46,3 @@ test_that("ICGC2Mut throws warning when non-mission critical arguments are missi
   }
 )
 
-test_csv <- 
-
-test_that("ICGC2Mut works correctly with matrices and data.frames when data.loaded is set to TRUE",
-          {
-            
-          }
-)
