@@ -17,8 +17,9 @@ Suggests:
     testthat
 LinkingTo: 
     Rcpp
+Depends:
+    data.table,
+    purrr
 Imports: 
     Rcpp,
-    data.table,
-    purrr,
     progress

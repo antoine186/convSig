@@ -116,4 +116,18 @@ Base2Num <- function(letter) {
   )
 }
 
+#' Loads an example ICGC file
+#' 
+#' @return A valid ICGC input file.
+#' 
+#' @examples
+#' example_data <- loadICGCexample()
+#' 
+#' @export 
+loadICGCexample <- function() {
+  # Import example input dataset
+  load("./Data/example_mutation_dataset.Rda")
+  invisible(example_mutation_dataset)
+}
+
 
