@@ -39,13 +39,23 @@ test_that("ICGC2Mut throws correct errors in erroneous argument scenarios",
 )
 
 test_that("ICGC2Mut throws warning when non-mission critical arguments are missing", 
-  {
+          {
             expect_warning(ICGC2Mut("./inst/extdata/example_mutation_dataset.tsv"))
             expect_warning(ICGC2Mut("./inst/extdata/example_mutation_dataset.tsv", assembly = "GRCh37"))
             expect_warning(ICGC2Mut("./inst/extdata/example_mutation_dataset.tsv", Seq = "WGS"))
-  }
+          }
 )
 
+test_mat_frame <- read.csv("./inst/extdata/example_mutation_dataset.csv")
+test_mat_frame$X <- NULL
+test_mat_frame_mat <- as.matrix(test_mat_frame)
+test_mat_frame_df <- as.data.frame(test_mat_frame)
 
+test_that("ICGC2Mut works properly with matrices and data.frames when data.loaded is set to TRUE",
+          {
+            expect_equal(ICGC2Mut(test_mat_frame_mat, "GRCh37", "WGS", data.loaded = TRUE), valid_test_tsv)
+            expect_equal(ICGC2Mut(test_mat_frame_df, "GRCh37", "WGS", data.loaded = TRUE), valid_test_tsv)
+          }
+)
 
 

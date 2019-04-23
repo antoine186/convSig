@@ -1,9 +1,9 @@
 #' Converts an ICGC file into a Mutation file
 #' 
-#' @param datapath A string or a variable referencing a string object. This is the path leading to your ICGC file (tsv or csv only).
-#' @param assembly A string or a variable referencing a string object. This indicates the assembly version used in your genome experiment. Default is set to NULL, but you really should specify this. If unspecified, the function will process all of the mutations in your file even if multiple assembly versions are present.
-#' @param Seq A string or a variable referencing a string. This indicates the sequencing strategy/approach used in your genome experiment. Default is set to NULL, but you really should specify this. If unspecified, the function will process all of the mutations in your file even if multiple sequencing strategies are present.
-#' @param data.loaded A boolean variable, which indicates whether your input data is already loaded in your environment. The default is set to FALSE therefore the function looks for a path. If set to TRUE, the function will work with your data directly in your environment. Make sure that your input data is not malformed; See \link[convSig]{loadICGCexample} for an example of an acceptable input.
+#' @param datapath A string or a variable referencing a string object. This is the path leading to your ICGC file (tsv or csv only). Alternatively, this is your mutation data if you set \code{data.loaded} to \code{TRUE}.
+#' @param assembly A string or a variable referencing a string object. This indicates the assembly version used in your genome experiment. Default is set to \code{NULL}, but you really should specify this. If unspecified, the function will process all of the mutations in your file even if multiple assembly versions are present.
+#' @param Seq A string or a variable referencing a string. This indicates the sequencing strategy/approach used in your genome experiment. Default is set to \code{NULL}, but you really should specify this. If unspecified, the function will process all of the mutations in your file even if multiple sequencing strategies are present.
+#' @param data.loaded A boolean variable, which indicates whether your input data is already loaded in your environment. The default is set to \code{FALSE} therefore the function looks for a path. If set to \code{TRUE}, the function will work with your data directly in your environment. Make sure that your input data is not malformed; See \code{\link[convSig]{loadICGCexample}} for an example of an acceptable input. Data.frames and matrices are acceptable. Please note that the function is slower with this option.
 #'
 #' @return A mutation file containing 6 fields/variables: The ICGC sample ID, the chromosome ID, the chromosome start position, the chromosome end position, the reference allele, and the alternate allele.
 #' 
@@ -109,6 +109,15 @@ ICGC2Mut <- function(datapath, assembly = NULL, Seq = NULL, data.loaded = FALSE)
   x <- x[from_allele < 4 & to_allele < 4, .(icgc_sample_id, chromosome, 
                                                             chromosome_start, chromosome_end,
                                                             mutated_from_allele, mutated_to_allele)]
+  if(data.loaded == TRUE) {
+    x <- x[, chromosome := as.numeric(chromosome)]
+    x <- x[, chromosome_start := as.numeric(chromosome_start)]
+    x <- x[, chromosome_end := as.numeric(chromosome_end)]
+    x <- x[, icgc_sample_id := as.character(icgc_sample_id)]
+    x <- x[, mutated_from_allele := as.character(mutated_from_allele)]
+    x <- x[, mutated_to_allele := as.character(mutated_to_allele)]
+  }
+  
   cat("Tip: Use data.table::fwrite to write the result to a csv file for example.")
   invisible(x)
 }
