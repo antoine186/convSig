@@ -9,9 +9,9 @@ ICGC2Mut(datapath, assembly = NULL, Seq = NULL, data.loaded = FALSE)
 \arguments{
 \item{datapath}{A string or a variable referencing a string object. This is the path leading to your ICGC file (tsv or csv only). Alternatively, this is your mutation data if you set \code{data.loaded} to \code{TRUE}.}
 
-\item{assembly}{A string or a variable referencing a string object. This indicates the assembly version used in your genome experiment. Default is set to \code{NULL}, but you really should specify this. If unspecified, the function will process all of the mutations in your file even if multiple assembly versions are present.}
+\item{assembly}{A string or a variable referencing a string object. This indicates the assembly version used in your genome experiment. Default is set to \code{NULL}, but you really should specify this. \emph{If unspecified, the function will process all of the mutations in your file even if multiple assembly versions are present}.}
 
-\item{Seq}{A string or a variable referencing a string. This indicates the sequencing strategy/approach used in your genome experiment. Default is set to \code{NULL}, but you really should specify this. If unspecified, the function will process all of the mutations in your file even if multiple sequencing strategies are present.}
+\item{Seq}{A string or a variable referencing a string. This indicates the sequencing strategy/approach used in your genome experiment. Default is set to \code{NULL}, but you really should specify this. \emph{If unspecified, the function will process all of the mutations in your file even if multiple sequencing strategies are present}.}
 
 \item{data.loaded}{A boolean variable, which indicates whether your input data is already loaded in your environment. The default is set to \code{FALSE} therefore the function looks for a path. If set to \code{TRUE}, the function will work with your data directly in your environment. Make sure that your input data is not malformed; See \code{\link[convSig]{loadICGCexample}} for an example of an acceptable input. Data.frames and matrices are acceptable. Please note that the function is slower with this option.}
 }
@@ -28,8 +28,8 @@ become requirements. The 'chromosome' header can also be omitted; This is not re
 }
 
 \examples{
-ICGC2Mut("simple_somatic_mutation.open.COCA-CN.tsv")
+res <- ICGC2Mut("simple_somatic_mutation.open.COCA-CN.tsv")
 datapath <- "simple_somatic_mutation.open.COCA-CN.tsv"
-ICGC2Mut(datapath, "GRCh37", "WGS")
+res <- ICGC2Mut(datapath, "GRCh37", "WGS")
 
 }

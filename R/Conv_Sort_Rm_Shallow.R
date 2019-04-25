@@ -1,8 +1,8 @@
 #' Converts an ICGC file into a Mutation file
 #' 
 #' @param datapath A string or a variable referencing a string object. This is the path leading to your ICGC file (tsv or csv only). Alternatively, this is your mutation data if you set \code{data.loaded} to \code{TRUE}.
-#' @param assembly A string or a variable referencing a string object. This indicates the assembly version used in your genome experiment. Default is set to \code{NULL}, but you really should specify this. If unspecified, the function will process all of the mutations in your file even if multiple assembly versions are present.
-#' @param Seq A string or a variable referencing a string. This indicates the sequencing strategy/approach used in your genome experiment. Default is set to \code{NULL}, but you really should specify this. If unspecified, the function will process all of the mutations in your file even if multiple sequencing strategies are present.
+#' @param assembly A string or a variable referencing a string object. This indicates the assembly version used in your genome experiment. Default is set to \code{NULL}, but you really should specify this. \emph{If unspecified, the function will process all of the mutations in your file even if multiple assembly versions are present}.
+#' @param Seq A string or a variable referencing a string. This indicates the sequencing strategy/approach used in your genome experiment. Default is set to \code{NULL}, but you really should specify this. \emph{If unspecified, the function will process all of the mutations in your file even if multiple sequencing strategies are present}.
 #' @param data.loaded A boolean variable, which indicates whether your input data is already loaded in your environment. The default is set to \code{FALSE} therefore the function looks for a path. If set to \code{TRUE}, the function will work with your data directly in your environment. Make sure that your input data is not malformed; See \code{\link[convSig]{loadICGCexample}} for an example of an acceptable input. Data.frames and matrices are acceptable. Please note that the function is slower with this option.
 #'
 #' @return A mutation file containing 6 fields/variables: The ICGC sample ID, the chromosome ID, the chromosome start position, the chromosome end position, the reference allele, and the alternate allele.
@@ -76,19 +76,44 @@ ICGC2Mut <- function(datapath, assembly = NULL, Seq = NULL, data.loaded = FALSE)
   } else {
     warning("You should supply a valid sequencing strategy.")
   } 
-  # Checking chromosome - Processing chromosome
-  if (!any(colnames(x) == "chromosome")) {
-    warning("Cannot find a header variable corresponding to chromosome.\n
-            We might inadvertently process the X and Y chromosomes!")
-  } else {
-    x <- x[!chromosome == "X"]
-    x <- x[!chromosome == "Y"]
-  }
+  # Processing chromosome
+  tryCatch(
+    {
+      x <- x[!chromosome == "X"]
+      x <- x[!chromosome == "Y"]
+    },
+    error=function(cnd) {
+      message(paste("Input column 'chromosome' for chromosome ID doesn't seem to exist."))
+      message("Here's the original error message:")
+      message(cnd)
+      stop("ICGC2Mut aborted.")
+    }
+  )
   
   cat("Converting base letters to numbers, this might take a few minutes... \n")
   # Calling Base2Num for mutated_from_allele and mutated_to_allele
-  from_allele <- purrr::map(x[, mutated_from_allele], Base2Num)
-  to_allele <- purrr::map(x[, mutated_to_allele], Base2Num)
+  tryCatch(
+    {
+      from_allele <- purrr::map(x[, mutated_from_allele], Base2Num)
+    }, 
+    error=function(cnd) {
+      message(paste("Input column 'mutated_from_allele' doesn't seem to exist."))
+      message("Here's the original error message:")
+      message(cnd)
+      stop("ICGC2Mut aborted.")
+    }
+  )
+  tryCatch(
+    {
+      to_allele <- purrr::map(x[, mutated_to_allele], Base2Num)
+    }, 
+    error=function(cnd) {
+      message(paste("Input column 'mutated_to_allele' doesn't seem to exist."))
+      message("Here's the original error message:")
+      message(cnd)
+      stop("ICGC2Mut aborted.")
+    }
+  )
   
   cat("Conversion successful\n
       ´´´´´´¶¶¶¶
@@ -122,6 +147,7 @@ ICGC2Mut <- function(datapath, assembly = NULL, Seq = NULL, data.loaded = FALSE)
   invisible(x)
 }
 
+# Base to number conversion
 Base2Num <- function(letter) {
   switch(toupper(letter),
     A = 0,
@@ -146,10 +172,11 @@ loadICGCexample <- function() {
   invisible(example_mutation_dataset)
 }
 
+# Sorts a mutation file
 ICGC_sort <- function(mut_file) {
   cat("Sorting the mutation file\n")
   
-  if (!all.equal(mut_file[, .(chromosome_start)], mut_file[, .(chromosome_end)], check.attributes = FALSE)) {
+  if (all.equal(mut_file[, .(chromosome_start)], mut_file[, .(chromosome_end)], check.attributes = FALSE) != TRUE) {
     mut_file <- mut_file[order(chromosome, chromosome_start, chromosome_end)]
   } else {
     mut_file <- mut_file[order(chromosome, chromosome_start)]
@@ -158,5 +185,11 @@ ICGC_sort <- function(mut_file) {
   invisible(mut_file)
 }
 
-res2 <- ICGC_sort(lol)
+# Remove duplicated entries in a mutation file
+ICGC_dedup <- function(mut_file) {
+  cat("Removing duplicate rows in the mutation file\n")
+  mut_file <- unique(mut_file)
+  invisible(mut_file)
+}
+
 
