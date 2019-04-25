@@ -12,9 +12,9 @@
 #' become requirements. The 'chromosome' header can also be omitted; This is not recommended however as the function will process mutations in the X and Y chromosomes instead of skipping them if they are present in the input file. 
 #' 
 #' @examples
-#' ICGC2Mut("simple_somatic_mutation.open.COCA-CN.tsv")
+#' res <- ICGC2Mut("simple_somatic_mutation.open.COCA-CN.tsv")
 #' datapath <- "simple_somatic_mutation.open.COCA-CN.tsv"
-#' ICGC2Mut(datapath, "GRCh37", "WGS")
+#' res <- ICGC2Mut(datapath, "GRCh37", "WGS")
 #' 
 #' @export 
 ICGC2Mut <- function(datapath, assembly = NULL, Seq = NULL, data.loaded = FALSE) {
@@ -105,7 +105,7 @@ ICGC2Mut <- function(datapath, assembly = NULL, Seq = NULL, data.loaded = FALSE)
       ´´¶´´´¶¶¶¶¶¶¶¶¶¶¶
       ´´´¶´´´´´´´´´´´¶
       ´´´´¶¶¶¶¶¶¶¶¶¶¶\n")
-  cat("Returning the result...\n")
+  cat("Returning the result to your specified variable...\n")
   x <- x[from_allele < 4 & to_allele < 4, .(icgc_sample_id, chromosome, 
                                                             chromosome_start, chromosome_end,
                                                             mutated_from_allele, mutated_to_allele)]
@@ -146,4 +146,17 @@ loadICGCexample <- function() {
   invisible(example_mutation_dataset)
 }
 
+ICGC_sort <- function(mut_file) {
+  cat("Sorting the mutation file\n")
+  
+  if (!all.equal(mut_file[, .(chromosome_start)], mut_file[, .(chromosome_end)], check.attributes = FALSE)) {
+    mut_file <- mut_file[order(chromosome, chromosome_start, chromosome_end)]
+  } else {
+    mut_file <- mut_file[order(chromosome, chromosome_start)]
+  }
+  
+  invisible(mut_file)
+}
+
+res2 <- ICGC_sort(lol)
 
