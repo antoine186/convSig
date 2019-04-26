@@ -177,12 +177,19 @@ ICGC_sort <- function(mut_file) {
   cat("Sorting the mutation file\n")
   
   if (all.equal(mut_file[, .(chromosome_start)], mut_file[, .(chromosome_end)], check.attributes = FALSE) != TRUE) {
+    warning("Mutations other than single nucleotide mutation detected...\n")
     mut_file <- mut_file[order(chromosome, chromosome_start, chromosome_end)]
   } else {
     mut_file <- mut_file[order(chromosome, chromosome_start)]
   }
   
   invisible(mut_file)
+}
+
+# Remove non-single nucleotide polymorphisms
+ICGC_snp <- function(mut_file) {
+  cat("Removing non-single nucleotide polymorphisms")
+  Rcpp::sourceCpp("./src/Shallow_Loops.cpp")
 }
 
 # Remove duplicated entries in a mutation file

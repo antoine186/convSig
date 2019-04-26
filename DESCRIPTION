@@ -19,7 +19,8 @@ LinkingTo:
     Rcpp
 Depends:
     data.table,
-    purrr
+    purrr,
+    Rcpp
 Imports: 
     Rcpp,
     progress
