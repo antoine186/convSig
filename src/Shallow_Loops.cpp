@@ -2,7 +2,7 @@
 #include <iostream>
 using namespace Rcpp;
 
-// This is a for loop comparison heling to remove non single nucleotide changes
+// This is a for loop comparison helping to remove non single nucleotide changes
 
 // [[Rcpp::export]]
 LogicalVector RM_nonSNP(DataFrame startend, SEXP ar) {

@@ -7,7 +7,7 @@
 ICGC2Mut(datapath, assembly = NULL, Seq = NULL, data.loaded = FALSE)
 }
 \arguments{
-\item{datapath}{A string or a variable referencing a string object. This is the path leading to your ICGC file (tsv or csv only). Alternatively, this is your mutation data if you set \code{data.loaded} to \code{TRUE}.}
+\item{datapath}{A string or a variable referencing a string object. This is the path leading to your ICGC file (tsv or csv only). Alternatively, this is your mutation data if you set \code{data.loaded} to \code{TRUE}. In the latter case, your input should either be a \code{data.frame} or a \code{matrix}.}
 
 \item{assembly}{A string or a variable referencing a string object. This indicates the assembly version used in your genome experiment. Default is set to \code{NULL}, but you really should specify this. \emph{If unspecified, the function will process all of the mutations in your file even if multiple assembly versions are present}.}
 

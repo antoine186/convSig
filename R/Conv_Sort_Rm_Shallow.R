@@ -1,6 +1,10 @@
+#' @useDynLib convSig
+#' @importFrom Rcpp sourceCpp
+NULL
+
 #' Converts an ICGC file into a Mutation file
 #' 
-#' @param datapath A string or a variable referencing a string object. This is the path leading to your ICGC file (tsv or csv only). Alternatively, this is your mutation data if you set \code{data.loaded} to \code{TRUE}.
+#' @param datapath A string or a variable referencing a string object. This is the path leading to your ICGC file (tsv or csv only). Alternatively, this is your mutation data if you set \code{data.loaded} to \code{TRUE}. In the latter case, your input should either be a \code{data.frame} or a \code{matrix}.
 #' @param assembly A string or a variable referencing a string object. This indicates the assembly version used in your genome experiment. Default is set to \code{NULL}, but you really should specify this. \emph{If unspecified, the function will process all of the mutations in your file even if multiple assembly versions are present}.
 #' @param Seq A string or a variable referencing a string. This indicates the sequencing strategy/approach used in your genome experiment. Default is set to \code{NULL}, but you really should specify this. \emph{If unspecified, the function will process all of the mutations in your file even if multiple sequencing strategies are present}.
 #' @param data.loaded A boolean variable, which indicates whether your input data is already loaded in your environment. The default is set to \code{FALSE} therefore the function looks for a path. If set to \code{TRUE}, the function will work with your data directly in your environment. Make sure that your input data is not malformed; See \code{\link[convSig]{loadICGCexample}} for an example of an acceptable input. Data.frames and matrices are acceptable. Please note that the function is slower with this option.
@@ -160,7 +164,7 @@ Base2Num <- function(letter) {
 
 #' Loads an example ICGC file
 #' 
-#' @return A valid ICGC input file.
+#' @return A valid ICGC input file (e.g. for \code{ICGC2Mut()}).
 #' 
 #' @examples
 #' example_data <- loadICGCexample()
@@ -168,28 +172,35 @@ Base2Num <- function(letter) {
 #' @export 
 loadICGCexample <- function() {
   # Import example input dataset
-  load("./Data/example_mutation_dataset.Rda")
+  load("./data/example_mutation_dataset.Rda")
   invisible(example_mutation_dataset)
 }
 
-#' Sorts a mutation file
-#' 
-#' @useDynLib convSig
-#' @importFrom Rcpp sourceCpp
+# Sorts the mutation file
 ICGC_sort <- function(mut_file) {
   cat("Sorting the mutation file\n")
   
-  if (all.equal(mut_file[, .(chromosome_start)], mut_file[, .(chromosome_end)], check.attributes = FALSE) != TRUE) {
-    warning("Mutations other than single nucleotide mutation detected...\n")
-    mut_file <- mut_file[order(chromosome, chromosome_start, chromosome_end)]
-  } else {
-    mut_file <- mut_file[order(chromosome, chromosome_start)]
-  }
+  tryCatch(
+    {
+      if (all.equal(mut_file[, .(chromosome_start)], mut_file[, .(chromosome_end)], check.attributes = FALSE) != TRUE) {
+        cat("Mutations other than single nucleotide mutation detected...\n")
+        mut_file <- mut_file[order(chromosome, chromosome_start, chromosome_end)]
+      } else {
+        mut_file <- mut_file[order(chromosome, chromosome_start)]
+      }
+    }, 
+    error=function(cnd) {
+      message(paste("It seems that your input file does not conform with the required format."))
+      message("Here's the original error message:")
+      message(cnd)
+      stop("ICGC_curate aborted.")
+    }
+  )
   
   invisible(mut_file)
 }
 
-# Remove non-single nucleotide polymorphisms
+#' Remove non-single nucleotide polymorphisms
 ICGC_snp <- function(mut_file) {
   cat("Removing non-single nucleotide polymorphisms\n")
   tryCatch(
@@ -216,6 +227,46 @@ ICGC_snp <- function(mut_file) {
 ICGC_dedup <- function(mut_file) {
   cat("Removing duplicate rows in the mutation file\n")
   mut_file <- unique(mut_file)
+  invisible(mut_file)
+}
+
+#' Sorts and removes duplicate entries in a mutation file output by \code{ICGC2Mut()}
+#' 
+#' @param mut_file A string or a variable referencing a mutation file output by \code{ICGC2Mut()}. You can specify a file you created, however you have to make sure that it has the correct format (i.e. please view \emph{Details}). Your input should either be a \code{data.frame} or a \code{matrix}.
+#' @param remove.nonSNP A boolean variable indicating whether the function should remove non-single nucleotide changes. This is set by default to \code{TRUE} as our downstream filtering method only handles single nucleotide changes. You can toggle this parameter to \code{FALSE} for your own purposes, although it should remain \code{TRUE} if you want to utilize our entire pipeline for your analysis.
+#'
+#' @return A sorted mutation file with duplicate entries removed and, depending on user specification, non-single nucleotide changes removed.
+#' 
+#' @section Details:
+#' Your input mutation file must at least have the following column headers: Chromosome ID, the chromosome start position, the chromosome end position, the reference allele, and the alternate allele.
+#' 
+#' @examples
+#' res <- ICGC_curate(mutation_data)
+#' 
+#' @export 
+ICGC_curate <- function(mut_file, remove.nonSNP = TRUE) {
+  
+  tryCatch(
+    {
+      if (!data.table::is.data.table(mut_file)) {
+        mut_file <- data.table::as.data.table(mut_file)
+      }
+    }, 
+    error=function(cnd) {
+      message(paste("Are you sure that your input is either a data.frame or a matrix?"))
+      message("Here's the original error message:")
+      message(cnd)
+      stop("Operation aborted.")
+    }
+  )
+  
+  mut_file <- ICGC_sort(mut_file)
+  
+  if (remove.nonSNP == TRUE) {
+    mut_file <- ICGC_snp(mut_file)
+  } 
+  
+  mut_file <- ICGC_dedup(mut_file)
   invisible(mut_file)
 }
 
