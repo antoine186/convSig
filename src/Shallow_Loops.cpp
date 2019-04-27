@@ -1,26 +1,28 @@
 #include <Rcpp.h>
+#include <iostream>
 using namespace Rcpp;
 
-// This is a simple example of exporting a C++ function to R. You can
+// This is a for loop comparison heling to remove non single nucleotide changes
 
 // [[Rcpp::export]]
-RcppExport SEXP RM_nonSNP(SEXP x) {
-  NumericMatrix startend = as<NumericMatrix>(x);
-    
-  int nr = startend.nrow();
-  int nc = startend.ncol();
+LogicalVector RM_nonSNP(DataFrame startend, SEXP ar) {
+  //NumericMatrix startend = as<NumericMatrix>(x);
+  LogicalVector rm_ind = as<LogicalVector>(ar);
   
-  int* rm_ind = new int[nr];
+  NumericVector startend1 = startend[0];
+  NumericVector startend2 = startend[1];
+  
+  int nr = startend.nrow();
+  std::cout << "Value of rm_ind is : " << rm_ind << "\n";
   
   for (int i = 0; i < nr; ++i)  
   { 
-    if (startend(i,1) == startend(i,2)) {
-      rm_ind[i] = 1;
-    } else {
-      rm_ind[i] = 0;
-    }
+  if (startend1[i] == startend2[i]) {
+  rm_ind[i] = TRUE;
+  } else {
+  rm_ind[i] = FALSE;
+  }
   } 
   
-  return wrap(rm_ind);
+  return rm_ind;
 }
-

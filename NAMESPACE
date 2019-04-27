@@ -2,3 +2,5 @@
 
 export(ICGC2Mut)
 export(loadICGCexample)
+importFrom(Rcpp,sourceCpp)
+useDynLib(convSig)

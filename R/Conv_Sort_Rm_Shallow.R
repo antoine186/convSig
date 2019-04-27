@@ -172,7 +172,10 @@ loadICGCexample <- function() {
   invisible(example_mutation_dataset)
 }
 
-# Sorts a mutation file
+#' Sorts a mutation file
+#' 
+#' @useDynLib convSig
+#' @importFrom Rcpp sourceCpp
 ICGC_sort <- function(mut_file) {
   cat("Sorting the mutation file\n")
   
@@ -188,8 +191,25 @@ ICGC_sort <- function(mut_file) {
 
 # Remove non-single nucleotide polymorphisms
 ICGC_snp <- function(mut_file) {
-  cat("Removing non-single nucleotide polymorphisms")
-  Rcpp::sourceCpp("./src/Shallow_Loops.cpp")
+  cat("Removing non-single nucleotide polymorphisms\n")
+  tryCatch(
+    {
+      rm_ind <- RM_nonSNP(mut_file[,.(chromosome_start, chromosome_end)], rep(TRUE, dim(mut_file)[1]))
+      mut_file <- mut_file[rm_ind]
+    },
+    error=function(cnd) {
+      message(paste("Oops, it seems like an internal problem happened. Probably something you cannot fix on your end."))
+      message("Here's the original error message:")
+      message(cnd)
+      stop("Operation aborted.")
+    }
+  )
+  
+  if (dim(mut_file)[1] == 0) {
+    stop("Your input file only contains non single nucleotide changes. This package only deals with those unfortunately")
+  }
+  
+  invisible(mut_file)
 }
 
 # Remove duplicated entries in a mutation file

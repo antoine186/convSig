@@ -106,6 +106,40 @@ rm(presort_input_notsame)
 rm(res_same)
 rm(res_notsame)
 
+input_same <- data.table::data.table(chromosome = c(1,3,2,1,3,3), 
+                                     chromosome_start = c(11,24,9,12,14,16), 
+                                     chromosome_end = c(11,24,9,12,14,16))
+
+input_notsame <- data.table::data.table(chromosome = c(1,3,2,1,3,3), 
+                                                chromosome_start = c(11,24,9,12,14,16), 
+                                                chromosome_end = c(11,24,17,12,15,16))
+
+res_same <- data.table::data.table(chromosome = c(1,3,2,1,3,3), 
+                                   chromosome_start = c(11,24,9,12,14,16),
+                                   chromosome_end = c(11,24,9,12,14,16))
+
+res_notsame <- data.table::data.table(chromosome = c(1,3,1,3),
+                                      chromosome_start = c(11,24,12,16),
+                                      chromosome_end = c(11,24,12,16))
+
+input_allnotsame <- data.table::data.table(chromosome = c(1,3,2), 
+                                     chromosome_start = c(11,24,9), 
+                                     chromosome_end = c(12,25,10))
+
+test_that("that the removal of non single nucleotide changes works properly",
+          {
+            expect_equal(ICGC_snp(input_same), res_same)
+            expect_equal(ICGC_snp(input_notsame), res_notsame)
+            expect_error(ICGC_snp(input_allnotsame))
+          }
+)
+
+rm(input_same)
+rm(input_notsame)
+rm(res_same)
+rm(res_notsame)
+rm(input_allnotsame)
+
 dup_input <- data.table::data.table(x=c(1,1,1,1), y=c(1,2,3,1))
 dup_res <- data.table::data.table(x=c(1,1,1), y=c(1,2,3))
 

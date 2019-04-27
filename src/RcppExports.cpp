@@ -5,6 +5,18 @@
 
 using namespace Rcpp;
 
+// RM_nonSNP
+LogicalVector RM_nonSNP(DataFrame startend, SEXP ar);
+RcppExport SEXP _convSig_RM_nonSNP(SEXP startendSEXP, SEXP arSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< DataFrame >::type startend(startendSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type ar(arSEXP);
+    rcpp_result_gen = Rcpp::wrap(RM_nonSNP(startend, ar));
+    return rcpp_result_gen;
+END_RCPP
+}
 // timesTwo
 RcppExport SEXP timesTwo(SEXP x);
 RcppExport SEXP _convSig_timesTwo(SEXP xSEXP) {
@@ -28,12 +40,10 @@ BEGIN_RCPP
 END_RCPP
 }
 
-RcppExport SEXP timesTwo(SEXP);
-
 static const R_CallMethodDef CallEntries[] = {
+    {"_convSig_RM_nonSNP", (DL_FUNC) &_convSig_RM_nonSNP, 2},
     {"_convSig_timesTwo", (DL_FUNC) &_convSig_timesTwo, 1},
     {"_convSig_timesTwoList", (DL_FUNC) &_convSig_timesTwoList, 1},
-    {"timesTwo", (DL_FUNC) &timesTwo, 1},
     {NULL, NULL, 0}
 };
 
