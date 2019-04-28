@@ -7,7 +7,7 @@
 loadICGCexample()
 }
 \value{
-A valid ICGC input file.
+A valid ICGC input file (e.g. for \code{ICGC2Mut()}).
 }
 \description{
 Loads an example ICGC file

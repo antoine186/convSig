@@ -7,13 +7,13 @@ NULL
 #' @param datapath A string or a variable referencing a string object. This is the path leading to your ICGC file (tsv or csv only). Alternatively, this is your mutation data if you set \code{data.loaded} to \code{TRUE}. In the latter case, your input should either be a \code{data.frame} or a \code{matrix}.
 #' @param assembly A string or a variable referencing a string object. This indicates the assembly version used in your genome experiment. Default is set to \code{NULL}, but you really should specify this. \emph{If unspecified, the function will process all of the mutations in your file even if multiple assembly versions are present}.
 #' @param Seq A string or a variable referencing a string. This indicates the sequencing strategy/approach used in your genome experiment. Default is set to \code{NULL}, but you really should specify this. \emph{If unspecified, the function will process all of the mutations in your file even if multiple sequencing strategies are present}.
-#' @param data.loaded A boolean variable, which indicates whether your input data is already loaded in your environment. The default is set to \code{FALSE} therefore the function looks for a path. If set to \code{TRUE}, the function will work with your data directly in your environment. Make sure that your input data is not malformed; See \code{\link[convSig]{loadICGCexample}} for an example of an acceptable input. Data.frames and matrices are acceptable. Please note that the function is slower with this option.
+#' @param data.loaded A boolean variable, which indicates whether your input data is already loaded in your environment. The default is set to \code{FALSE} therefore the function looks for a path. If set to \code{TRUE}, the function will work with your data directly in your environment. Make sure that your input data is not malformed; See \code{\link[convSig]{loadICGCexample()}} for an example of an acceptable input. Data.frames and matrices are acceptable. Please note that the function is slower with this option.
 #'
 #' @return A mutation file containing 6 fields/variables: The ICGC sample ID, the chromosome ID, the chromosome start position, the chromosome end position, the reference allele, and the alternate allele.
 #' 
 #' @section Details:
 #' Your input ICGC file must have a header abiding to the ICGC format. The presence of column headers 'mutated_from_allele' and 'mutated_to_allele' are absolute requirements for the usage of this function. You can also technically omit 'assembly_version' and 'sequencing_strategy' if you do not pass them as arguments. However, if you do, then they
-#' become requirements. The 'chromosome' header can also be omitted; This is not recommended however as the function will process mutations in the X and Y chromosomes instead of skipping them if they are present in the input file. 
+#' become requirements. The 'chromosome' header can also be omitted; This is not recommended however as the function will process mutations in the X and Y chromosomes instead of skipping them if they are present in the input file. See \code{\link[convSig]{loadICGCexample()}} for a closer look at a legal input format.
 #' 
 #' @examples
 #' res <- ICGC2Mut("simple_somatic_mutation.open.COCA-CN.tsv")
@@ -232,13 +232,13 @@ ICGC_dedup <- function(mut_file) {
 
 #' Sorts and removes duplicate entries in a mutation file output by \code{ICGC2Mut()}
 #' 
-#' @param mut_file A string or a variable referencing a mutation file output by \code{ICGC2Mut()}. You can specify a file you created, however you have to make sure that it has the correct format (i.e. please view \emph{Details}). Your input should either be a \code{data.frame} or a \code{matrix}.
+#' @param mut_file A string or a variable referencing a mutation file output by \code{ICGC2Mut()}. You can specify a file you created, however you have to make sure that it has the correct format (i.e. please view \emph{Details}). Your input should either be a \code{data.frame}, a \code{matrix}, or a \code{data.table}.
 #' @param remove.nonSNP A boolean variable indicating whether the function should remove non-single nucleotide changes. This is set by default to \code{TRUE} as our downstream filtering method only handles single nucleotide changes. You can toggle this parameter to \code{FALSE} for your own purposes, although it should remain \code{TRUE} if you want to utilize our entire pipeline for your analysis.
 #'
 #' @return A sorted mutation file with duplicate entries removed and, depending on user specification, non-single nucleotide changes removed.
 #' 
 #' @section Details:
-#' Your input mutation file must at least have the following column headers: Chromosome ID, the chromosome start position, the chromosome end position, the reference allele, and the alternate allele.
+#' Your input mutation file must at least have the following column headers: chromosome (i.e. the Chromosome ID), chromosome_start (i.e. the chromosome start position), chromosome_end (i.e. the chromosome end position), mutated_from_allele (i.e. the reference allele), and mutated_to_allele (i.e. alternate allele).
 #' 
 #' @examples
 #' res <- ICGC_curate(mutation_data)
@@ -249,11 +249,29 @@ ICGC_curate <- function(mut_file, remove.nonSNP = TRUE) {
   tryCatch(
     {
       if (!data.table::is.data.table(mut_file)) {
+        if (!is.data.frame(mut_file) && !is.matrix(mut_file)) {
+          stop("Your input is neither a data.frame or a matrix")
+        }
+        
+        if (!any(colnames(mut_file) == "chromosome")) {
+          stop("Cannot find a header variable corresponding to \'chromosome\'")
+        } else if (!any(colnames(mut_file) == "chromosome_start")) {
+          stop("Cannot find a header variable corresponding to \'chromosome_start\'")
+        } else if (!any(colnames(mut_file) == "chromosome_end")) {
+          stop("Cannot find a header variable corresponding to \'chromosome_end\'")
+        }
+        
         mut_file <- data.table::as.data.table(mut_file)
+        
+        mut_file <- mut_file[, chromosome := as.numeric(chromosome)]
+        mut_file <- mut_file[, chromosome_start := as.numeric(chromosome_start)]
+        mut_file <- mut_file[, chromosome_end := as.numeric(chromosome_end)]
+        mut_file <- mut_file[, mutated_from_allele := as.character(mutated_from_allele)]
+        mut_file <- mut_file[, mutated_to_allele := as.character(mutated_to_allele)]
       }
     }, 
     error=function(cnd) {
-      message(paste("Are you sure that your input is either a data.frame or a matrix?"))
+      message(paste("Something has gone wrong with the input you supplied..."))
       message("Here's the original error message:")
       message(cnd)
       stop("Operation aborted.")

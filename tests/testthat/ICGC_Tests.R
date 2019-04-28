@@ -152,4 +152,46 @@ test_that("removal of duplicated rows works correctly",
 rm(dup_input)
 rm(dup_res)
 
+# Test throwing errors when input is malformed
+# When are not data.frame or matrix
+# When missing critical columns
+
+res <- ICGC2Mut("./inst/extdata/example_mutation_dataset.tsv", "GRCh37", "WGS")
+test_res_mat <- as.matrix(res)
+test_res_df <- as.data.frame(res)
+
+res_rmnonSNP <- ICGC_curate(res, remove.nonSNP = TRUE)
+
+test_that("ICGC_curate returns consistent results for both data.frames and matrices",
+          {
+            expect_equal(ICGC_curate(test_res_mat, remove.nonSNP = TRUE), res_rmnonSNP)
+            expect_equal(ICGC_curate(test_res_df, remove.nonSNP = TRUE), res_rmnonSNP)
+          }  
+)
+
+res_nochrom <- res
+res_nostart <- res
+res_noend <- res
+res_nochrom$chromosome <- NULL
+res_nostart$chromosome <- NULL
+res_noend$chromosome <- NULL
+
+test_that("ICGC_curate throws appropriate errors when the input is malformed",
+          {
+            expect_error(ICGC_curate("incorrect input", remove.nonSNP = TRUE))
+            expect_error(ICGC_curate(res_nochrom, remove.nonSNP = TRUE))
+            expect_error(ICGC_curate(res_nostart, remove.nonSNP = TRUE))
+            expect_error(ICGC_curate(res_noend, remove.nonSNP = TRUE))
+          }
+)
+
+rm(res)
+rm(res_nochrom)
+rm(res_nostart)
+rm(res_noend)
+rm(test_res_mat)
+rm(test_res_df)
+rm(res_rmnonSNP)
+
+
 

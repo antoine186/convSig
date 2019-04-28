@@ -13,7 +13,7 @@ ICGC2Mut(datapath, assembly = NULL, Seq = NULL, data.loaded = FALSE)
 
 \item{Seq}{A string or a variable referencing a string. This indicates the sequencing strategy/approach used in your genome experiment. Default is set to \code{NULL}, but you really should specify this. \emph{If unspecified, the function will process all of the mutations in your file even if multiple sequencing strategies are present}.}
 
-\item{data.loaded}{A boolean variable, which indicates whether your input data is already loaded in your environment. The default is set to \code{FALSE} therefore the function looks for a path. If set to \code{TRUE}, the function will work with your data directly in your environment. Make sure that your input data is not malformed; See \code{\link[convSig]{loadICGCexample}} for an example of an acceptable input. Data.frames and matrices are acceptable. Please note that the function is slower with this option.}
+\item{data.loaded}{A boolean variable, which indicates whether your input data is already loaded in your environment. The default is set to \code{FALSE} therefore the function looks for a path. If set to \code{TRUE}, the function will work with your data directly in your environment. Make sure that your input data is not malformed; See \code{\link[convSig]{loadICGCexample()}} for an example of an acceptable input. Data.frames and matrices are acceptable. Please note that the function is slower with this option.}
 }
 \value{
 A mutation file containing 6 fields/variables: The ICGC sample ID, the chromosome ID, the chromosome start position, the chromosome end position, the reference allele, and the alternate allele.
@@ -24,7 +24,7 @@ Converts an ICGC file into a Mutation file
 \section{Details}{
 
 Your input ICGC file must have a header abiding to the ICGC format. The presence of column headers 'mutated_from_allele' and 'mutated_to_allele' are absolute requirements for the usage of this function. You can also technically omit 'assembly_version' and 'sequencing_strategy' if you do not pass them as arguments. However, if you do, then they
-become requirements. The 'chromosome' header can also be omitted; This is not recommended however as the function will process mutations in the X and Y chromosomes instead of skipping them if they are present in the input file.
+become requirements. The 'chromosome' header can also be omitted; This is not recommended however as the function will process mutations in the X and Y chromosomes instead of skipping them if they are present in the input file. See \code{\link[convSig]{loadICGCexample()}} for a closer look at a legal input format.
 }
 
 \examples{

@@ -6,14 +6,12 @@ using namespace Rcpp;
 
 // [[Rcpp::export]]
 LogicalVector RM_nonSNP(DataFrame startend, SEXP ar) {
-  //NumericMatrix startend = as<NumericMatrix>(x);
   LogicalVector rm_ind = as<LogicalVector>(ar);
   
   NumericVector startend1 = startend[0];
   NumericVector startend2 = startend[1];
   
   int nr = startend.nrow();
-  std::cout << "Value of rm_ind is : " << rm_ind << "\n";
   
   for (int i = 0; i < nr; ++i)  
   { 

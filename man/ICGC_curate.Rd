@@ -7,7 +7,7 @@
 ICGC_curate(mut_file, remove.nonSNP = TRUE)
 }
 \arguments{
-\item{mut_file}{A string or a variable referencing a mutation file output by \code{ICGC2Mut()}. You can specify a file you created, however you have to make sure that it has the correct format (i.e. please view \emph{Details}). Your input should either be a \code{data.frame} or a \code{matrix}.}
+\item{mut_file}{A string or a variable referencing a mutation file output by \code{ICGC2Mut()}. You can specify a file you created, however you have to make sure that it has the correct format (i.e. please view \emph{Details}). Your input should either be a \code{data.frame}, a \code{matrix}, or a \code{data.table}.}
 
 \item{remove.nonSNP}{A boolean variable indicating whether the function should remove non-single nucleotide changes. This is set by default to \code{TRUE} as our downstream filtering method only handles single nucleotide changes. You can toggle this parameter to \code{FALSE} for your own purposes, although it should remain \code{TRUE} if you want to utilize our entire pipeline for your analysis.}
 }
@@ -19,7 +19,7 @@ Sorts and removes duplicate entries in a mutation file output by \code{ICGC2Mut(
 }
 \section{Details}{
 
-Your input mutation file must at least have the following column headers: Chromosome ID, the chromosome start position, the chromosome end position, the reference allele, and the alternate allele.
+Your input mutation file must at least have the following column headers: chromosome (i.e. the Chromosome ID), chromosome_start (i.e. the chromosome start position), chromosome_end (i.e. the chromosome end position), mutated_from_allele (i.e. the reference allele), and mutated_to_allele (i.e. alternate allele).
 }
 
 \examples{
