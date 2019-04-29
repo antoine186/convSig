@@ -15,3 +15,12 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
 Suggests: 
     testthat
+LinkingTo: 
+    Rcpp
+Depends:
+    data.table,
+    purrr,
+    Rcpp
+Imports: 
+    Rcpp,
+    progress
