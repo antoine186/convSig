@@ -4,7 +4,8 @@ NULL
 
 #' Converts an ICGC file into a Mutation file
 #' 
-#' @param datapath A string or a variable referencing a string object. This is the path leading to your ICGC file (tsv or csv only). Alternatively, this is your mutation data if you set \code{data.loaded} to \code{TRUE}. In the latter case, your input should either be a \code{data.frame} or a \code{matrix}.
+#' @param datapath A string or a variable referencing a string object. This is 
+#'  the path leading to your ICGC file (tsv or csv only). Alternatively, this is your mutation data if you set \code{data.loaded} to \code{TRUE}. In the latter case, your input should either be a \code{data.frame} or a \code{matrix}.
 #' @param assembly A string or a variable referencing a string object. This indicates the assembly version used in your genome experiment. Default is set to \code{NULL}, but you really should specify this. \emph{If unspecified, the function will process all of the mutations in your file even if multiple assembly versions are present}.
 #' @param Seq A string or a variable referencing a string. This indicates the sequencing strategy/approach used in your genome experiment. Default is set to \code{NULL}, but you really should specify this. \emph{If unspecified, the function will process all of the mutations in your file even if multiple sequencing strategies are present}.
 #' @param data.loaded A boolean variable, which indicates whether your input data is already loaded in your environment. The default is set to \code{FALSE} therefore the function looks for a path. If set to \code{TRUE}, the function will work with your data directly in your environment. Make sure that your input data is not malformed; See \code{\link[convSig]{loadICGCexample()}} for an example of an acceptable input. Data.frames and matrices are acceptable. Please note that the function is slower with this option.
@@ -21,6 +22,8 @@ NULL
 #' res <- ICGC2Mut(datapath, "GRCh37", "WGS")
 #' 
 #' @export 
+#' 
+#' @importFrom data.table fread data.table as.data.table
 ICGC2Mut <- function(datapath, assembly = NULL, Seq = NULL, data.loaded = FALSE) {
   # Check that data is a string
   if (data.loaded == FALSE) {
@@ -167,13 +170,12 @@ Base2Num <- function(letter) {
 #' @return A valid ICGC input file (e.g. for \code{ICGC2Mut()}).
 #' 
 #' @examples
-#' example_data <- loadICGCexample()
+#' loadICGCexample()
 #' 
 #' @export 
 loadICGCexample <- function() {
   # Import example input dataset
-  load("./data/example_mutation_dataset.Rda")
-  invisible(example_mutation_dataset)
+  load("./data/example_mutation_dataset.Rda", envir = parent.frame())
 }
 
 # Sorts the mutation file
@@ -217,7 +219,8 @@ ICGC_snp <- function(mut_file) {
   )
   
   if (dim(mut_file)[1] == 0) {
-    stop("Your input file only contains non single nucleotide changes. This package only deals with those unfortunately")
+    stop("Your input file only contains non single nucleotide changes.", 
+         "This package only deals with those unfortunately")
   }
   
   invisible(mut_file)

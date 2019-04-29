@@ -1,7 +1,5 @@
 context("ICGC2Mut Tests")
 
-library(convSig)
-
 test_that("base to number conversion works",
           {
             expect_equal(Base2Num("a"), 0)
@@ -25,8 +23,10 @@ valid_test_tsv <- data.table::fread("./inst/extdata/result_mutation_dataset.tsv"
 
 test_that("ICGC2Mut is consistent for csv and tsv files",
           {
-            expect_equal(ICGC2Mut("./inst/extdata/example_mutation_dataset.tsv", "GRCh37", "WGS"), valid_test_tsv)
-            expect_equal(ICGC2Mut("./inst/extdata/example_mutation_dataset.csv", "GRCh37", "WGS"), valid_test_tsv)
+            expect_equal(ICGC2Mut("./inst/extdata/example_mutation_dataset.tsv",
+                                  "GRCh37", "WGS"), valid_test_tsv)
+            expect_equal(ICGC2Mut("./inst/extdata/example_mutation_dataset.csv",
+                                  "GRCh37", "WGS"), valid_test_tsv)
           }
 )
 
@@ -114,7 +114,7 @@ input_notsame <- data.table::data.table(chromosome = c(1,3,2,1,3,3),
                                                 chromosome_start = c(11,24,9,12,14,16), 
                                                 chromosome_end = c(11,24,17,12,15,16))
 
-res_same <- data.table::data.table(chromosome = c(1,3,2,1,3,3), 
+res_same <- data.table(chromosome = c(1,3,2,1,3,3), 
                                    chromosome_start = c(11,24,9,12,14,16),
                                    chromosome_end = c(11,24,9,12,14,16))
 

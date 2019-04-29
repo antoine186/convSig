@@ -13,6 +13,6 @@ A valid ICGC input file (e.g. for \code{ICGC2Mut()}).
 Loads an example ICGC file
 }
 \examples{
-example_data <- loadICGCexample()
+loadICGCexample()
 
 }
