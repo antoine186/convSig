@@ -19,48 +19,48 @@ test_that("base to number conversion works",
           }
 )
 
-valid_test_tsv <- data.table::fread("./inst/extdata/result_mutation_dataset.tsv")
+valid_test_tsv <- data.table::fread("result_mutation_dataset.tsv")
 
 test_that("ICGC2Mut is consistent for csv and tsv files",
           {
-            expect_equal(ICGC2Mut("./inst/extdata/example_mutation_dataset.tsv",
+            expect_equal(ICGC2Mut("example_mutation_dataset.tsv",
                                   "GRCh37", "WGS"), valid_test_tsv)
-            expect_equal(ICGC2Mut("./inst/extdata/example_mutation_dataset.csv",
+            expect_equal(ICGC2Mut("example_mutation_dataset.csv",
                                   "GRCh37", "WGS"), valid_test_tsv)
           }
 )
 
 test_that("ICGC2Mut throws correct errors in erroneous argument scenarios",
           {
-            expect_error(ICGC2Mut("./inst/extdata/example_mutation_dataset.tsv", "GRCh399999", "WGS"))
-            expect_error(ICGC2Mut("./inst/extdata/example_mutation_dataset.tsv", "GRCh37", "WasdasdS"))
-            expect_error(ICGC2Mut("./inst/extdata/example_mutati.tsv", "GRCh37", "WGS"))
+            expect_error(ICGC2Mut("example_mutation_dataset.tsv", "GRCh399999", "WGS"))
+            expect_error(ICGC2Mut("example_mutation_dataset.tsv", "GRCh37", "WasdasdS"))
+            expect_error(ICGC2Mut("example_mutati.tsv", "GRCh37", "WGS"))
           }
 )
 
 test_that("ICGC2Mut throws warning when non-mission critical arguments are missing", 
           {
-            expect_warning(ICGC2Mut("./inst/extdata/example_mutation_dataset.tsv"))
-            expect_warning(ICGC2Mut("./inst/extdata/example_mutation_dataset.tsv", assembly = "GRCh37"))
-            expect_warning(ICGC2Mut("./inst/extdata/example_mutation_dataset.tsv", Seq = "WGS"))
+            expect_warning(ICGC2Mut("example_mutation_dataset.tsv"))
+            expect_warning(ICGC2Mut("example_mutation_dataset.tsv", 
+                                    assembly = "GRCh37"))
+            expect_warning(ICGC2Mut("example_mutation_dataset.tsv", Seq = "WGS"))
           }
 )
 
-test_mat_frame <- read.csv("./inst/extdata/example_mutation_dataset.csv")
+test_mat_frame <- read.csv("example_mutation_dataset.csv")
 test_mat_frame$X <- NULL
 test_mat_frame_mat <- as.matrix(test_mat_frame)
 test_mat_frame_df <- as.data.frame(test_mat_frame)
 
-test_that("ICGC2Mut works properly with matrices and data.frames when data.loaded is set to TRUE",
+test_that("ICGC2Mut works properly with matrices and data.frames 
+          when data.loaded is set to TRUE",
           {
-            expect_equal(ICGC2Mut(test_mat_frame_mat, "GRCh37", "WGS", data.loaded = TRUE), valid_test_tsv)
-            expect_equal(ICGC2Mut(test_mat_frame_df, "GRCh37", "WGS", data.loaded = TRUE), valid_test_tsv)
+            expect_equal(ICGC2Mut(test_mat_frame_mat, "GRCh37", "WGS",
+                                  data.loaded = TRUE), valid_test_tsv)
+            expect_equal(ICGC2Mut(test_mat_frame_df, "GRCh37", "WGS",
+                                  data.loaded = TRUE), valid_test_tsv)
           }
 )
-
-rm(valid_test_tsv)
-rm(test_mat_frame_mat)
-rm(test_mat_frame_df)
 
 test_miss_from <- test_mat_frame
 test_miss_to <- test_mat_frame
@@ -74,9 +74,6 @@ test_that("ICGC2Mut throws correct errors when mission critical arguments are mi
             expect_error(ICGC2Mut(test_miss_to, "GRCh37", "WGS", data.loaded = TRUE))
           }
 )
-
-rm(test_miss_from)
-rm(test_miss_to)
 
 presort_input_same <- data.table::data.table(chromosome = c(1,3,2,1,3,3,2,1,2), 
                                              chromosome_start = c(11,24,9,12,14,16,21,32,4), 
@@ -100,11 +97,6 @@ test_that("sorting of rows works correctly",
             expect_equal(ICGC_sort(presort_input_notsame), res_notsame)
           }
 )
-
-rm(presort_input_same)
-rm(presort_input_notsame)
-rm(res_same)
-rm(res_notsame)
 
 input_same <- data.table::data.table(chromosome = c(1,3,2,1,3,3), 
                                      chromosome_start = c(11,24,9,12,14,16), 
@@ -134,12 +126,6 @@ test_that("that the removal of non single nucleotide changes works properly",
           }
 )
 
-rm(input_same)
-rm(input_notsame)
-rm(res_same)
-rm(res_notsame)
-rm(input_allnotsame)
-
 dup_input <- data.table::data.table(x=c(1,1,1,1), y=c(1,2,3,1))
 dup_res <- data.table::data.table(x=c(1,1,1), y=c(1,2,3))
 
@@ -149,14 +135,11 @@ test_that("removal of duplicated rows works correctly",
           }
 )
 
-rm(dup_input)
-rm(dup_res)
-
 # Test throwing errors when input is malformed
 # When are not data.frame or matrix
 # When missing critical columns
 
-res <- ICGC2Mut("./inst/extdata/example_mutation_dataset.tsv", "GRCh37", "WGS")
+res <- ICGC2Mut("example_mutation_dataset.tsv", "GRCh37", "WGS")
 test_res_mat <- as.matrix(res)
 test_res_df <- as.data.frame(res)
 
@@ -184,14 +167,5 @@ test_that("ICGC_curate throws appropriate errors when the input is malformed",
             expect_error(ICGC_curate(res_noend, remove.nonSNP = TRUE))
           }
 )
-
-rm(res)
-rm(res_nochrom)
-rm(res_nostart)
-rm(res_noend)
-rm(test_res_mat)
-rm(test_res_df)
-rm(res_rmnonSNP)
-
 
 
