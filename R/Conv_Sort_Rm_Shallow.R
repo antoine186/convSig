@@ -23,7 +23,7 @@ NULL
 #' to \code{FALSE} therefore the function looks for a path. If set 
 #' to \code{TRUE}, the function will work with your data directly in your 
 #' environment. Make sure that your input data is not malformed; 
-#' See \code{\link[convSig]{loadICGCexample()}} for an example of an 
+#' See \link[=loadICGCexample]{loadICGCexample()} for an example of an 
 #' acceptable input. Data.frames and matrices are acceptable. Please note that 
 #' the function is slower with this option.
 #'
@@ -40,7 +40,7 @@ NULL
 #' The 'chromosome' header can also be omitted; This is 
 #' not recommended however as the function will process mutations in the X and 
 #' Y chromosomes instead of skipping them if they are present in the input file. 
-#' See \code{\link[convSig]{loadICGCexample()}} for a closer look at a legal 
+#' See \link[=loadICGCexample]{loadICGCexample()} for a closer look at a legal 
 #' input format.
 #' 
 #' @examples
@@ -52,13 +52,8 @@ NULL
 #' 
 #' @importFrom data.table fread data.table as.data.table
 #' @importFrom purrr map
-icgc2mut <- function(datapath, assembly = NULL, Seq = NULL, data.loaded = FALSE) {
-  # Check that data is a string
-  if (data.loaded == FALSE) {
-    if(!is.character(datapath)) {
-      stop("Data file path is not a string.")
-    }
-  }
+icgc2mut <- function(datapath, assembly = NULL, Seq = NULL) {
+  
   if(!is.null(assembly) && !is.character(assembly)) {
     stop("Assembly supplied is not a string.")
   }
@@ -66,14 +61,18 @@ icgc2mut <- function(datapath, assembly = NULL, Seq = NULL, data.loaded = FALSE)
     stop("Sequencing strategy supplied is not a string.")
   }
   
+  # Set data.loaded accordingly to flag the need for column conversion
+  data.loaded = FALSE
+  
   # Import ICGC file as a data.table to improve performance
   cat("Loading ICGC file\n")
   tryCatch(
     {
-      if (data.loaded == FALSE) {
+      if ("character" %in% class(datapath)) {
         x <- fread(datapath)
       } else {
         x <- as.data.table(datapath)
+        data.loaded = TRUE
       }
     }, 
     error=function(cnd) {
@@ -183,7 +182,7 @@ Base2Num <- function(letter) {
 
 #' Loads an example ICGC file
 #' 
-#' @return A valid ICGC input file (e.g. for \code{icgc2mut()}).
+#' @return A valid ICGC input file (that can for example be used for \link[=icgc2mut]{icgc2mut()}).
 #' 
 #' @examples
 #' loadICGCexample()

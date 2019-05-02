@@ -55,10 +55,8 @@ test_mat_frame_df <- as.data.frame(test_mat_frame)
 test_that("icgc2mut works properly with matrices and data.frames 
           when data.loaded is set to TRUE",
           {
-            expect_equal(icgc2mut(test_mat_frame_mat, "GRCh37", "WGS",
-                                  data.loaded = TRUE), valid_test_tsv)
-            expect_equal(icgc2mut(test_mat_frame_df, "GRCh37", "WGS",
-                                  data.loaded = TRUE), valid_test_tsv)
+            expect_equal(icgc2mut(test_mat_frame_mat, "GRCh37", "WGS"), valid_test_tsv)
+            expect_equal(icgc2mut(test_mat_frame_df, "GRCh37", "WGS"), valid_test_tsv)
           }
 )
 

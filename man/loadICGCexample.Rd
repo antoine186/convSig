@@ -7,7 +7,7 @@
 loadICGCexample()
 }
 \value{
-A valid ICGC input file (e.g. for \code{icgc2mut()}).
+A valid ICGC input file (that can for example be used for \link[=icgc2mut]{icgc2mut()}).
 }
 \description{
 Loads an example ICGC file

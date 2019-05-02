@@ -4,7 +4,7 @@
 \alias{icgc2mut}
 \title{Converts an ICGC file into a Mutation file}
 \usage{
-icgc2mut(datapath, assembly = NULL, Seq = NULL, data.loaded = FALSE)
+icgc2mut(datapath, assembly = NULL, Seq = NULL)
 }
 \arguments{
 \item{datapath}{A string or a variable referencing a string object. This is
@@ -29,7 +29,7 @@ input data is already loaded in your environment. The default is set
 to \code{FALSE} therefore the function looks for a path. If set
 to \code{TRUE}, the function will work with your data directly in your
 environment. Make sure that your input data is not malformed;
-See \code{\link[convSig]{loadICGCexample()}} for an example of an
+See \link[=loadICGCexample]{loadICGCexample()} for an example of an
 acceptable input. Data.frames and matrices are acceptable. Please note that
 the function is slower with this option.}
 }
@@ -51,7 +51,7 @@ pass them as arguments. However, if you do, then they become requirements.
 The 'chromosome' header can also be omitted; This is
 not recommended however as the function will process mutations in the X and
 Y chromosomes instead of skipping them if they are present in the input file.
-See \code{\link[convSig]{loadICGCexample()}} for a closer look at a legal
+See \link[=loadICGCexample]{loadICGCexample()} for a closer look at a legal
 input format.
 }
 
