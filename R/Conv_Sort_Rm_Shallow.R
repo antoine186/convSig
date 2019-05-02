@@ -44,15 +44,15 @@ NULL
 #' input format.
 #' 
 #' @examples
-#' res <- ICGC2Mut("simple_somatic_mutation.open.COCA-CN.tsv")
+#' res <- icgc2mut("simple_somatic_mutation.open.COCA-CN.tsv")
 #' datapath <- "simple_somatic_mutation.open.COCA-CN.tsv"
-#' res <- ICGC2Mut(datapath, "GRCh37", "WGS")
+#' res <- icgc2mut(datapath, "GRCh37", "WGS")
 #' 
 #' @export 
 #' 
 #' @importFrom data.table fread data.table as.data.table
 #' @importFrom purrr map
-ICGC2Mut <- function(datapath, assembly = NULL, Seq = NULL, data.loaded = FALSE) {
+icgc2mut <- function(datapath, assembly = NULL, Seq = NULL, data.loaded = FALSE) {
   # Check that data is a string
   if (data.loaded == FALSE) {
     if(!is.character(datapath)) {
@@ -80,7 +80,7 @@ ICGC2Mut <- function(datapath, assembly = NULL, Seq = NULL, data.loaded = FALSE)
       message(paste("There seems to be a problem with the filepath you supplied."))
       message("Here's the original error message:")
       message(cnd)
-      stop("ICGC2Mut aborted.")
+      stop("icgc2mut aborted.")
     }
   )
   
@@ -122,7 +122,7 @@ ICGC2Mut <- function(datapath, assembly = NULL, Seq = NULL, data.loaded = FALSE)
                     to exist."))
       message("Here's the original error message:")
       message(cnd)
-      stop("ICGC2Mut aborted.")
+      stop("icgc2mut aborted.")
     }
   )
   
@@ -136,7 +136,7 @@ ICGC2Mut <- function(datapath, assembly = NULL, Seq = NULL, data.loaded = FALSE)
       message(paste("Input column 'mutated_from_allele' doesn't seem to exist."))
       message("Here's the original error message:")
       message(cnd)
-      stop("ICGC2Mut aborted.")
+      stop("icgc2mut aborted.")
     }
   )
   tryCatch(
@@ -147,7 +147,7 @@ ICGC2Mut <- function(datapath, assembly = NULL, Seq = NULL, data.loaded = FALSE)
       message(paste("Input column 'mutated_to_allele' doesn't seem to exist."))
       message("Here's the original error message:")
       message(cnd)
-      stop("ICGC2Mut aborted.")
+      stop("icgc2mut aborted.")
     }
   )
   
@@ -183,7 +183,7 @@ Base2Num <- function(letter) {
 
 #' Loads an example ICGC file
 #' 
-#' @return A valid ICGC input file (e.g. for \code{ICGC2Mut()}).
+#' @return A valid ICGC input file (e.g. for \code{icgc2mut()}).
 #' 
 #' @examples
 #' loadICGCexample()
@@ -195,7 +195,7 @@ loadICGCexample <- function() {
 }
 
 #' Sorts the mutation file
-ICGC_sort <- function(mut_file) {
+icgc_sort <- function(mut_file) {
   cat("Sorting the mutation file\n")
   
   tryCatch(
@@ -213,7 +213,7 @@ ICGC_sort <- function(mut_file) {
                     required format."))
       message("Here's the original error message:")
       message(cnd)
-      stop("ICGC_curate aborted.")
+      stop("icgc_curate aborted.")
     }
   )
   
@@ -221,7 +221,7 @@ ICGC_sort <- function(mut_file) {
 }
 
 #' Remove non-single nucleotide polymorphisms
-ICGC_snp <- function(mut_file) {
+icgc_snp <- function(mut_file) {
   cat("Removing non-single nucleotide polymorphisms\n")
   tryCatch(
     {
@@ -247,17 +247,17 @@ ICGC_snp <- function(mut_file) {
 }
 
 # Remove duplicated entries in a mutation file
-ICGC_dedup <- function(mut_file) {
+icgc_dedup <- function(mut_file) {
   cat("Removing duplicate rows in the mutation file\n")
   mut_file <- unique(mut_file)
   invisible(mut_file)
 }
 
 #' Sorts and removes duplicate entries in a mutation file output 
-#' by \code{ICGC2Mut()}
+#' by \code{icgc2mut()}
 #' 
 #' @param mut_file A string or a variable referencing a mutation file output 
-#' by \code{ICGC2Mut()}. You can specify a file you created, however you have 
+#' by \code{icgc2mut()}. You can specify a file you created, however you have 
 #' to make sure that it has the correct format (i.e. please view \emph{Details}). 
 #' Your input should either be a \code{data.frame}, a \code{matrix}, or 
 #' a \code{data.table}.
@@ -279,11 +279,11 @@ ICGC_dedup <- function(mut_file) {
 #' (i.e. alternate allele).
 #' 
 #' @examples
-#' res <- ICGC_curate(mutation_data)
+#' res <- icgc_curate(mutation_data)
 #' 
 #' @export
 #' @importFrom data.table is.data.table as.data.table
-ICGC_curate <- function(mut_file, remove.nonSNP = TRUE) {
+icgc_curate <- function(mut_file, remove.nonSNP = TRUE) {
   
   tryCatch(
     {
@@ -317,13 +317,13 @@ ICGC_curate <- function(mut_file, remove.nonSNP = TRUE) {
     }
   )
   
-  mut_file <- ICGC_sort(mut_file)
+  mut_file <- icgc_sort(mut_file)
   
   if (remove.nonSNP == TRUE) {
-    mut_file <- ICGC_snp(mut_file)
+    mut_file <- icgc_snp(mut_file)
   } 
   
-  mut_file <- ICGC_dedup(mut_file)
+  mut_file <- icgc_dedup(mut_file)
   invisible(mut_file)
 }
 
