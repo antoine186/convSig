@@ -50,6 +50,7 @@ test_that("icgc2mut throws warning when non-mission critical arguments are missi
 example_mutation_dataset <- read.csv("example_mutation_dataset.csv")
 example_mutation_dataset$assembly_version <- 
   as.character(example_mutation_dataset$assembly_version)
+
 ins_ind <- c(1:20)
 example_mutation_dataset$assembly_version[ins_ind] <- "world"
 ins_ind <- c(21: 30)
@@ -62,6 +63,27 @@ res_miss_assembly <- icgc2mut(example_mutation_dataset, assembly ="hello", Seq =
 test_that("icgc2mut behaves as expected when assembly argument is missing", 
           {
             expect_equal(icgc2mut(example_mutation_dataset, Seq = "WGS"), res_miss_assembly)
+            expect_equal(icgc2mut(example_mutation_dataset), res_miss_assembly)
+          }
+)
+
+example_mutation_dataset <- read.csv("example_mutation_dataset.csv")
+example_mutation_dataset$sequencing_strategy <- 
+  as.character(example_mutation_dataset$sequencing_strategy)
+
+ins_ind <- c(1:20)
+example_mutation_dataset$sequencing_strategy[ins_ind] <- "seq strat. 1"
+ins_ind <- c(21: 30)
+example_mutation_dataset$sequencing_strategy[ins_ind] <- "seq strat. 2"
+ins_ind <- sample(31: 100)
+example_mutation_dataset$sequencing_strategy[ins_ind] <- "seq strat. 3"
+
+res_miss_seq <- icgc2mut(example_mutation_dataset, assembly ="GRCh37", Seq = "seq strat. 3")
+
+test_that("icgc2mut behaves as expected when sequencing strat argument is missing", 
+          {
+            expect_equal(icgc2mut(example_mutation_dataset, assembly ="GRCh37"), res_miss_seq)
+            expect_equal(icgc2mut(example_mutation_dataset), res_miss_seq)
           }
 )
 

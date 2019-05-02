@@ -12,15 +12,15 @@ NULL
 #' acceptable input. Please note that the function is slower with either a supplied
 #' \code{data.frame} or \code{matrix}.
 #' @param assembly A string or a variable referencing a string object. This 
-#' indicates the assembly version used in your genome experiment. Default is 
+#' indicates the assembly version used in your experiment. Default is 
 #' set to \code{NULL}, but you really should specify this. \emph{If unspecified,
-#' the function will process all of the mutations in your file even if 
-#' multiple assembly versions are present}.
+#' the function will process the most represented assembly version present in your
+#' input file}.
 #' @param Seq A string or a variable referencing a string. This indicates the 
 #' sequencing strategy/approach used in your genome experiment. Default is set 
 #' to \code{NULL}, but you really should specify this. \emph{If unspecified, 
-#' the function will process all of the mutations in your file even if 
-#' multiple sequencing strategies are present}.
+#' the function will process the most represented sequencing strategy present in your
+#' input file}.
 #'
 #' @return A mutation file containing 6 fields/variables: The ICGC sample ID, 
 #' the chromosome ID, the chromosome start position, the chromosome end 
@@ -94,7 +94,9 @@ icgc2mut <- function(datapath, assembly = NULL, Seq = NULL) {
     warning("You should supply a valid assembly version.")
     assembly_stat <- x[, .(.N), by = .(assembly_version)]
     assembly_stat <- assembly_stat[order(-N)]
-    assembly <- assembly_stat[1,1]
+    assembly_stat$assembly_version <- as.character(assembly_stat$assembly_version)
+    assembly <- as.character(assembly_stat[1,1])
+    
     cat(paste("We have chosen the following assembly:", assembly, "\n", sep = " "))
     cat("\n")
     print(assembly_stat)
@@ -114,6 +116,17 @@ icgc2mut <- function(datapath, assembly = NULL, Seq = NULL) {
     }
   } else {
     warning("You should supply a valid sequencing strategy.")
+    seq_stat <- x[, .(.N), by = .(sequencing_strategy)]
+    seq_stat <- seq_stat[order(-N)]
+    seq_stat$sequencing_strategy <- as.character(seq_stat$sequencing_strategy)
+    Seq <- as.character(seq_stat[1,1])
+    
+    cat(paste("We have chosen the following sequencing strategy:", Seq, "\n", sep = " "))
+    cat("\n")
+    print(seq_stat)
+    cat("\n")
+    
+    x <- x[sequencing_strategy == Seq]
   } 
   # Processing chromosome
   tryCatch(

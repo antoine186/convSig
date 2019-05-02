@@ -16,16 +16,16 @@ acceptable input. Please note that the function is slower with either a supplied
 \code{data.frame} or \code{matrix}.}
 
 \item{assembly}{A string or a variable referencing a string object. This
-indicates the assembly version used in your genome experiment. Default is
+indicates the assembly version used in your experiment. Default is
 set to \code{NULL}, but you really should specify this. \emph{If unspecified,
-the function will process all of the mutations in your file even if
-multiple assembly versions are present}.}
+the function will process the most represented assembly version present in your
+input file}.}
 
 \item{Seq}{A string or a variable referencing a string. This indicates the
 sequencing strategy/approach used in your genome experiment. Default is set
 to \code{NULL}, but you really should specify this. \emph{If unspecified,
-the function will process all of the mutations in your file even if
-multiple sequencing strategies are present}.}
+the function will process the most represented sequencing strategy present in your
+input file}.}
 }
 \value{
 A mutation file containing 6 fields/variables: The ICGC sample ID,
