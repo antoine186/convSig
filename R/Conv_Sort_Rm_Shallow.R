@@ -158,9 +158,9 @@ icgc2mut <- function(datapath, assembly = NULL, Seq = NULL, data.loaded = FALSE)
                                             chromosome_end, mutated_from_allele,
                                             mutated_to_allele)]
   if(data.loaded == TRUE) {
-    x <- x[, chromosome := as.numeric(chromosome)]
-    x <- x[, chromosome_start := as.numeric(chromosome_start)]
-    x <- x[, chromosome_end := as.numeric(chromosome_end)]
+    x <- x[, chromosome := as.numeric(as.character(chromosome))]
+    x <- x[, chromosome_start := as.numeric(as.character(chromosome_start))]
+    x <- x[, chromosome_end := as.numeric(as.character(chromosome_end))]
     x <- x[, icgc_sample_id := as.character(icgc_sample_id)]
     x <- x[, mutated_from_allele := as.character(mutated_from_allele)]
     x <- x[, mutated_to_allele := as.character(mutated_to_allele)]
@@ -302,9 +302,9 @@ icgc_curate <- function(mut_file, remove.nonSNP = TRUE) {
         
         mut_file <- as.data.table(mut_file)
         
-        mut_file <- mut_file[, chromosome := as.numeric(chromosome)]
-        mut_file <- mut_file[, chromosome_start := as.numeric(chromosome_start)]
-        mut_file <- mut_file[, chromosome_end := as.numeric(chromosome_end)]
+        mut_file <- mut_file[, chromosome := as.numeric(as.character(chromosome))]
+        mut_file <- mut_file[, chromosome_start := as.numeric(as.character(chromosome_start))]
+        mut_file <- mut_file[, chromosome_end := as.numeric(as.character(chromosome_end))]
         mut_file <- mut_file[, mutated_from_allele := as.character(mutated_from_allele)]
         mut_file <- mut_file[, mutated_to_allele := as.character(mutated_to_allele)]
       }

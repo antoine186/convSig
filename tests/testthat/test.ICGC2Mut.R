@@ -1,4 +1,4 @@
-context("ICGC2Mut Tests")
+context("ICGC Processing Tests")
 
 test_that("base to number conversion works",
           {
@@ -21,29 +21,29 @@ test_that("base to number conversion works",
 
 valid_test_tsv <- data.table::fread("result_mutation_dataset.tsv")
 
-test_that("ICGC2Mut is consistent for csv and tsv files",
+test_that("icgc2mut is consistent for csv and tsv files",
           {
-            expect_equal(ICGC2Mut("example_mutation_dataset.tsv",
+            expect_equal(icgc2mut("example_mutation_dataset.tsv",
                                   "GRCh37", "WGS"), valid_test_tsv)
-            expect_equal(ICGC2Mut("example_mutation_dataset.csv",
+            expect_equal(icgc2mut("example_mutation_dataset.csv",
                                   "GRCh37", "WGS"), valid_test_tsv)
           }
 )
 
-test_that("ICGC2Mut throws correct errors in erroneous argument scenarios",
+test_that("icgc2mut throws correct errors in erroneous argument scenarios",
           {
-            expect_error(ICGC2Mut("example_mutation_dataset.tsv", "GRCh399999", "WGS"))
-            expect_error(ICGC2Mut("example_mutation_dataset.tsv", "GRCh37", "WasdasdS"))
-            expect_error(ICGC2Mut("example_mutati.tsv", "GRCh37", "WGS"))
+            expect_error(icgc2mut("example_mutation_dataset.tsv", "GRCh399999", "WGS"))
+            expect_error(icgc2mut("example_mutation_dataset.tsv", "GRCh37", "WasdasdS"))
+            expect_error(icgc2mut("example_mutati.tsv", "GRCh37", "WGS"))
           }
 )
 
-test_that("ICGC2Mut throws warning when non-mission critical arguments are missing", 
+test_that("icgc2mut throws warning when non-mission critical arguments are missing", 
           {
-            expect_warning(ICGC2Mut("example_mutation_dataset.tsv"))
-            expect_warning(ICGC2Mut("example_mutation_dataset.tsv", 
+            expect_warning(icgc2mut("example_mutation_dataset.tsv"))
+            expect_warning(icgc2mut("example_mutation_dataset.tsv", 
                                     assembly = "GRCh37"))
-            expect_warning(ICGC2Mut("example_mutation_dataset.tsv", Seq = "WGS"))
+            expect_warning(icgc2mut("example_mutation_dataset.tsv", Seq = "WGS"))
           }
 )
 
@@ -52,12 +52,12 @@ test_mat_frame$X <- NULL
 test_mat_frame_mat <- as.matrix(test_mat_frame)
 test_mat_frame_df <- as.data.frame(test_mat_frame)
 
-test_that("ICGC2Mut works properly with matrices and data.frames 
+test_that("icgc2mut works properly with matrices and data.frames 
           when data.loaded is set to TRUE",
           {
-            expect_equal(ICGC2Mut(test_mat_frame_mat, "GRCh37", "WGS",
+            expect_equal(icgc2mut(test_mat_frame_mat, "GRCh37", "WGS",
                                   data.loaded = TRUE), valid_test_tsv)
-            expect_equal(ICGC2Mut(test_mat_frame_df, "GRCh37", "WGS",
+            expect_equal(icgc2mut(test_mat_frame_df, "GRCh37", "WGS",
                                   data.loaded = TRUE), valid_test_tsv)
           }
 )
@@ -68,10 +68,10 @@ rm(test_mat_frame)
 test_miss_from$mutated_from_allele <- NULL
 test_miss_to$mutated_to_allele <- NULL
 
-test_that("ICGC2Mut throws correct errors when mission critical arguments are missing", 
+test_that("icgc2mut throws correct errors when mission critical arguments are missing", 
           {
-            expect_error(ICGC2Mut(test_miss_from, "GRCh37", "WGS", data.loaded = TRUE))
-            expect_error(ICGC2Mut(test_miss_to, "GRCh37", "WGS", data.loaded = TRUE))
+            expect_error(icgc2mut(test_miss_from, "GRCh37", "WGS", data.loaded = TRUE))
+            expect_error(icgc2mut(test_miss_to, "GRCh37", "WGS", data.loaded = TRUE))
           }
 )
 
@@ -93,8 +93,8 @@ res_notsame <- data.table::data.table(chromosome = c(1,1,1,2,2,2,3,3,3),
 
 test_that("sorting of rows works correctly",
           {
-            expect_equal(ICGC_sort(presort_input_same), res_same)
-            expect_equal(ICGC_sort(presort_input_notsame), res_notsame)
+            expect_equal(icgc_sort(presort_input_same), res_same)
+            expect_equal(icgc_sort(presort_input_notsame), res_notsame)
           }
 )
 
@@ -120,9 +120,9 @@ input_allnotsame <- data.table::data.table(chromosome = c(1,3,2),
 
 test_that("that the removal of non single nucleotide changes works properly",
           {
-            expect_equal(ICGC_snp(input_same), res_same)
-            expect_equal(ICGC_snp(input_notsame), res_notsame)
-            expect_error(ICGC_snp(input_allnotsame))
+            expect_equal(icgc_snp(input_same), res_same)
+            expect_equal(icgc_snp(input_notsame), res_notsame)
+            expect_error(icgc_snp(input_allnotsame))
           }
 )
 
@@ -131,7 +131,7 @@ dup_res <- data.table::data.table(x=c(1,1,1), y=c(1,2,3))
 
 test_that("removal of duplicated rows works correctly",
           {
-            expect_equal(ICGC_dedup(dup_input), dup_res)
+            expect_equal(icgc_dedup(dup_input), dup_res)
           }
 )
 
@@ -139,16 +139,16 @@ test_that("removal of duplicated rows works correctly",
 # When are not data.frame or matrix
 # When missing critical columns
 
-res <- ICGC2Mut("example_mutation_dataset.tsv", "GRCh37", "WGS")
+res <- icgc2mut("example_mutation_dataset.tsv", "GRCh37", "WGS")
 test_res_mat <- as.matrix(res)
 test_res_df <- as.data.frame(res)
 
-res_rmnonSNP <- ICGC_curate(res, remove.nonSNP = TRUE)
+res_rmnonSNP <- icgc_curate(res, remove.nonSNP = TRUE)
 
-test_that("ICGC_curate returns consistent results for both data.frames and matrices",
+test_that("icgc_curate returns consistent results for both data.frames and matrices",
           {
-            expect_equal(ICGC_curate(test_res_mat, remove.nonSNP = TRUE), res_rmnonSNP)
-            expect_equal(ICGC_curate(test_res_df, remove.nonSNP = TRUE), res_rmnonSNP)
+            expect_equal(icgc_curate(test_res_mat, remove.nonSNP = TRUE), res_rmnonSNP)
+            expect_equal(icgc_curate(test_res_df, remove.nonSNP = TRUE), res_rmnonSNP)
           }  
 )
 
@@ -159,12 +159,12 @@ res_nochrom$chromosome <- NULL
 res_nostart$chromosome <- NULL
 res_noend$chromosome <- NULL
 
-test_that("ICGC_curate throws appropriate errors when the input is malformed",
+test_that("icgc_curate throws appropriate errors when the input is malformed",
           {
-            expect_error(ICGC_curate("incorrect input", remove.nonSNP = TRUE))
-            expect_error(ICGC_curate(res_nochrom, remove.nonSNP = TRUE))
-            expect_error(ICGC_curate(res_nostart, remove.nonSNP = TRUE))
-            expect_error(ICGC_curate(res_noend, remove.nonSNP = TRUE))
+            expect_error(icgc_curate("incorrect input", remove.nonSNP = TRUE))
+            expect_error(icgc_curate(res_nochrom, remove.nonSNP = TRUE))
+            expect_error(icgc_curate(res_nostart, remove.nonSNP = TRUE))
+            expect_error(icgc_curate(res_noend, remove.nonSNP = TRUE))
           }
 )
 
