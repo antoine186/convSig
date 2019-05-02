@@ -47,6 +47,24 @@ test_that("icgc2mut throws warning when non-mission critical arguments are missi
           }
 )
 
+example_mutation_dataset <- read.csv("example_mutation_dataset.csv")
+example_mutation_dataset$assembly_version <- 
+  as.character(example_mutation_dataset$assembly_version)
+ins_ind <- c(1:20)
+example_mutation_dataset$assembly_version[ins_ind] <- "world"
+ins_ind <- c(21: 30)
+example_mutation_dataset$assembly_version[ins_ind] <- "sugar"
+ins_ind <- sample(31: 100)
+example_mutation_dataset$assembly_version[ins_ind] <- "hello"
+
+res_miss_assembly <- icgc2mut(example_mutation_dataset, assembly ="hello", Seq = "WGS")
+
+test_that("icgc2mut behaves as expected when assembly argument is missing", 
+          {
+            expect_equal(icgc2mut(example_mutation_dataset, Seq = "WGS"), res_miss_assembly)
+          }
+)
+
 test_mat_frame <- read.csv("example_mutation_dataset.csv")
 test_mat_frame$X <- NULL
 test_mat_frame_mat <- as.matrix(test_mat_frame)

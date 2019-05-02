@@ -5,27 +5,22 @@ NULL
 #' Converts an ICGC file into a Mutation file
 #' 
 #' @param datapath A string or a variable referencing a string object. This is 
-#'  the path leading to your ICGC file (tsv or csv only). Alternatively, this 
-#'  is your mutation data if you set \code{data.loaded} to \code{TRUE}. In the 
-#'  latter case, your input should either be a \code{data.frame} or a \code{matrix}.
+#' the path leading to your ICGC file (tsv or csv only). Alternatively, this 
+#' is your mutation data if you supplied either a \code{data.frame} or a \code{matrix}.
+#' Please make sure that your input data is not malformed; 
+#' See \link[=loadICGCexample]{loadICGCexample()} for an example of an 
+#' acceptable input. Please note that the function is slower with either a supplied
+#' \code{data.frame} or \code{matrix}.
 #' @param assembly A string or a variable referencing a string object. This 
 #' indicates the assembly version used in your genome experiment. Default is 
 #' set to \code{NULL}, but you really should specify this. \emph{If unspecified,
-#'  the function will process all of the mutations in your file even if 
-#'  multiple assembly versions are present}.
+#' the function will process all of the mutations in your file even if 
+#' multiple assembly versions are present}.
 #' @param Seq A string or a variable referencing a string. This indicates the 
 #' sequencing strategy/approach used in your genome experiment. Default is set 
 #' to \code{NULL}, but you really should specify this. \emph{If unspecified, 
 #' the function will process all of the mutations in your file even if 
 #' multiple sequencing strategies are present}.
-#' @param data.loaded A boolean variable, which indicates whether your 
-#' input data is already loaded in your environment. The default is set 
-#' to \code{FALSE} therefore the function looks for a path. If set 
-#' to \code{TRUE}, the function will work with your data directly in your 
-#' environment. Make sure that your input data is not malformed; 
-#' See \link[=loadICGCexample]{loadICGCexample()} for an example of an 
-#' acceptable input. Data.frames and matrices are acceptable. Please note that 
-#' the function is slower with this option.
 #'
 #' @return A mutation file containing 6 fields/variables: The ICGC sample ID, 
 #' the chromosome ID, the chromosome start position, the chromosome end 
@@ -85,17 +80,27 @@ icgc2mut <- function(datapath, assembly = NULL, Seq = NULL) {
   
   cat("Checking arguments supplied with call\n")
   # Checking for assembly_version
-  if (!is.null(assembly)) {
-    if (!any(colnames(x) == "assembly_version")) {
-      stop("Cannot find a header variable corresponding to assembly_version.\n
+  if (!any(colnames(x) == "assembly_version")) {
+    stop("Cannot find a header variable corresponding to assembly_version.\n
           No way to tell which column refers to assembly version.")
-    }
+  }
+  
+  if (!is.null(assembly)) {
     x <- x[assembly_version == assembly]
     if (dim(x)[1] == 0) {
       stop("Specified assembly_version does not exist in the data.")
     }
   } else {
     warning("You should supply a valid assembly version.")
+    assembly_stat <- x[, .(.N), by = .(assembly_version)]
+    assembly_stat <- assembly_stat[order(-N)]
+    assembly <- assembly_stat[1,1]
+    cat(paste("We have chosen the following assembly:", assembly, "\n", sep = " "))
+    cat("\n")
+    print(assembly_stat)
+    cat("\n")
+    
+    x <- x[assembly_version == assembly]
   }
   # Checking for sequencing_strategy
   if (!is.null(Seq)) {
@@ -165,7 +170,7 @@ icgc2mut <- function(datapath, assembly = NULL, Seq = NULL) {
     x <- x[, mutated_to_allele := as.character(mutated_to_allele)]
   }
   
-  cat("Tip: Use data.table::fwrite to write the result to a csv file for example.")
+  cat("Tip: Use data.table::fwrite to write the result to a csv file for example.\n")
   invisible(x)
 }
 

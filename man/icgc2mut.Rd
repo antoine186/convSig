@@ -9,8 +9,11 @@ icgc2mut(datapath, assembly = NULL, Seq = NULL)
 \arguments{
 \item{datapath}{A string or a variable referencing a string object. This is
 the path leading to your ICGC file (tsv or csv only). Alternatively, this
-is your mutation data if you set \code{data.loaded} to \code{TRUE}. In the
-latter case, your input should either be a \code{data.frame} or a \code{matrix}.}
+is your mutation data if you supplied either a \code{data.frame} or a \code{matrix}.
+Please make sure that your input data is not malformed;
+See \link[=loadICGCexample]{loadICGCexample()} for an example of an
+acceptable input. Please note that the function is slower with either a supplied
+\code{data.frame} or \code{matrix}.}
 
 \item{assembly}{A string or a variable referencing a string object. This
 indicates the assembly version used in your genome experiment. Default is
@@ -23,15 +26,6 @@ sequencing strategy/approach used in your genome experiment. Default is set
 to \code{NULL}, but you really should specify this. \emph{If unspecified,
 the function will process all of the mutations in your file even if
 multiple sequencing strategies are present}.}
-
-\item{data.loaded}{A boolean variable, which indicates whether your
-input data is already loaded in your environment. The default is set
-to \code{FALSE} therefore the function looks for a path. If set
-to \code{TRUE}, the function will work with your data directly in your
-environment. Make sure that your input data is not malformed;
-See \link[=loadICGCexample]{loadICGCexample()} for an example of an
-acceptable input. Data.frames and matrices are acceptable. Please note that
-the function is slower with this option.}
 }
 \value{
 A mutation file containing 6 fields/variables: The ICGC sample ID,
