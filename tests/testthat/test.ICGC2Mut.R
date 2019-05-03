@@ -87,6 +87,51 @@ test_that("icgc2mut behaves as expected when sequencing strat argument is missin
           }
 )
 
+example_mutation_dataset <- read.csv("example_mutation_dataset.csv")
+res_nomiss <- icgc2mut(example_mutation_dataset, assembly ="GRCh37", Seq = "WGS")
+
+test_that("icgc2mut behaves as expected when both assembly and sequencing strat 
+          arguments are missing", 
+          {
+            expect_equal(icgc2mut(example_mutation_dataset), res_nomiss)
+          }
+)
+
+example_mutation_dataset <- read.csv("example_mutation_dataset.csv")
+example_mutation_dataset$assembly_version <- 
+  as.character(example_mutation_dataset$assembly_version)
+example_mutation_dataset$sequencing_strategy <- 
+  as.character(example_mutation_dataset$sequencing_strategy)
+
+ins_ind <- c(1:20)
+example_mutation_dataset$assembly_version[ins_ind] <- "world"
+ins_ind <- c(21: 30)
+example_mutation_dataset$assembly_version[ins_ind] <- "sugar"
+ins_ind <- sample(31: 100)
+example_mutation_dataset$assembly_version[ins_ind] <- "hello"
+ins_ind <- c(81:100)
+example_mutation_dataset$sequencing_strategy[ins_ind] <- "seq strat. 1"
+ins_ind <- c(21: 30)
+example_mutation_dataset$sequencing_strategy[ins_ind] <- "seq strat. 2"
+ins_ind <- sample(1: 20)
+example_mutation_dataset$sequencing_strategy[ins_ind] <- "seq strat. 3"
+ins_ind <- sample(31: 80)
+example_mutation_dataset$sequencing_strategy[ins_ind] <- "seq strat. 3"
+
+example_mutation_dataset$assembly_version <- 
+  as.factor(example_mutation_dataset$assembly_version)
+example_mutation_dataset$sequencing_strategy <- 
+  as.factor(example_mutation_dataset$sequencing_strategy)
+
+res_finalmiss <- icgc2mut(example_mutation_dataset, assembly ="hello", Seq = "seq strat. 3")
+
+test_that("icgc2mut behaves as expected when both assembly and sequencing strat 
+          arguments are missing TEST 2", 
+          {
+            expect_equal(icgc2mut(example_mutation_dataset), res_finalmiss)
+          }
+)
+
 test_mat_frame <- read.csv("example_mutation_dataset.csv")
 test_mat_frame$X <- NULL
 test_mat_frame_mat <- as.matrix(test_mat_frame)
