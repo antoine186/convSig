@@ -160,19 +160,55 @@ test_that("icgc2mut throws correct errors when mission critical arguments are mi
 
 presort_input_same <- data.table::data.table(chromosome = c(1,3,2,1,3,3,2,1,2), 
                                              chromosome_start = c(11,24,9,12,14,16,21,32,4), 
-                                             chromosome_end = c(11,24,9,12,14,16,21,32,4))
+                                             chromosome_end = c(11,24,9,12,14,16,21,32,4),
+                                             icgc_sample_id = c("SA1", "SA1", "SA1", "SA1", 
+                                                                "SA1", "SA1", "SA1", 
+                                                                "SA1", "SA1"),
+                                             mutated_from_allele = c("A", "A", "A", 
+                                                                     "A", "A", "A", 
+                                                                     "A", "A", "A"),
+                                             mutated_to_allele = c("C", "C", "C", 
+                                                                   "C", "C", "C", 
+                                                                   "C", "C", "C"))
 
 presort_input_notsame <- data.table::data.table(chromosome = c(1,3,2,1,3,3,2,1,2), 
                                                 chromosome_start = c(11,24,9,12,14,16,21,32,4), 
-                                                chromosome_end = c(12,11,17,10,16,8,32,31,9))
+                                                chromosome_end = c(12,11,17,10,16,8,32,31,9),
+                                                icgc_sample_id = c("SA1", "SA1", "SA1", "SA1", 
+                                                                   "SA1", "SA1", "SA1", 
+                                                                   "SA1", "SA1"),
+                                                mutated_from_allele = c("A", "A", "A", 
+                                                                        "A", "A", "A", 
+                                                                        "A", "A", "A"),
+                                                mutated_to_allele = c("C", "C", "C", 
+                                                                      "C", "C", "C", 
+                                                                      "C", "C", "C"))
 
 res_same <- data.table::data.table(chromosome = c(1,1,1,2,2,2,3,3,3), 
                                    chromosome_start = c(11,12,32,4,9,21,14,16,24),
-                                   chromosome_end = c(11,12,32,4,9,21,14,16,24))
+                                   chromosome_end = c(11,12,32,4,9,21,14,16,24),
+                                   icgc_sample_id = c("SA1", "SA1", "SA1", "SA1", 
+                                                      "SA1", "SA1", "SA1", 
+                                                      "SA1", "SA1"),
+                                   mutated_from_allele = c("A", "A", "A", 
+                                                           "A", "A", "A", 
+                                                           "A", "A", "A"),
+                                   mutated_to_allele = c("C", "C", "C", 
+                                                         "C", "C", "C", 
+                                                         "C", "C", "C"))
 
 res_notsame <- data.table::data.table(chromosome = c(1,1,1,2,2,2,3,3,3),
                                       chromosome_start = c(11,12,32,4,9,21,14,16,24),
-                                      chromosome_end = c(12,10,31,9,17,32,16,8,11))
+                                      chromosome_end = c(12,10,31,9,17,32,16,8,11),
+                                      icgc_sample_id = c("SA1", "SA1", "SA1", "SA1", 
+                                                         "SA1", "SA1", "SA1", 
+                                                         "SA1", "SA1"),
+                                      mutated_from_allele = c("A", "A", "A", 
+                                                              "A", "A", "A", 
+                                                              "A", "A", "A"),
+                                      mutated_to_allele = c("C", "C", "C", 
+                                                            "C", "C", "C", 
+                                                            "C", "C", "C"))
 
 test_that("sorting of rows works correctly",
           {
