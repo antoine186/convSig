@@ -344,4 +344,22 @@ icgc_curate <- function(mut_file, remove.nonSNP = TRUE) {
   invisible(mut_file)
 }
 
+chrom_check <- function(interdata) {
+  if (!any(colnames(interdata) == "chromosome")) {
+    stop("Cannot find a column header by the name of \'chromosome\'")
+  }
+  
+  if ("integer" %in% class(interdata$chromosome)) {
+    return(interdata)
+  } else if ("character" %in% class(interdata$chromosome)) {
+    return("lol")
+  } else if ("factor" %in% class(interdata$chromosome)) {
+    return("lol")
+  }
+}
+
+chrom_string_split <- function(chrom) {
+  return("lol")
+}
+
 
