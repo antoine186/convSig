@@ -40,6 +40,7 @@ NULL
 #' 
 #' @examples
 #' res <- icgc2mut("simple_somatic_mutation.open.COCA-CN.tsv")
+#' # Or
 #' datapath <- "simple_somatic_mutation.open.COCA-CN.tsv"
 #' res <- icgc2mut(datapath, "GRCh37", "WGS")
 #' 
@@ -187,7 +188,8 @@ icgc2mut <- function(datapath, assembly = NULL, Seq = NULL) {
   invisible(x)
 }
 
-# Base to number conversion
+#' Base to number conversion
+#' @export
 Base2Num <- function(letter) {
   switch(toupper(letter),
     A = 0,
@@ -281,10 +283,10 @@ icgc_dedup <- function(mut_file) {
 #' by \code{icgc2mut()}
 #' 
 #' @param mut_file A string or a variable referencing a mutation file output 
-#' by \code{icgc2mut()}. You can specify a file you created, however you have 
-#' to make sure that it has the correct format (i.e. please view \emph{Details}). 
-#' Your input should either be a \code{data.frame}, a \code{matrix}, or 
-#' a \code{data.table}.
+#' by \link[=icgc2mut]{icgc2mut()}. You can specify a file you created, however
+#'  you have to make sure that it has the correct format (i.e. please view 
+#'  \emph{Details}). Your input should either be a \code{data.frame}, a 
+#'  \code{matrix}, or a \code{data.table}.
 #' @param remove.nonSNP A boolean variable indicating whether the function 
 #' should remove non-single nucleotide changes. This is set by default 
 #' to \code{TRUE} as our downstream filtering method only handles single 
@@ -297,7 +299,8 @@ icgc_dedup <- function(mut_file) {
 #' 
 #' @section Details:
 #' Your input mutation file must at least have the following column headers: 
-#' chromosome (i.e. the Chromosome ID), chromosome_start (i.e. the chromosome 
+#' icgc_sample_id (i.e. the ICGC sample ID), chromosome (i.e. the Chromosome ID),
+#'  chromosome_start (i.e. the chromosome 
 #' start position), chromosome_end (i.e. the chromosome end position), 
 #' mutated_from_allele (i.e. the reference allele), and mutated_to_allele 
 #' (i.e. alternate allele).

@@ -21,4 +21,5 @@ Depends:
 Imports: 
     Rcpp,
     data.table,
-    purrr
+    purrr,
+    methods

@@ -51,6 +51,7 @@ input format.
 
 \examples{
 res <- icgc2mut("simple_somatic_mutation.open.COCA-CN.tsv")
+# Or
 datapath <- "simple_somatic_mutation.open.COCA-CN.tsv"
 res <- icgc2mut(datapath, "GRCh37", "WGS")
 

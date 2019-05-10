@@ -9,10 +9,10 @@ icgc_curate(mut_file, remove.nonSNP = TRUE)
 }
 \arguments{
 \item{mut_file}{A string or a variable referencing a mutation file output
-by \code{icgc2mut()}. You can specify a file you created, however you have
-to make sure that it has the correct format (i.e. please view \emph{Details}).
-Your input should either be a \code{data.frame}, a \code{matrix}, or
-a \code{data.table}.}
+by \link[=icgc2mut]{icgc2mut()}. You can specify a file you created, however
+you have to make sure that it has the correct format (i.e. please view
+\emph{Details}). Your input should either be a \code{data.frame}, a
+\code{matrix}, or a \code{data.table}.}
 
 \item{remove.nonSNP}{A boolean variable indicating whether the function
 should remove non-single nucleotide changes. This is set by default
@@ -32,7 +32,8 @@ by \code{icgc2mut()}
 \section{Details}{
 
 Your input mutation file must at least have the following column headers:
-chromosome (i.e. the Chromosome ID), chromosome_start (i.e. the chromosome
+icgc_sample_id (i.e. the ICGC sample ID), chromosome (i.e. the Chromosome ID),
+chromosome_start (i.e. the chromosome
 start position), chromosome_end (i.e. the chromosome end position),
 mutated_from_allele (i.e. the reference allele), and mutated_to_allele
 (i.e. alternate allele).
