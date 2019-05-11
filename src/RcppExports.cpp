@@ -77,14 +77,14 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// testloop
-int testloop(CharacterVector x);
-RcppExport SEXP _convSig_testloop(SEXP xSEXP) {
+// WeirdVector
+NumericVector WeirdVector(NumericVector x);
+RcppExport SEXP _convSig_WeirdVector(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(testloop(x));
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(WeirdVector(x));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -96,7 +96,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_convSig_RM_nonSNP", (DL_FUNC) &_convSig_RM_nonSNP, 2},
     {"_convSig_timesTwo", (DL_FUNC) &_convSig_timesTwo, 1},
     {"_convSig_timesTwoList", (DL_FUNC) &_convSig_timesTwoList, 1},
-    {"_convSig_testloop", (DL_FUNC) &_convSig_testloop, 1},
+    {"_convSig_WeirdVector", (DL_FUNC) &_convSig_WeirdVector, 1},
     {NULL, NULL, 0}
 };
 

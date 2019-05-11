@@ -29,15 +29,16 @@ std::vector<int> feat2table3(std::string b1, std::string b2, std::string b3) {
   int n1 = base2num(b1);
   int n2 = base2num(b2);
   int n3 = base2num(b3);
+  int n1t = n1;
   
   if (n2 < 2) {
     n1 = 3 - n3;
-    n3 = 3 - n1;
+    n3 = 3 - n1t;
   } else {
     n2 = 3 - n2;
   }
   
-  int value = n1*8*3+n2*4*3+n3*3;
+  int value = (n1*8*3)+(n2*4*3)+(n3*3);
   vector<int> values;  
   values.push_back(value);
   values.push_back(value + 1);
@@ -90,14 +91,20 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
   int chrom = 0;
   int ref_pos = -1;
   int mut_pos = 0;
-  string base1;
-  string base2;
-  string base3;
+  std::string base1;
+  std::string base2;
+  std::string base3;
+  
+  int fasta_stat = 0;
+  int spe_stat = 0;
+  int line_stat = 0;
+  int feature_stat = 0;
    
   std::regex chrompattern ("^>");
   // For loop 1
   for (int i = 0; i < loop1; i = i + 1) {
-    string cur_line = as<std::string>(f[i]);
+    std::string cur_line = as<std::string>(f[i]);
+    ++fasta_stat;
     // Special case for chromosome header line
     if (std::regex_search(cur_line, chrompattern)) {
       chrom++;
@@ -120,15 +127,19 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
     // For loop 2 based on cur_array
     int loop2 = strlen(cur_array); 
     for (int j = 0; j < loop2; j = j + 1) {
+      ++line_stat;
       base3 = cur_array[j];
-      vector<int> temp_array;
+      std::vector<int> temp_array;
       
-      if (base1 != "N" && base2 != "N" && base3 != "N") {
+      if (base1 != "N" && (base2 != "N" && base3 != "N")) {
+        
         temp_array = feat2table3(base1, base2, base3);
         
-        wt_ar[temp_array[0]] = ++wt_ar[temp_array[0]];
-        wt_ar[temp_array[1]] = ++wt_ar[temp_array[1]];
-        wt_ar[temp_array[2]] = ++wt_ar[temp_array[2]];
+        ++wt_ar[temp_array[0]];
+        ++wt_ar[temp_array[1]];
+        ++wt_ar[temp_array[2]];
+        
+        ++feature_stat;
       }
       
       ++ref_pos;
@@ -138,6 +149,7 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
       if (mut_pos < mut_file_length && !(chromid_ar[mut_pos] > chrom ||
       startpos_ar[mut_pos] > ref_pos)) {
         while (1) {
+          ++spe_stat;
           if(ref_ar[mut_pos] != base2) {
             throw "The reference genome provided does not appear to correspond" 
             "to the one in the mutation input file";
@@ -176,6 +188,10 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
   
   mat.slot("mut_mat") = mut_mat;
   mat.slot("wt") = wt_ar;
+  mat.slot("fasta_status") = fasta_stat;
+  mat.slot("special_status") = spe_stat;
+  mat.slot("perline_status") = line_stat;
+  mat.slot("feature_status") = feature_stat;
 
   return mat;
 

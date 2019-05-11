@@ -14,6 +14,7 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 RcppExport SEXP timesTwo(SEXP x) {
   double res = as<double>(x) * 2;
+  throw "lol";
   return wrap(res);
 }
 
@@ -21,6 +22,18 @@ RcppExport SEXP timesTwo(SEXP x) {
 RcppExport SEXP timesTwoList(SEXP x) {
   NumericVector res = as<NumericVector>(x) * 2;
   return wrap(res);
+}
+
+// [[Rcpp::export]]
+NumericVector WeirdVector(NumericVector x) {
+  std::vector<int> temp_array;
+  temp_array.push_back(3); 
+  temp_array.push_back(4);
+  temp_array.push_back(5);
+  
+  x[temp_array[0]] = ++x[temp_array[0]];
+  x[temp_array[1]] = ++x[temp_array[1]];
+  return x;
 }
 
 // You can include R code blocks in C++ files processed with sourceCpp

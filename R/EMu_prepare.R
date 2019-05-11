@@ -9,13 +9,11 @@ setClass (
   # Defining slot type
   representation (
     mut_mat = "matrix",
-    wt = "numeric"
-  ),
-  
-  # Initializing slots
-  prototype = list(
-    name = as.character(NULL),
-    birth = as.Date(as.character(NULL))
+    wt = "numeric",
+    fasta_status = "numeric",
+    special_status = "numeric",
+    perline_status = "numeric",
+    feature_status = "numeric"
   )
 )
 
@@ -29,28 +27,21 @@ readfast <- function(datapath) {
 
 mut_count3 <- function(datapath) {
   # Make sure mutation input is a data.table
+
+  cat("Loading the assembly\n")
   # Call readfast
-  ##### For testing
-  cat("Loading the assembly (this one takes very long) and the mutation input file\n")
-  #reference_gen <- convSig:::readfast("~/Documents/GitHub/convSig-shallow/test-prepare/GRCh37_head")
   reference_gen <- convSig:::readfast("~/Documents/GitHub/convSig-shallow/Homo_sapiens.GRCh37.dna.primary_assembly.fa")
-  
-  #curated_lol <- data.table::fread("~/Documents/GitHub/convSig-shallow/test-prepare/mut_head")
-  #colnames(curated_lol) <- c("icgc_sample_id", "chromosome", "chromosome_start", "mutated_from_allele", "mutated_to_allele")
-  ##### End testing
+  cat("Loading the mutation input file\n")
+  # Read in the mutation input file
   
   ##### For testing
-  cat("Miscellaneous processing...\n")
   lol <- icgc2mut("~/Documents/GitHub/convSig-shallow/simple_somatic_mutation.open.COCA-CN.tsv",
                   assembly = "GRCh37", Seq = "WGS")
   curated_lol <- icgc_curate(lol, remove.nonSNP = FALSE)
   datapath <- curated_lol 
   ##### End testing
   
-  ##### Get only chrom 1
-  
-  ##### End
-  
+  cat("Miscellaneous processing...\n")
   nb_uniq = length(unique(as.character(datapath$icgc_sample_id)))
   # This is the row names of init_mut_mat
   uniq_sample <- unique(as.character(datapath$icgc_sample_id))
@@ -63,9 +54,9 @@ mut_count3 <- function(datapath) {
   # Order of this file's column is super important
   treated_mut <- mut_process3(datapath)
   
-  # Remove 'chromosome end' from treated_mut
   cat("Counting the frequency of mutation fragment types. This could take a few minutes...\n")
-  shallow3res <- new("Shallow3res", mut_mat = init_mut_mat, wt = init_wt)
+  shallow3res <- new("Shallow3res", mut_mat = init_mut_mat, wt = init_wt, fasta_status = 0,
+                     special_status = 0)
   shallow3res = convSig:::shallow_loop3(shallow3res, reference_gen, treated_mut, nb_uniq)
 }
 
@@ -156,4 +147,9 @@ alt_reverse <- function(datapath, from_allele) {
   
   invisible(alleles)
 }
+
+#chrom_separate <- function() {
+  
+#}
+
 

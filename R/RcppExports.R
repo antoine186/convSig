@@ -25,7 +25,7 @@ timesTwoList <- function(x) {
     .Call('_convSig_timesTwoList', PACKAGE = 'convSig', x)
 }
 
-testloop <- function(x) {
-    .Call('_convSig_testloop', PACKAGE = 'convSig', x)
+WeirdVector <- function(x) {
+    .Call('_convSig_WeirdVector', PACKAGE = 'convSig', x)
 }
 
