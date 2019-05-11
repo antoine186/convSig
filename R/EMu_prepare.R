@@ -157,8 +157,3 @@ alt_reverse <- function(datapath, from_allele) {
   invisible(alleles)
 }
 
-#lol <- convSig:::readfast("~/Documents/GitHub/convSig-shallow/Homo_sapiens.GRCh37.dna.primary_assembly.fa")
-# hey <- fasta_process(lol$V1)
-# hey <- fasta_process3(hello)
-# load("~/Documents/GitHub/convSig-shallow/hello.Rda")
-#class(lol$V1)
