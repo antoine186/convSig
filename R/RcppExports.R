@@ -29,3 +29,11 @@ WeirdVector <- function(x) {
     .Call('_convSig_WeirdVector', PACKAGE = 'convSig', x)
 }
 
+string_comptest <- function(x) {
+    .Call('_convSig_string_comptest', PACKAGE = 'convSig', x)
+}
+
+string_comptest2 <- function(x, y, a) {
+    .Call('_convSig_string_comptest2', PACKAGE = 'convSig', x, y, a)
+}
+

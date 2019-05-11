@@ -1,5 +1,9 @@
 #include <Rcpp.h>
+#include <string>
+#include <cstring>
+
 using namespace Rcpp;
+using namespace std;
 
 // This is a simple example of exporting a C++ function to R. You can
 // source this function into an R session using the Rcpp::sourceCpp 
@@ -34,6 +38,34 @@ NumericVector WeirdVector(NumericVector x) {
   x[temp_array[0]] = ++x[temp_array[0]];
   x[temp_array[1]] = ++x[temp_array[1]];
   return x;
+}
+
+// [[Rcpp::export]]
+bool string_comptest(CharacterVector x) {
+  bool yo;
+  if (x[0] == "hello") {
+    yo = true;
+  } else {
+    yo = false;
+  }
+  return yo;
+}
+
+// [[Rcpp::export]]
+int string_comptest2(CharacterVector x, CharacterVector y, int a) {
+  int index = 0;
+  for(CharacterVector::iterator it = x.begin(); 
+      it != x.end(); ++it) {
+    //++index;
+    if (*it == y[a]) {
+    //if (strncmp(it.c_str(), "lol") == 1) {
+    //if (x.find("lol") != std::string::npos) {
+      //++index;
+      index = it - x.begin();
+      break;
+    }
+  }
+  return index;
 }
 
 // You can include R code blocks in C++ files processed with sourceCpp

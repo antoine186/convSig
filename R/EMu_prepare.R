@@ -9,11 +9,7 @@ setClass (
   # Defining slot type
   representation (
     mut_mat = "matrix",
-    wt = "numeric",
-    fasta_status = "numeric",
-    special_status = "numeric",
-    perline_status = "numeric",
-    feature_status = "numeric"
+    wt = "numeric"
   )
 )
 
@@ -55,9 +51,8 @@ mut_count3 <- function(datapath) {
   treated_mut <- mut_process3(datapath)
   
   cat("Counting the frequency of mutation fragment types. This could take a few minutes...\n")
-  shallow3res <- new("Shallow3res", mut_mat = init_mut_mat, wt = init_wt, fasta_status = 0,
-                     special_status = 0)
-  shallow3res = convSig:::shallow_loop3(shallow3res, reference_gen, treated_mut, nb_uniq)
+  shallow3res <- new("Shallow3res", mut_mat = init_mut_mat, wt = init_wt)
+  shallow3res = convSig:::shallow_loop3(shallow3res, reference_gen, treated_mut, uniq_sample)
 }
 
 #' @export

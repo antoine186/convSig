@@ -88,6 +88,30 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// string_comptest
+bool string_comptest(CharacterVector x);
+RcppExport SEXP _convSig_string_comptest(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(string_comptest(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// string_comptest2
+int string_comptest2(CharacterVector x, CharacterVector y, int a);
+RcppExport SEXP _convSig_string_comptest2(SEXP xSEXP, SEXP ySEXP, SEXP aSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< int >::type a(aSEXP);
+    rcpp_result_gen = Rcpp::wrap(string_comptest2(x, y, a));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_convSig_feat2table3", (DL_FUNC) &_convSig_feat2table3, 3},
@@ -97,6 +121,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_convSig_timesTwo", (DL_FUNC) &_convSig_timesTwo, 1},
     {"_convSig_timesTwoList", (DL_FUNC) &_convSig_timesTwoList, 1},
     {"_convSig_WeirdVector", (DL_FUNC) &_convSig_WeirdVector, 1},
+    {"_convSig_string_comptest", (DL_FUNC) &_convSig_string_comptest, 1},
+    {"_convSig_string_comptest2", (DL_FUNC) &_convSig_string_comptest2, 3},
     {NULL, NULL, 0}
 };
 

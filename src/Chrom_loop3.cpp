@@ -4,6 +4,7 @@
 #include <cstring>
 #include <array>
 #include <unordered_map>
+#include <typeinfo>
 using namespace Rcpp;
 using namespace std;
 
@@ -95,16 +96,17 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
   std::string base2;
   std::string base3;
   
-  int fasta_stat = 0;
-  int spe_stat = 0;
-  int line_stat = 0;
-  int feature_stat = 0;
+  //int fasta_stat = 0;
+  //int spe_stat = 0;
+  //int line_stat = 0;
+  //int feature_stat = 0;
+  //int free_stat = 0;
    
   std::regex chrompattern ("^>");
   // For loop 1
   for (int i = 0; i < loop1; i = i + 1) {
     std::string cur_line = as<std::string>(f[i]);
-    ++fasta_stat;
+    //++fasta_stat;
     // Special case for chromosome header line
     if (std::regex_search(cur_line, chrompattern)) {
       chrom++;
@@ -127,7 +129,7 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
     // For loop 2 based on cur_array
     int loop2 = strlen(cur_array); 
     for (int j = 0; j < loop2; j = j + 1) {
-      ++line_stat;
+      //++line_stat;
       base3 = cur_array[j];
       std::vector<int> temp_array;
       
@@ -139,7 +141,7 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
         ++wt_ar[temp_array[1]];
         ++wt_ar[temp_array[2]];
         
-        ++feature_stat;
+        //++feature_stat;
       }
       
       ++ref_pos;
@@ -149,10 +151,10 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
       if (mut_pos < mut_file_length && !(chromid_ar[mut_pos] > chrom ||
       startpos_ar[mut_pos] > ref_pos)) {
         while (1) {
-          ++spe_stat;
+          //++spe_stat;
           if(ref_ar[mut_pos] != base2) {
-            //throw "The reference genome provided does not appear to correspond" 
-            //"to the one in the mutation input file";
+            throw "The reference genome provided does not appear to correspond" 
+            "to the one in the mutation input file";
             mut_pos = ++mut_pos;
             continue;
           }
@@ -161,15 +163,16 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
           
           for(CharacterVector::iterator it = uniq_samples.begin(); 
               it != uniq_samples.end(); ++it) {
-            
+
             if (*it == sampleid_ar[mut_pos]) {
+              //++free_stat;
               index = it - uniq_samples.begin();
               break;
             }
             
           }
           
-          mut_mat(index, temp_array[mut_ar[mut_pos]]) += mut_mat(index, temp_array[mut_ar[mut_pos]]);
+          ++mut_mat(index, temp_array[mut_ar[mut_pos]]);
           
           mut_pos = ++mut_pos;
           
@@ -190,10 +193,11 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
   
   mat.slot("mut_mat") = mut_mat;
   mat.slot("wt") = wt_ar;
-  mat.slot("fasta_status") = fasta_stat;
-  mat.slot("special_status") = spe_stat;
-  mat.slot("perline_status") = line_stat;
-  mat.slot("feature_status") = feature_stat;
+  //mat.slot("fasta_status") = fasta_stat;
+  //mat.slot("special_status") = spe_stat;
+  //mat.slot("perline_status") = line_stat;
+  //mat.slot("feature_status") = feature_stat;
+  //mat.slot("free_status") = free_stat;
 
   return mat;
 
