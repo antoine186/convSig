@@ -42,7 +42,6 @@ std::vector<int> feat2table3(std::string b1, std::string b2, std::string b3) {
   values.push_back(value);
   values.push_back(value + 1);
   values.push_back(value + 2);
-  //int values[3] = {value, value+1, value+2};
   
   return(values);
 }
@@ -72,21 +71,21 @@ DataFrame reverse_transform(DataFrame alleles) {
 }
 
 // [[Rcpp::export]]
-S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file) {
+S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector uniq_samples) {
   
   NumericMatrix mut_mat = mat.slot("mut_mat");
-  NumericVector wt = mat.slot("wt");
-  //List fasta = mat.slot("reference");
-  // mut_mat(0,1) = 5;
-  // mut_mat(0,2) = 4;
-  // mut_mat(0,3) = 3;
-  //mat.slot("name")  = "Sewall Wright";
-  /////////////////////////////////////////////////////////////////////////////
+  NumericVector wt_ar = mat.slot("wt");
+  
+  CharacterVector sampleid_ar = mut_file[0];
+  NumericVector chromid_ar = mut_file[1];
+  NumericVector startpos_ar = mut_file[2];
+  CharacterVector ref_ar = mut_file[3];
+  NumericVector mut_ar = mut_file[4];
 
   int loop1 = fasta.nrow();
-  //int loop1 = f.size();
+  int mut_file_length = mut_file.nrow();
+
   CharacterVector f = as<CharacterVector>(fasta[0]);
-  //CharacterVector f = as<CharacterVector>(fasta);
 
   int chrom = 0;
   int ref_pos = -1;
@@ -94,12 +93,7 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file) {
   string base1;
   string base2;
   string base3;
-  // Mut_res mut_obj = mut_process3(mut_file); // Change this
-  // int mut_chrom = mut_obj.chromid_ar[0]; // Change this
-  /**
-  int wt_table[96] = {0};
-  //std::array<int, 96> wt_table = {0};
-  
+   
   std::regex chrompattern ("^>");
   // For loop 1
   for (int i = 0; i < loop1; i = i + 1) {
@@ -132,28 +126,45 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file) {
       if (base1 != "N" && base2 != "N" && base3 != "N") {
         temp_array = feat2table3(base1, base2, base3);
         
-        wt_table[temp_array[0]] = ++wt_table[temp_array[0]];
-        wt_table[temp_array[1]] = ++wt_table[temp_array[1]];
-        wt_table[temp_array[2]] = ++wt_table[temp_array[2]];
+        wt_ar[temp_array[0]] = ++wt_ar[temp_array[0]];
+        wt_ar[temp_array[1]] = ++wt_ar[temp_array[1]];
+        wt_ar[temp_array[2]] = ++wt_ar[temp_array[2]];
       }
       
       ++ref_pos;
-      /**
+
       // Here is the second while loop
-      if (mut_pos < mut_obj.mut_file_length && !(mut_obj.chromid_ar[mut_pos] > chrom ||
-      mut_obj.startpos_ar[mut_pos] > ref_pos)) {
+      if (mut_pos < mut_file_length && !(chromid_ar[mut_pos] > chrom ||
+      startpos_ar[mut_pos] > ref_pos)) {
         while (1) {
-          if(mut_obj.ref_ar[mut_pos] != base2) {
-            throw "The reference genome provided does not conform" 
-            "with the one in the mutation input file";
+          if(ref_ar[mut_pos] != base2) {
+            throw "The reference genome provided does not appear to correspond" 
+            "to the one in the mutation input file";
           }
           
-          //string sample_key = mut_obj.sampleid_ar;
-          //mut_obj.mut_hash[sample_key]
+          int index;
+          
+          for(CharacterVector::iterator it = uniq_samples.begin(); 
+              it != uniq_samples.end(); ++it) {
+            
+            if (*it == sampleid_ar[mut_pos]) {
+              index = it - uniq_samples.begin();
+              break;
+            }
+            
+          }
+          
+          mut_mat(index, temp_array[mut_ar[mut_pos]]) += mut_mat(index, temp_array[mut_ar[mut_pos]]);
+          
           mut_pos = ++mut_pos;
+          
+          if (mut_pos > mut_file_length || (chromid_ar[mut_pos] > chrom ||
+              startpos_ar[mut_pos] > ref_pos)) {
+            break;
+          }
         }
       } 
-      
+
       base1 = base2;
       base2 = base3;
       
@@ -162,12 +173,9 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file) {
     }
   }
   
-  //return();
-  
-  /////////////////////////////////////////////////////////////////////////////
   mat.slot("mut_mat") = mut_mat;
-  mat.slot("wt") = mut_mat;
-  */
+  mat.slot("wt") = wt_ar;
+
   return mat;
 
 }

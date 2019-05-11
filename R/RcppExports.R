@@ -9,8 +9,8 @@ reverse_transform <- function(alleles) {
     .Call('_convSig_reverse_transform', PACKAGE = 'convSig', alleles)
 }
 
-shallow_loop3 <- function(mat, fasta, mut_file) {
-    .Call('_convSig_shallow_loop3', PACKAGE = 'convSig', mat, fasta, mut_file)
+shallow_loop3 <- function(mat, fasta, mut_file, uniq_samples) {
+    .Call('_convSig_shallow_loop3', PACKAGE = 'convSig', mat, fasta, mut_file, uniq_samples)
 }
 
 RM_nonSNP <- function(startend, ar) {
@@ -23,5 +23,9 @@ timesTwo <- function(x) {
 
 timesTwoList <- function(x) {
     .Call('_convSig_timesTwoList', PACKAGE = 'convSig', x)
+}
+
+testloop <- function(x) {
+    .Call('_convSig_testloop', PACKAGE = 'convSig', x)
 }
 

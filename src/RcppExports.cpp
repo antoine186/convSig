@@ -30,15 +30,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // shallow_loop3
-S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file);
-RcppExport SEXP _convSig_shallow_loop3(SEXP matSEXP, SEXP fastaSEXP, SEXP mut_fileSEXP) {
+S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector uniq_samples);
+RcppExport SEXP _convSig_shallow_loop3(SEXP matSEXP, SEXP fastaSEXP, SEXP mut_fileSEXP, SEXP uniq_samplesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< S4 >::type mat(matSEXP);
     Rcpp::traits::input_parameter< DataFrame >::type fasta(fastaSEXP);
     Rcpp::traits::input_parameter< DataFrame >::type mut_file(mut_fileSEXP);
-    rcpp_result_gen = Rcpp::wrap(shallow_loop3(mat, fasta, mut_file));
+    Rcpp::traits::input_parameter< CharacterVector >::type uniq_samples(uniq_samplesSEXP);
+    rcpp_result_gen = Rcpp::wrap(shallow_loop3(mat, fasta, mut_file, uniq_samples));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -76,14 +77,26 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// testloop
+int testloop(CharacterVector x);
+RcppExport SEXP _convSig_testloop(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(testloop(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_convSig_feat2table3", (DL_FUNC) &_convSig_feat2table3, 3},
     {"_convSig_reverse_transform", (DL_FUNC) &_convSig_reverse_transform, 1},
-    {"_convSig_shallow_loop3", (DL_FUNC) &_convSig_shallow_loop3, 3},
+    {"_convSig_shallow_loop3", (DL_FUNC) &_convSig_shallow_loop3, 4},
     {"_convSig_RM_nonSNP", (DL_FUNC) &_convSig_RM_nonSNP, 2},
     {"_convSig_timesTwo", (DL_FUNC) &_convSig_timesTwo, 1},
     {"_convSig_timesTwoList", (DL_FUNC) &_convSig_timesTwoList, 1},
+    {"_convSig_testloop", (DL_FUNC) &_convSig_testloop, 1},
     {NULL, NULL, 0}
 };
 
