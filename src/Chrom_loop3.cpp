@@ -151,8 +151,10 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
         while (1) {
           ++spe_stat;
           if(ref_ar[mut_pos] != base2) {
-            throw "The reference genome provided does not appear to correspond" 
-            "to the one in the mutation input file";
+            //throw "The reference genome provided does not appear to correspond" 
+            //"to the one in the mutation input file";
+            mut_pos = ++mut_pos;
+            continue;
           }
           
           int index;
