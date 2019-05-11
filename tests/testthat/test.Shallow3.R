@@ -27,6 +27,7 @@ res_nosexorn <- res_nosexorn[!chromosome == "X"]
 res_nosexorn <- res_nosexorn[!chromosome == "Y"]
 
 res_nosexorn$mutated_to_allele <- NULL
+res_nosexorn$chromosome_end <- NULL
 
 test_that("skipping sex chromosomes and padding \"N\" bases works",
           {
@@ -58,6 +59,7 @@ for (i in 1:dim(interdata)[1]) {
 }
 
 interdata$mutated_to_allele <- to_allele
+interdata$chromosome_end <- NULL
 
 test_that("alternate allele transformation works",
           {

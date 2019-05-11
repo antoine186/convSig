@@ -5,6 +5,19 @@
 
 using namespace Rcpp;
 
+// feat2table3
+std::vector<int> feat2table3(std::string b1, std::string b2, std::string b3);
+RcppExport SEXP _convSig_feat2table3(SEXP b1SEXP, SEXP b2SEXP, SEXP b3SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type b1(b1SEXP);
+    Rcpp::traits::input_parameter< std::string >::type b2(b2SEXP);
+    Rcpp::traits::input_parameter< std::string >::type b3(b3SEXP);
+    rcpp_result_gen = Rcpp::wrap(feat2table3(b1, b2, b3));
+    return rcpp_result_gen;
+END_RCPP
+}
 // reverse_transform
 DataFrame reverse_transform(DataFrame alleles);
 RcppExport SEXP _convSig_reverse_transform(SEXP allelesSEXP) {
@@ -17,25 +30,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // shallow_loop3
-S4 shallow_loop3(S4 mat);
-RcppExport SEXP _convSig_shallow_loop3(SEXP matSEXP) {
+S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file);
+RcppExport SEXP _convSig_shallow_loop3(SEXP matSEXP, SEXP fastaSEXP, SEXP mut_fileSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< S4 >::type mat(matSEXP);
-    rcpp_result_gen = Rcpp::wrap(shallow_loop3(mat));
-    return rcpp_result_gen;
-END_RCPP
-}
-// fasta_process3
-int fasta_process3(SEXP fasta, DataFrame mut_file);
-RcppExport SEXP _convSig_fasta_process3(SEXP fastaSEXP, SEXP mut_fileSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type fasta(fastaSEXP);
+    Rcpp::traits::input_parameter< DataFrame >::type fasta(fastaSEXP);
     Rcpp::traits::input_parameter< DataFrame >::type mut_file(mut_fileSEXP);
-    rcpp_result_gen = Rcpp::wrap(fasta_process3(fasta, mut_file));
+    rcpp_result_gen = Rcpp::wrap(shallow_loop3(mat, fasta, mut_file));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -75,9 +78,9 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_convSig_feat2table3", (DL_FUNC) &_convSig_feat2table3, 3},
     {"_convSig_reverse_transform", (DL_FUNC) &_convSig_reverse_transform, 1},
-    {"_convSig_shallow_loop3", (DL_FUNC) &_convSig_shallow_loop3, 1},
-    {"_convSig_fasta_process3", (DL_FUNC) &_convSig_fasta_process3, 2},
+    {"_convSig_shallow_loop3", (DL_FUNC) &_convSig_shallow_loop3, 3},
     {"_convSig_RM_nonSNP", (DL_FUNC) &_convSig_RM_nonSNP, 2},
     {"_convSig_timesTwo", (DL_FUNC) &_convSig_timesTwo, 1},
     {"_convSig_timesTwoList", (DL_FUNC) &_convSig_timesTwoList, 1},
