@@ -150,11 +150,12 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
       // larger than ref_pos
       if (mut_pos < mut_file_length && !(chromid_ar[mut_pos] > chrom ||
       startpos_ar[mut_pos] > ref_pos)) {
+        //++free_stat;
         while (1) {
-          //++spe_stat;
+          //++free_stat;
           if(ref_ar[mut_pos] != base2) {
-            throw "The reference genome provided does not appear to correspond" 
-            "to the one in the mutation input file";
+            stop("It seems that your supplied assembly input does not " 
+                    "correspond to the one in your mutation input file");
             mut_pos = ++mut_pos;
             continue;
           }

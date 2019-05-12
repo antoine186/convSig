@@ -9,33 +9,106 @@ setClass (
   # Defining slot type
   representation (
     mut_mat = "matrix",
-    wt = "numeric"
+    wt = "numeric",
+    free_status = "numeric"
   )
 )
 
+#' Read in the reference genome fasta file
+#'
 #' @importFrom data.table fread data.table as.data.table
 readfast <- function(datapath) {
-  x <- data.table::fread(datapath, header = FALSE)
+  tryCatch(
+    {
+      if ("character" %in% class(datapath)) {
+        x <- fread(datapath, header = FALSE)
+      } else {
+        x <- as.data.table(datapath)
+        #data.loaded = TRUE
+      }
+    }, 
+    error=function(cnd) {
+      message(paste("There seems to be a problem with the filepath you supplied."))
+      message("Here's the original error message:")
+      message(cnd)
+      stop("Reading in assembly file input aborted.")
+    }
+  )
   invisible(x)
   
   # Handle factors if we are dealing with data in env.
 }
 
-mut_count3 <- function(datapath) {
+#' Read in the mutation input file
+#'
+#' @importFrom data.table fread data.table as.data.table
+readmut <- function(datapath) {
+  tryCatch(
+    {
+      if ("character" %in% class(datapath)) {
+        x <- fread(datapath)
+      } else {
+        x <- as.data.table(datapath)
+        #data.loaded = TRUE
+        x <- x[, icgc_sample_id := as.character(icgc_sample_id)]
+        x <- x[, chromosome := as.numeric(as.character(chromosome))]
+        x <- x[, chromosome_start := as.numeric(as.character(chromosome_start))]
+        x <- x[, mutated_from_allele := as.character(mutated_from_allele)]
+        x <- x[, mutated_to_allele := as.character(mutated_to_allele)]
+      }
+    }, 
+    error=function(cnd) {
+      message(paste("There seems to be a problem with the filepath you supplied."))
+      message("Here's the original error message:")
+      message(cnd)
+      stop("Reading in mutation file input aborted.")
+    }
+  )
+  invisible(x)
+}
+
+#' Computes the frequency of each possible trinucleotide mutation signature
+#' 
+#' @param reference A string or a variable referencing a string object. This is
+#' the path leading to your assembly file (.fa or .fa.gz). 
+#' 
+#' @param mut_file A string or a variable referencing a string object. This is 
+#' the path leading to your mutation input file (tsv or csv only). Alternatively,
+#' this is your mutation data if you supplied either a \code{data.frame} or a \code{matrix}.
+#' Please make sure that your input data is not malformed; It should contain 
+#' the following columns: icgc_sample_id (i.e. the ICGC sample ID), chromosome 
+#' (i.e. the Chromosome ID), chromosome_start (i.e. the chromosome start position), 
+#' mutated_from_allele (i.e. the reference allele), and mutated_to_allele 
+#' (i.e. alternate allele). 
+#' Your input file must also be sorted and must only contain single nucleotide
+#' changes (see \link[=icgc_curate]{icgc_curate()}).
+#' \emph{Such files can be produced by some of our functions
+#' like \link[=icgc2mut]{icgc2mut()}}.
+#' 
+#' @return A background mutation signatures vector (\code{wt}), which provides
+#' the frequency of each possible signature given an assembly file. A matrix (\code{mut_mat}) 
+#' containing the mutational rate of each signature for each sample in your supplied mutation
+#' input file.
+#' 
+#' @section Details: Explain the return value a bit more
+#' 
+#' @examples 
+#' assembly <- "Homo_sapiens.GRCh37.dna.primary_assembly.fa"
+#' mut_file <- "mutation_file_input.tsv"
+#' 
+#' mut_sign <- mut_count3(assembly, mut_file)
+#'
+#' @export
+mut_count3 <- function(reference, mut_file) {
   # Make sure mutation input is a data.table
 
   cat("Loading the assembly\n")
   # Call readfast
-  reference_gen <- convSig:::readfast("~/Documents/GitHub/convSig-shallow/Homo_sapiens.GRCh37.dna.primary_assembly.fa")
+  reference_gen <- readfast(reference)
+  
   cat("Loading the mutation input file\n")
   # Read in the mutation input file
-  
-  ##### For testing
-  lol <- icgc2mut("~/Documents/GitHub/convSig-shallow/simple_somatic_mutation.open.COCA-CN.tsv",
-                  assembly = "GRCh37", Seq = "WGS")
-  curated_lol <- icgc_curate(lol, remove.nonSNP = FALSE)
-  datapath <- curated_lol 
-  ##### End testing
+  datapath <- readmut(mut_file)
   
   cat("Miscellaneous processing...\n")
   nb_uniq = length(unique(as.character(datapath$icgc_sample_id)))
@@ -47,16 +120,20 @@ mut_count3 <- function(datapath) {
   
   # Call mut_process3 here and store result in variable called treated_mut
   cat("Processing and encoding the mutation input file\n")
-  # Order of this file's column is super important
+  # Order of this file's column is super important <= Here
   treated_mut <- mut_process3(datapath)
   
   cat("Counting the frequency of mutation fragment types. This could take a few minutes...\n")
   shallow3res <- new("Shallow3res", mut_mat = init_mut_mat, wt = init_wt)
-  shallow3res = convSig:::shallow_loop3(shallow3res, reference_gen, treated_mut, uniq_sample)
+  shallow3res = shallow_loop3(shallow3res, reference_gen, treated_mut, uniq_sample)
+  
+  invisible(shallow3res)
 }
 
+#' A function that treats the mutation input file and reorders its columns
+#' 
 #' @export
-#'
+#' 
 #' @importFrom data.table data.table as.data.table
 #' @importFrom purrr map
 mut_process3 <- function(datapath) {

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Conv_Sort_Rm_Shallow.R
 \name{icgc2mut}
 \alias{icgc2mut}
-\title{Converts an ICGC file into a Mutation file}
+\title{Converts an ICGC file into a mutation file}
 \usage{
 icgc2mut(datapath, assembly = NULL, Seq = NULL)
 }
@@ -33,7 +33,7 @@ the chromosome ID, the chromosome start position, the chromosome end
 position, the reference allele, and the alternate allele.
 }
 \description{
-Converts an ICGC file into a Mutation file
+Converts an ICGC file into a mutation file
 }
 \section{Details}{
 

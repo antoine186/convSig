@@ -2,7 +2,7 @@
 #' @importFrom Rcpp sourceCpp
 NULL
 
-#' Converts an ICGC file into a Mutation file
+#' Converts an ICGC file into a mutation file
 #' 
 #' @param datapath A string or a variable referencing a string object. This is 
 #' the path leading to your ICGC file (tsv or csv only). Alternatively, this 
