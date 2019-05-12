@@ -5,12 +5,20 @@ feat2table3 <- function(b1, b2, b3) {
     .Call('_convSig_feat2table3', PACKAGE = 'convSig', b1, b2, b3)
 }
 
+feat2table5 <- function(b1, b2, b3, b4, b5) {
+    .Call('_convSig_feat2table5', PACKAGE = 'convSig', b1, b2, b3, b4, b5)
+}
+
 reverse_transform <- function(alleles) {
     .Call('_convSig_reverse_transform', PACKAGE = 'convSig', alleles)
 }
 
 shallow_loop3 <- function(mat, fasta, mut_file, uniq_samples) {
     .Call('_convSig_shallow_loop3', PACKAGE = 'convSig', mat, fasta, mut_file, uniq_samples)
+}
+
+shallow_loop5 <- function(mat, fasta, mut_file, uniq_samples) {
+    .Call('_convSig_shallow_loop5', PACKAGE = 'convSig', mat, fasta, mut_file, uniq_samples)
 }
 
 RM_nonSNP <- function(startend, ar) {

@@ -4,7 +4,7 @@ NULL
 
 setClass (
   # Class name
-  "Shallow3res",
+  "Shallowres",
   
   # Defining slot type
   representation (
@@ -98,7 +98,7 @@ readmut <- function(datapath) {
 #' mut_sign <- mut_count3(assembly, mut_file)
 #'
 #' @export
-mut_count3 <- function(reference, mut_file) {
+mut_count <- function(reference, mut_file, five = FALSE) {
   # Make sure mutation input is a data.table
 
   cat("Loading the assembly\n")
@@ -114,8 +114,13 @@ mut_count3 <- function(reference, mut_file) {
   # This is the row names of init_mut_mat
   uniq_sample <- unique(as.character(datapath$icgc_sample_id))
   
-  init_mut_mat <- matrix(0L, nrow = nb_uniq, ncol = 96) 
-  init_wt <- rep(0, 96)
+  if (five == FALSE) {
+    init_mut_mat <- matrix(0L, nrow = nb_uniq, ncol = 96) 
+    init_wt <- rep(0, 96)
+  } else if (five == TRUE) {
+    init_mut_mat <- matrix(0L, nrow = nb_uniq, ncol = 1536) 
+    init_wt <- rep(0, 1536)
+  }
   
   # Call mut_process3 here and store result in variable called treated_mut
   cat("Processing and encoding the mutation input file\n")
@@ -123,10 +128,15 @@ mut_count3 <- function(reference, mut_file) {
   treated_mut <- mut_process3(datapath)
   
   cat("Counting the frequency of mutation fragment types. This could take a few minutes...\n")
-  shallow3res <- new("Shallow3res", mut_mat = init_mut_mat, wt = init_wt)
-  shallow3res = shallow_loop3(shallow3res, reference_gen, treated_mut, uniq_sample)
+  shallowres <- new("Shallowres", mut_mat = init_mut_mat, wt = init_wt)
   
-  invisible(shallow3res)
+  if (five == FALSE) {
+    shallowres = shallow_loop3(shallowres, reference_gen, treated_mut, uniq_sample)
+  } else if (five == TRUE) {
+    shallowres = shallow_loop5(shallowres, reference_gen, treated_mut, uniq_sample)
+  }
+  
+  invisible(shallowres)
 }
 
 #' A function that treats the mutation input file and reorders its columns

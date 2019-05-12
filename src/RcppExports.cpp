@@ -18,6 +18,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// feat2table5
+std::vector<int> feat2table5(std::string b1, std::string b2, std::string b3, std::string b4, std::string b5);
+RcppExport SEXP _convSig_feat2table5(SEXP b1SEXP, SEXP b2SEXP, SEXP b3SEXP, SEXP b4SEXP, SEXP b5SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type b1(b1SEXP);
+    Rcpp::traits::input_parameter< std::string >::type b2(b2SEXP);
+    Rcpp::traits::input_parameter< std::string >::type b3(b3SEXP);
+    Rcpp::traits::input_parameter< std::string >::type b4(b4SEXP);
+    Rcpp::traits::input_parameter< std::string >::type b5(b5SEXP);
+    rcpp_result_gen = Rcpp::wrap(feat2table5(b1, b2, b3, b4, b5));
+    return rcpp_result_gen;
+END_RCPP
+}
 // reverse_transform
 DataFrame reverse_transform(DataFrame alleles);
 RcppExport SEXP _convSig_reverse_transform(SEXP allelesSEXP) {
@@ -40,6 +55,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< DataFrame >::type mut_file(mut_fileSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type uniq_samples(uniq_samplesSEXP);
     rcpp_result_gen = Rcpp::wrap(shallow_loop3(mat, fasta, mut_file, uniq_samples));
+    return rcpp_result_gen;
+END_RCPP
+}
+// shallow_loop5
+S4 shallow_loop5(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector uniq_samples);
+RcppExport SEXP _convSig_shallow_loop5(SEXP matSEXP, SEXP fastaSEXP, SEXP mut_fileSEXP, SEXP uniq_samplesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< S4 >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< DataFrame >::type fasta(fastaSEXP);
+    Rcpp::traits::input_parameter< DataFrame >::type mut_file(mut_fileSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type uniq_samples(uniq_samplesSEXP);
+    rcpp_result_gen = Rcpp::wrap(shallow_loop5(mat, fasta, mut_file, uniq_samples));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -115,8 +144,10 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_convSig_feat2table3", (DL_FUNC) &_convSig_feat2table3, 3},
+    {"_convSig_feat2table5", (DL_FUNC) &_convSig_feat2table5, 5},
     {"_convSig_reverse_transform", (DL_FUNC) &_convSig_reverse_transform, 1},
     {"_convSig_shallow_loop3", (DL_FUNC) &_convSig_shallow_loop3, 4},
+    {"_convSig_shallow_loop5", (DL_FUNC) &_convSig_shallow_loop5, 4},
     {"_convSig_RM_nonSNP", (DL_FUNC) &_convSig_RM_nonSNP, 2},
     {"_convSig_timesTwo", (DL_FUNC) &_convSig_timesTwo, 1},
     {"_convSig_timesTwoList", (DL_FUNC) &_convSig_timesTwoList, 1},
