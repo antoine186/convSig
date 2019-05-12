@@ -27,7 +27,6 @@ log/
 logs/
 tmp/
 cache/
-data/
 results/
 doc/presentation/
 doc/report/libs/
@@ -84,7 +83,4 @@ vignettes/*.pdf
 # Temporary files created by R markdown
 *.utf8.md
 *.knit.md
-
-# The RoughWork Rmarkdown file
-analysis/RoughWork.Rmd
 
