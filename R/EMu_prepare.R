@@ -66,7 +66,7 @@ readmut <- function(datapath) {
   invisible(x)
 }
 
-#' Computes the frequency of each possible trinucleotide mutation signature
+#' Computes the frequency of each possible trinucleotide or 5-nucleotide mutation signature
 #' 
 #' @param reference A string or a variable referencing a string object. This is
 #' the path leading to your assembly file (.fa or .fa.gz). 
@@ -83,6 +83,11 @@ readmut <- function(datapath) {
 #' changes (see \link[=icgc_curate]{icgc_curate()}).
 #' \emph{Such files can be produced by some of our functions
 #' like \link[=icgc2mut]{icgc2mut()}}.
+#' 
+#' @param five A boolean variable. A value of \code{TRUE} will lead to the function
+#' scanning the input files for 5 bases mutation signatures as opposed to 3 bases
+#' signatures. a value of \code{FALSE} causes the function to scan for 3 bases signatures. 
+#' This value is set to \code{FALSE} by default.
 #' 
 #' @return A background mutation signatures vector (\code{wt}), which provides
 #' the frequency of each possible signature given an assembly file. A matrix (\code{mut_mat}) 

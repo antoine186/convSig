@@ -2,7 +2,7 @@
 % Please edit documentation in R/EMu_prepare.R
 \name{mut_count}
 \alias{mut_count}
-\title{Computes the frequency of each possible trinucleotide mutation signature}
+\title{Computes the frequency of each possible trinucleotide or 5-nucleotide mutation signature}
 \usage{
 mut_count(reference, mut_file, five = FALSE)
 }
@@ -22,6 +22,11 @@ Your input file must also be sorted and must only contain single nucleotide
 changes (see \link[=icgc_curate]{icgc_curate()}).
 \emph{Such files can be produced by some of our functions
 like \link[=icgc2mut]{icgc2mut()}}.}
+
+\item{five}{A boolean variable. A value of \code{TRUE} will lead to the function
+scanning the input files for 5 bases mutation signatures as opposed to 3 bases
+signatures. a value of \code{FALSE} causes the function to scan for 3 bases signatures.
+This value is set to \code{FALSE} by default.}
 }
 \value{
 A background mutation signatures vector (\code{wt}), which provides
@@ -30,7 +35,7 @@ containing the mutational rate of each signature for each sample in your supplie
 input file.
 }
 \description{
-Computes the frequency of each possible trinucleotide mutation signature
+Computes the frequency of each possible trinucleotide or 5-nucleotide mutation signature
 }
 \section{Details}{
  Explain the return value a bit more
