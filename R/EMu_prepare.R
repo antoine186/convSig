@@ -9,8 +9,7 @@ setClass (
   # Defining slot type
   representation (
     mut_mat = "matrix",
-    wt = "numeric",
-    free_status = "numeric"
+    wt = "numeric"
   )
 )
 
@@ -131,8 +130,6 @@ mut_count3 <- function(reference, mut_file) {
 }
 
 #' A function that treats the mutation input file and reorders its columns
-#' 
-#' @export
 #' 
 #' @importFrom data.table data.table as.data.table
 #' @importFrom purrr map
