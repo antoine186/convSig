@@ -72,6 +72,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// conv_bimap
+NumericMatrix conv_bimap(int N, int K, int numbase);
+RcppExport SEXP _convSig_conv_bimap(SEXP NSEXP, SEXP KSEXP, SEXP numbaseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< int >::type K(KSEXP);
+    Rcpp::traits::input_parameter< int >::type numbase(numbaseSEXP);
+    rcpp_result_gen = Rcpp::wrap(conv_bimap(N, K, numbase));
+    return rcpp_result_gen;
+END_RCPP
+}
 // RM_nonSNP
 LogicalVector RM_nonSNP(DataFrame startend, SEXP ar);
 RcppExport SEXP _convSig_RM_nonSNP(SEXP startendSEXP, SEXP arSEXP) {
@@ -148,6 +161,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_convSig_reverse_transform", (DL_FUNC) &_convSig_reverse_transform, 1},
     {"_convSig_shallow_loop3", (DL_FUNC) &_convSig_shallow_loop3, 4},
     {"_convSig_shallow_loop5", (DL_FUNC) &_convSig_shallow_loop5, 4},
+    {"_convSig_conv_bimap", (DL_FUNC) &_convSig_conv_bimap, 3},
     {"_convSig_RM_nonSNP", (DL_FUNC) &_convSig_RM_nonSNP, 2},
     {"_convSig_timesTwo", (DL_FUNC) &_convSig_timesTwo, 1},
     {"_convSig_timesTwoList", (DL_FUNC) &_convSig_timesTwoList, 1},

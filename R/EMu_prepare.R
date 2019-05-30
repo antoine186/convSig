@@ -19,13 +19,16 @@ setClass (
 readfast <- function(datapath) {
   tryCatch(
     {
+      #if (!file.exists(datapath)) {
+        #stop(datapath, ": File doesn't exist.")
+      #} 
       if ("character" %in% class(datapath)) {
         x <- fread(datapath, header = FALSE)
-      } else {
+      } else if ("data.frame" %in% class(datapath)) {
         x <- as.data.table(datapath)
         #data.loaded = TRUE
       }
-    }, 
+    },
     error=function(cnd) {
       message(paste("There seems to be a problem with the filepath you supplied."))
       message("Here's the original error message:")

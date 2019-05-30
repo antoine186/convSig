@@ -21,6 +21,10 @@ shallow_loop5 <- function(mat, fasta, mut_file, uniq_samples) {
     .Call('_convSig_shallow_loop5', PACKAGE = 'convSig', mat, fasta, mut_file, uniq_samples)
 }
 
+conv_bimap <- function(N, K, numbase) {
+    .Call('_convSig_conv_bimap', PACKAGE = 'convSig', N, K, numbase)
+}
+
 RM_nonSNP <- function(startend, ar) {
     .Call('_convSig_RM_nonSNP', PACKAGE = 'convSig', startend, ar)
 }
