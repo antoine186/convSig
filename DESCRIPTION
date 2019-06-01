@@ -22,4 +22,5 @@ Imports:
     Rcpp,
     data.table,
     purrr,
-    methods
+    methods,
+    dplyr
