@@ -32,22 +32,63 @@ conv_create <- function(N, K, numbase) {
   return(recon_conv)
 }
 
-#res <- conv_create(32, 5, 3)
-#res <- conv_create(512, 5, 5)
+#' Recycles a 4D array
+#' 
+#' @export
+four_recycle <- function(ar, ax, want_l) {
 
-# "/Users/antoinetian/Documents/GitHub/convSig-shallow/feat3test.csv"
+  dims <- dim(ar)
+  my_dim <- dims[ax]
+  dims[ax] <- want_l
 
-# P <- matrix(runif(2*2), nrow = 2, ncol = 2)
-# P2 <- matrix(runif(2*2), nrow = 2, ncol = 2)
-# 
-# bg <- array(runif(2*2*2), c(2, 2, 2))
-# theta <- array(runif(2*2*3), c(2, 2, 2))
-# P <- array(runif(10*5), c(10, 5))
-# 
-# int <- base::colSums(bg * theta)
-# 
-# res <- P%*%P2
-# lol <- bg%*%theta
+  new_ar <- array(0, dim = dims)
+
+  if (ax == 1) {
+    for (i in 1:dims[1]) {
+      for (j in 1:dims[2]) {
+        for (k in 1:dims[3]) {
+          for (q in 1:dims[4]) {
+            new_ar[i, j, k, q] = ar[1, j, k, q]
+          }
+        }
+      }
+    }
+  } else if (ax == 2) {
+    for (i in 1:dims[1]) {
+      for (j in 1:dims[2]) {
+        for (k in 1:dims[3]) {
+          for (q in 1:dims[4]) {
+            new_ar[i, j, k, q] = ar[i, 1, k, q]
+          }
+        }
+      }
+    }
+  } else if (ax == 3) {
+    for (i in 1:dims[1]) {
+      for (j in 1:dims[2]) {
+        for (k in 1:dims[3]) {
+          for (q in 1:dims[4]) {
+            new_ar[i, j, k, q] = ar[i, j, 1, q]
+          }
+        }
+      }
+    }
+  } else if (ax == 4) {
+    for (i in 1:dims[1]) {
+      for (j in 1:dims[2]) {
+        for (k in 1:dims[3]) {
+          for (q in 1:dims[4]) {
+            new_ar[i, j, k, q] = ar[i, j, k, 1]
+          }
+        }
+      }
+    }
+  }
+
+  return (new_ar)
+}
+
+
 
 
 

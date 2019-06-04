@@ -2,6 +2,7 @@
 
 export(Base2Num)
 export(conv_create)
+export(four_recycle)
 export(icgc2mut)
 export(icgc_curate)
 export(loadICGCexample)

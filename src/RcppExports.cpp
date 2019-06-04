@@ -84,6 +84,31 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// four_rec
+int four_rec(NumericVector flat_ar, NumericVector g_dims, int ax, int want_len);
+RcppExport SEXP _convSig_four_rec(SEXP flat_arSEXP, SEXP g_dimsSEXP, SEXP axSEXP, SEXP want_lenSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type flat_ar(flat_arSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type g_dims(g_dimsSEXP);
+    Rcpp::traits::input_parameter< int >::type ax(axSEXP);
+    Rcpp::traits::input_parameter< int >::type want_len(want_lenSEXP);
+    rcpp_result_gen = Rcpp::wrap(four_rec(flat_ar, g_dims, ax, want_len));
+    return rcpp_result_gen;
+END_RCPP
+}
+// receive
+double receive(NumericVector lol);
+RcppExport SEXP _convSig_receive(SEXP lolSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type lol(lolSEXP);
+    rcpp_result_gen = Rcpp::wrap(receive(lol));
+    return rcpp_result_gen;
+END_RCPP
+}
 // RM_nonSNP
 LogicalVector RM_nonSNP(DataFrame startend, SEXP ar);
 RcppExport SEXP _convSig_RM_nonSNP(SEXP startendSEXP, SEXP arSEXP) {
@@ -161,6 +186,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_convSig_shallow_loop3", (DL_FUNC) &_convSig_shallow_loop3, 4},
     {"_convSig_shallow_loop5", (DL_FUNC) &_convSig_shallow_loop5, 4},
     {"_convSig_conv_bimap", (DL_FUNC) &_convSig_conv_bimap, 2},
+    {"_convSig_four_rec", (DL_FUNC) &_convSig_four_rec, 4},
+    {"_convSig_receive", (DL_FUNC) &_convSig_receive, 1},
     {"_convSig_RM_nonSNP", (DL_FUNC) &_convSig_RM_nonSNP, 2},
     {"_convSig_timesTwo", (DL_FUNC) &_convSig_timesTwo, 1},
     {"_convSig_timesTwoList", (DL_FUNC) &_convSig_timesTwoList, 1},
