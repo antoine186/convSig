@@ -189,7 +189,6 @@ icgc2mut <- function(datapath, assembly = NULL, Seq = NULL) {
 }
 
 #' Base to number conversion
-#' @export
 Base2Num <- function(letter) {
   switch(toupper(letter),
     A = 0,

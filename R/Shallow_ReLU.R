@@ -6,8 +6,6 @@ NULL
 #' 
 #' @importFrom data.table fread data.table as.data.table
 #' @importFrom dplyr bind_cols
-#' 
-#' @export
 conv_create <- function(N, K, numbase) {
   #conv = as.data.table(matrix(0L, nrow = N, ncol = K))
   
@@ -33,8 +31,6 @@ conv_create <- function(N, K, numbase) {
 }
 
 #' Recycles a 4D array at the index specified by the user
-#' 
-#' @export
 four_recycle <- function(ar, ax, want_l) {
 
   dims <- dim(ar)
@@ -90,8 +86,6 @@ four_recycle <- function(ar, ax, want_l) {
 
 #' Stores the indices of the fragment types according to which base is present
 #' at a particular base position
-#' 
-#' @export
 fragbase_indexer <- function(numbase, N) {
   
   type <- list()
@@ -134,8 +128,6 @@ fragbase_indexer <- function(numbase, N) {
 }
 
 #' Returns a matrix with all possible unmutated fragment types one-hot encoded
-#' 
-#' @export
 tencode <- function(numbase, N) {
   
   T = matrix(0, nrow = N, ncol = (4 * numbase) - 2)
@@ -172,8 +164,6 @@ tencode <- function(numbase, N) {
 }
 
 #' Imports and processes the mutation count data
-#' 
-#' @export
 mutation_inputprocess <- function(datapath, numbase) {
   
   X <- readmut(datapath)
@@ -197,6 +187,43 @@ mutation_inputprocess <- function(datapath, numbase) {
   invisible(X_ar)
 }
 
+#' Imports and processes the mutation count data
+background_inputprocess <- function(datapath, numbase) {
+  
+  X <- readmut(datapath)
+  
+  S <- dim(X)[1]
+  N = 4^(numbase - 1) * 2
+  
+  X <- c(t(as.matrix(X)))
+  X_ar <- array(0, dim = c(N, 3))
+  
+  count = 1
+  for (i in 1:N) {
+    for (j in 1:3) {
+      X_ar[i,j] = X[count]
+      count = count + 1
+    }
+  }
+  X_ar <- X_ar[,1]
+  
+  invisible(X_ar)
+}
+
+#' Performs the ReLU transform on the mutational data
+#' 
+#' @export
+relu_bigboy <- function(mut_path, bg_path, numbase) {
+  
+  X <- mutation_inputprocess(mut_path, numbase)
+  bg <- background_inputprocess(bg_path, numbase)
+  
+  S <- dim(X)[1]
+  N <- dim(X)[2]
+  
+  p = 0.5
+  return(2)
+}
 
 
 

@@ -44,8 +44,6 @@ readfast <- function(datapath) {
 #' Read in the mutation input file
 #'
 #' @importFrom data.table fread data.table as.data.table
-#' 
-#' @export
 readmut <- function(datapath) {
   tryCatch(
     {
