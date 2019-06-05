@@ -2,10 +2,10 @@
 % Please edit documentation in R/Shallow_ReLU.R
 \name{four_recycle}
 \alias{four_recycle}
-\title{Recycles a 4D array}
+\title{Recycles a 4D array at the index specified by the user}
 \usage{
 four_recycle(ar, ax, want_l)
 }
 \description{
-Recycles a 4D array
+Recycles a 4D array at the index specified by the user
 }

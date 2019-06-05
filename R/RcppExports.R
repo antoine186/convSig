@@ -25,14 +25,6 @@ conv_bimap <- function(N, numbase) {
     .Call('_convSig_conv_bimap', PACKAGE = 'convSig', N, numbase)
 }
 
-four_rec <- function(flat_ar, g_dims, ax, want_len) {
-    .Call('_convSig_four_rec', PACKAGE = 'convSig', flat_ar, g_dims, ax, want_len)
-}
-
-receive <- function(lol) {
-    .Call('_convSig_receive', PACKAGE = 'convSig', lol)
-}
-
 RM_nonSNP <- function(startend, ar) {
     .Call('_convSig_RM_nonSNP', PACKAGE = 'convSig', startend, ar)
 }

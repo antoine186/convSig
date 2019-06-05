@@ -29,10 +29,10 @@ conv_create <- function(N, K, numbase) {
   
   recon_conv[recon_conv < 0] <- 0
   
-  return(recon_conv)
+  invisible(recon_conv)
 }
 
-#' Recycles a 4D array
+#' Recycles a 4D array at the index specified by the user
 #' 
 #' @export
 four_recycle <- function(ar, ax, want_l) {
@@ -85,7 +85,116 @@ four_recycle <- function(ar, ax, want_l) {
     }
   }
 
-  return (new_ar)
+  invisible(new_ar)
+}
+
+#' Stores the indices of the fragment types according to which base is present
+#' at a particular base position
+#' 
+#' @export
+fragbase_indexer <- function(numbase, N) {
+  
+  type <- list()
+  base_div = 1
+  
+  if (numbase == 3) {
+    mid = 2
+  } else if (numbase == 5) {
+    mid = 3
+  }
+
+  for(i in 1:numbase) {
+    
+    if (i == mid) {
+      temp_struct <- list(c(), c())
+      base_mod = 2
+    } else {
+      temp_struct <- list(c(), c(), c(), c())
+      base_mod = 4
+    }
+    
+    for (j in 1:N) {
+      inter_j = j - 1
+      
+      base_type = (floor(inter_j / base_div) %% base_mod) + 1
+      temp_struct[[base_type]] <- c(temp_struct[[base_type]], j) 
+    }
+    
+    type[[i]] <- temp_struct
+    
+    if (i == mid) {
+      base_div <- base_div * 2
+    } else {
+      base_div <- base_div * 4
+    }
+    
+  }
+  
+  invisible(type)
+}
+
+#' Returns a matrix with all possible unmutated fragment types one-hot encoded
+#' 
+#' @export
+tencode <- function(numbase, N) {
+  
+  T = matrix(0, nrow = N, ncol = (4 * numbase) - 2)
+  
+  if (numbase == 3) {
+    mid = 2
+  } else if (numbase == 5) {
+    mid = 3
+  }
+  
+  for (i in 1:N) {
+    #temp = i
+    inter_temp = i - 1
+    for (j in 1:numbase) {
+      inter_j = j - 1
+      
+      if (j < mid) {
+        T[i,(4 * inter_j + inter_temp %% 4) + 1]=1
+        
+        #T[i,4*j+temp%%4]=1;
+        inter_temp= floor(inter_temp / 4)
+      } else if (j == mid) {
+        T[i,(4 * inter_j + inter_temp %% 2) + 1]=1
+        inter_temp = floor(inter_temp / 2)
+      } else if (j > mid) {
+        T[i,(4 * inter_j - 2 + inter_temp %% 4) + 1]=1
+        inter_temp = inter_temp / 4
+      }
+      
+    }
+  }
+  
+  invisible(T)
+}
+
+#' Imports and processes the mutation count data
+#' 
+#' @export
+mutation_inputprocess <- function(datapath, numbase) {
+  
+  X <- readmut(datapath)
+
+  S <- dim(X)[1]
+  N = 4^(numbase - 1) * 2
+
+  X <- c(t(as.matrix(X)))
+  X_ar <- array(0, dim = c(S, N, 3))
+
+  count = 1
+  for (i in 1:S) {
+    for (j in 1:N) {
+      for (k in 1:3) {
+        X_ar[i,j,k] = X[count]
+        count = count + 1
+      }
+    }
+  }
+
+  invisible(X_ar)
 }
 
 
