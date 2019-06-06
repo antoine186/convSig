@@ -130,10 +130,10 @@ mut_count <- function(reference, mut_file, five = FALSE) {
     init_wt <- rep(0, 1536)
   }
   
-  # Call mut_process3 here and store result in variable called treated_mut
+  # Call mut_process35 here and store result in variable called treated_mut
   cat("Processing and encoding the mutation input file\n")
   # Order of this file's column is super important <= Here
-  treated_mut <- mut_process3(datapath)
+  treated_mut <- mut_process35(datapath)
   
   cat("Counting the frequency of mutation fragment types. This could take a few minutes...\n")
   shallowres <- new("Shallowres", mut_mat = init_mut_mat, wt = init_wt)
@@ -151,7 +151,7 @@ mut_count <- function(reference, mut_file, five = FALSE) {
 #' 
 #' @importFrom data.table data.table as.data.table
 #' @importFrom purrr map
-mut_process3 <- function(datapath) {
+mut_process35 <- function(datapath) {
   
   tryCatch(
     {

@@ -1,4 +1,4 @@
-context("Shallow Trinucleotide Window Tests")
+context("Shallow Data Preparation Tests")
 
 interdata <- icgc2mut("example_mutation_dataset.tsv",
                       "GRCh37", "WGS")
@@ -31,7 +31,7 @@ res_nosexorn$chromosome_end <- NULL
 
 test_that("skipping sex chromosomes and padding \"N\" bases works",
           {
-            x <- mut_process3(interdata)
+            x <- mut_process35(interdata)
             x$mutated_to_allele <- NULL
             expect_equal(x, res_nosexorn)
           }
@@ -63,7 +63,7 @@ interdata$chromosome_end <- NULL
 
 test_that("alternate allele transformation works",
           {
-            x <- mut_process3(testdata)
+            x <- mut_process35(testdata)
             expect_equal(x, interdata)
           }
 )

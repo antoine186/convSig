@@ -30,7 +30,7 @@ conv_create <- function(N, K, numbase) {
   invisible(recon_conv)
 }
 
-#' Recycles a 4D array at the index specified by the user
+# Recycles a 4D array at the index specified by the user
 four_recycle <- function(ar, ax, want_l) {
 
   dims <- dim(ar)
@@ -84,8 +84,8 @@ four_recycle <- function(ar, ax, want_l) {
   invisible(new_ar)
 }
 
-#' Stores the indices of the fragment types according to which base is present
-#' at a particular base position
+# Stores the indices of the fragment types according to which base is present
+# at a particular base position
 fragbase_indexer <- function(numbase, N) {
   
   type <- list()
@@ -127,7 +127,7 @@ fragbase_indexer <- function(numbase, N) {
   invisible(type)
 }
 
-#' Returns a matrix with all possible unmutated fragment types one-hot encoded
+# Returns a matrix with all possible unmutated fragment types one-hot encoded
 tencode <- function(numbase, N) {
   
   T = matrix(0, nrow = N, ncol = (4 * numbase) - 2)
@@ -163,7 +163,7 @@ tencode <- function(numbase, N) {
   invisible(T)
 }
 
-#' Imports and processes the mutation count data
+# Imports and processes the mutation count data
 mutation_inputprocess <- function(datapath, numbase) {
   
   X <- readmut(datapath)
@@ -187,7 +187,7 @@ mutation_inputprocess <- function(datapath, numbase) {
   invisible(X_ar)
 }
 
-#' Imports and processes the mutation count data
+# Imports and processes the mutation count data
 background_inputprocess <- function(datapath, numbase) {
   
   X <- readmut(datapath)
@@ -210,10 +210,37 @@ background_inputprocess <- function(datapath, numbase) {
   invisible(X_ar)
 }
 
+# Imports and processes the mutation count data
+test_splitX <- function(X_input, S, N) {
+  
+  X_ar <- array(0, dim = c(S, N, 3))
+  for (i in 1:S) {
+    for (j in 1:N) {
+      for (k in 1:3) {
+        X_ar[i,j,k] = Xsplitter(X_input[i,j,k])
+      }
+    }
+  }
+  
+}
+
+# Imports and processes the mutation count data
+Xsplitter <- function(count_nb) {
+  
+  test_X <- rbinom(1, count_nb, 0.5)
+  
+  invisible(test_X)
+}
+
+# Imports and processes the mutation count data
+bgsplitter <- function() {
+  
+}
+
 #' Performs the ReLU transform on the mutational data
 #' 
 #' @export
-relu_bigboy <- function(mut_path, bg_path, numbase) {
+relu_transform <- function(mut_path, bg_path, numbase) {
   
   X <- mutation_inputprocess(mut_path, numbase)
   bg <- background_inputprocess(bg_path, numbase)
@@ -222,6 +249,9 @@ relu_bigboy <- function(mut_path, bg_path, numbase) {
   N <- dim(X)[2]
   
   p = 0.5
+  
+  
+  
   return(2)
 }
 
