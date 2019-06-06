@@ -4,7 +4,7 @@
 \alias{relu_transform}
 \title{Performs the ReLU transform on the mutational data}
 \usage{
-relu_transform(mut_path, bg_path, numbase)
+relu_transform(mut_path, bg_path, five = FALSE)
 }
 \description{
 Performs the ReLU transform on the mutational data

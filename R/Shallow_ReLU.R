@@ -240,7 +240,13 @@ bgsplitter <- function() {
 #' Performs the ReLU transform on the mutational data
 #' 
 #' @export
-relu_transform <- function(mut_path, bg_path, numbase) {
+relu_transform <- function(mut_path, bg_path, five = FALSE) {
+  
+  if (five == FALSE) {
+    numbase = 3
+  } else if (five == TRUE) {
+    numbase = 5
+  }
   
   X <- mutation_inputprocess(mut_path, numbase)
   bg <- background_inputprocess(bg_path, numbase)
