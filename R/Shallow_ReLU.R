@@ -164,9 +164,7 @@ tencode <- function(numbase, N) {
 }
 
 # Imports and processes the mutation count data
-mutation_inputprocess <- function(datapath, numbase) {
-  
-  X <- readmut(datapath)
+mutation_inputprocess <- function(X, numbase) {
 
   S <- dim(X)[1]
   N = 4^(numbase - 1) * 2
@@ -188,11 +186,8 @@ mutation_inputprocess <- function(datapath, numbase) {
 }
 
 # Imports and processes the mutation count data
-background_inputprocess <- function(datapath, numbase) {
+background_inputprocess <- function(X, numbase) {
   
-  X <- readmut(datapath)
-  
-  S <- dim(X)[1]
   N = 4^(numbase - 1) * 2
   
   X <- c(t(as.matrix(X)))
@@ -210,7 +205,7 @@ background_inputprocess <- function(datapath, numbase) {
   invisible(X_ar)
 }
 
-# Imports and processes the mutation count data
+# Splits the counts found in the mutation count file into test/train counts
 test_splitX <- function(X_input, S, N) {
   
   X_ar <- array(0, dim = c(S, N, 3))
@@ -222,9 +217,26 @@ test_splitX <- function(X_input, S, N) {
     }
   }
   
+  invisible(X_ar)
 }
 
-# Imports and processes the mutation count data
+# Splits the counts found in the background count file into test/train counts
+test_splitbg <- function(bg_input, numbase) {
+  
+  if (numbase == 3) {
+    type_length = 32
+  } else if (numbase == 5) {
+    type_length = 512
+  }
+  
+  X_ar <- array(0, dim = type_length)
+  for (i in 1:type_length) {
+    X_ar[i] = Xsplitter(bg_input[i])
+  }
+  
+  return(X_ar)
+}
+
 Xsplitter <- function(count_nb) {
   
   test_X <- rbinom(1, count_nb, 0.5)
@@ -232,15 +244,62 @@ Xsplitter <- function(count_nb) {
   invisible(test_X)
 }
 
-# Imports and processes the mutation count data
-bgsplitter <- function() {
+# Sums a 4D matrix at the 4th axis
+four_colsum <- function(X, ax) {
+  
+  dims <- dim(X)
+  
+  i_final <- dim(X)[1]
+  j_final <- dim(X)[2]
+  k_final <- dim(X)[3]
+  q_final <- dim(X)[4]
+  
+  dims[ax] = 1
+  
+  X_ar <- array(0, dim = dims)
+  
+  if (ax == 4) {
+    for (i in 1:i_final) {
+      for (j in 1:j_final) {
+        for (k in 1:k_final) {
+          acc <- array(0, dim = q_final)
+          for (q in 1:q_final) {
+            acc[q] = X[i,j,k,q]
+          }
+          
+          X_ar[i,j,k,1] = sum(acc)
+        }
+      }
+    }
+  }
+  
+  return(X_ar)
+}
+
+# Function that creates the Z hidden variable for the EM algorithm
+hidden_create <- function(S, N, K) {
+  
+  Z <- array(0, dim = c(S, N, 3, K))
+  Zk_sum <- array(S, N, 3, 1)
+  
+  res <- sweep(new_P,MARGIN=c(2,3,4),theta,`*`)
   
 }
 
 #' Performs the ReLU transform on the mutational data
 #' 
 #' @export
-relu_transform <- function(mut_path, bg_path, five = FALSE) {
+relu_transform <- function(mut_obj, five = FALSE, K = 5) {
+  
+  if (K == 0) {
+    stop("Your specified number of mutational processes cannot be zero")
+  } else if (K > 80) {
+    stop("Your specified number of mutational processes cannot exceed 80")
+  }
+  
+  if (!("Shallowres" %in% class(mut_obj))) {
+    stop("Your specified mut_obj is not of the right type")
+  }
   
   if (five == FALSE) {
     numbase = 3
@@ -248,17 +307,19 @@ relu_transform <- function(mut_path, bg_path, five = FALSE) {
     numbase = 5
   }
   
+  mut_path <- mut_obj@mut_mat
+  bg_path <- mut_obj@wt
+  
   X <- mutation_inputprocess(mut_path, numbase)
   bg <- background_inputprocess(bg_path, numbase)
   
   S <- dim(X)[1]
   N <- dim(X)[2]
   
-  p = 0.5
+  X_test <- test_splitX(X, S, N)
+  bg_test <- test_splitbg(bg, numbase)
   
-  
-  
-  return(2)
+  return(bg_test)
 }
 
 
