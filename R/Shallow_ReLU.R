@@ -276,6 +276,35 @@ four_colsum <- function(X, ax) {
   invisible(X_ar)
 }
 
+# Sums a 3D matrix at the 2nd axis
+three_colsum <- function(X, ax) {
+  
+  dims <- dim(X)
+  
+  i_final <- dim(X)[1]
+  j_final <- dim(X)[2]
+  k_final <- dim(X)[3]
+  
+  dims[ax] = 1
+  
+  X_ar <- array(0, dim = dims)
+  
+  if (ax == 2) {
+    for (i in 1:i_final) {
+      for (k in 1:k_final) {
+        acc <- array(0, dim = j_final)
+        for (j in 1:j_final) {
+          acc[j] = X[i,j,k] 
+        }
+        
+        X_ar[i,1,k] = sum(acc)
+      }
+    }
+  }
+  
+  invisible(X_ar)
+}
+
 # Function that creates the Z hidden variable for the EM algorithm
 hidden_create <- function(S, N, K) {
   
@@ -321,6 +350,18 @@ relu_transform <- function(mut_obj, five = FALSE, K = 5) {
   bg_test <- test_splitbg(bg, numbase)
   
   Z <- hidden_create(S, N, K)
+  
+  P <- array(runif(S*K), dim = c(S, K))
+  
+  conv <- conv_create(N, K, numbase)
+  
+  theta_array = array(runif(N*K), dim = c(N, K))
+  theta_array <- sweep(theta_array,MARGIN=c(2),colSums(theta_array),`/`)
+  
+  beta_array = X + 10^(-4)
+  
+  mat <- array(runif(2*3*K), dim = c(2, 3, K))
+  mat2 <- three_colsum(mat, 2)
   
   invisible(Z)
 }
