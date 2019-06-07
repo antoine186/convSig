@@ -234,7 +234,7 @@ test_splitbg <- function(bg_input, numbase) {
     X_ar[i] = Xsplitter(bg_input[i])
   }
   
-  return(X_ar)
+  invisible(X_ar)
 }
 
 Xsplitter <- function(count_nb) {
@@ -273,17 +273,18 @@ four_colsum <- function(X, ax) {
     }
   }
   
-  return(X_ar)
+  invisible(X_ar)
 }
 
 # Function that creates the Z hidden variable for the EM algorithm
 hidden_create <- function(S, N, K) {
   
-  Z <- array(0, dim = c(S, N, 3, K))
-  Zk_sum <- array(S, N, 3, 1)
+  Z <- array(runif(S*N*3*K), dim = c(S, N, 3, K))
+  Zk_sum <- four_colsum(Z, 4)
   
-  res <- sweep(new_P,MARGIN=c(2,3,4),theta,`*`)
+  res <- sweep(Z,MARGIN=c(1,2,3),Zk_sum,`/`)
   
+  invisible(res)
 }
 
 #' Performs the ReLU transform on the mutational data
@@ -319,7 +320,9 @@ relu_transform <- function(mut_obj, five = FALSE, K = 5) {
   X_test <- test_splitX(X, S, N)
   bg_test <- test_splitbg(bg, numbase)
   
-  return(bg_test)
+  Z <- hidden_create(S, N, K)
+  
+  invisible(Z)
 }
 
 
