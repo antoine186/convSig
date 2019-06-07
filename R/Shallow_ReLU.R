@@ -361,9 +361,10 @@ relu_transform <- function(mut_obj, five = FALSE, K = 5) {
   beta_array = X + 10^(-4)
   
   mat <- array(runif(2*3*K), dim = c(2, 3, K))
-  mat2 <- three_colsum(mat, 2)
+  summed_mat <- three_colsum(mat, 2)
+  mat <- sweep(mat,MARGIN=c(1,3),summed_mat, `/`)
   
-  invisible(Z)
+  invisible(mat)
 }
 
 
