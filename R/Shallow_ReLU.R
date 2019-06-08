@@ -384,6 +384,26 @@ relu_transform <- function(mut_obj, five = FALSE, K = 5) {
   invisible(mat)
 }
 
+# initialize the initial LOSS value
+init_LOSS <- function(bg, theta, P) {
+  
+  bg <- array(bg, dim = c(length(bg), 1))
+  LOSS <- sweep(theta,MARGIN=c(1),bg, `*`)
+  
+  invisible(LOSS) 
+}
 
+# Loop function, which increments lambda (burden of the loss function) iteratively
+regularizer <- function() {
+  
+  for (r in 1:6) {
+    
+    reg = (10^r) - 1
+    
+    
+    
+  }
+  
+}
 
 
