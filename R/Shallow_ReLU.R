@@ -30,6 +30,44 @@ conv_create <- function(N, K, numbase) {
   invisible(recon_conv)
 }
 
+# Recycles a 3D array at the index specified by the user
+three_recycle <- function(ar, ax, want_l) {
+  
+  dims <- dim(ar)
+  my_dim <- dims[ax]
+  dims[ax] <- want_l
+  
+  new_ar <- array(0, dim = dims)
+  
+  if (ax == 1) {
+    for (i in 1:dims[1]) {
+      for (j in 1:dims[2]) {
+        for (k in 1:dims[3]) {
+          new_ar[i, j, k] = ar[1, j, k]
+        }
+      }
+    }
+  } else if (ax == 2) {
+    for (i in 1:dims[1]) {
+      for (j in 1:dims[2]) {
+        for (k in 1:dims[3]) {
+            new_ar[i, j, k] = ar[i, 1, k]
+        }
+      }
+    }
+  } else if (ax == 3) {
+    for (i in 1:dims[1]) {
+      for (j in 1:dims[2]) {
+        for (k in 1:dims[3]) {
+            new_ar[i, j, k] = ar[i, j, 1]
+        }
+      }
+    }
+  }
+  
+  invisible(new_ar)
+}
+
 # Recycles a 4D array at the index specified by the user
 four_recycle <- function(ar, ax, want_l) {
 
@@ -345,8 +383,10 @@ relu_transform <- function(mut_obj, five = FALSE, K = 5) {
   
   if (five == FALSE) {
     numbase = 3
+    mid = 2
   } else if (five == TRUE) {
     numbase = 5
+    mid = 3
   }
   
   mut_path <- mut_obj@mut_mat
@@ -379,28 +419,60 @@ relu_transform <- function(mut_obj, five = FALSE, K = 5) {
   type <- fragbase_indexer(numbase, N)
   T <- tencode(numbase, N)
   
+  reg_res <- regularizer()
   
-  
-  invisible(mat)
+  invisible(reg_res)
 }
 
 # initialize the initial LOSS value
 init_LOSS <- function(bg, theta, P) {
   
   bg <- array(bg, dim = c(length(bg), 1))
-  LOSS <- sweep(theta,MARGIN=c(1),bg, `*`)
+  inter_LOSS <- sweep(theta,MARGIN=c(1),bg, `*`)
+  inter_LOSS <- sweep(P,MARGIN=c(2),colSums(inter_LOSS),`*`)
+  LOSS <- sum(inter_LOSS)
   
   invisible(LOSS) 
 }
 
 # Loop function, which increments lambda (burden of the loss function) iteratively
-regularizer <- function() {
+regularizer <- function(X, bg, conv, theta, P, mat, N, S, K, type, mid) {
   
   for (r in 1:6) {
     
     reg = (10^r) - 1
     
+    LOSS <- init_LOSS(bg, theta, P)
+    for (i in 1:2) {
+      
+      inter_theta <- theta[unlist(type[[mid]][i]),]
+      theta_dim <- dim(inter_theta)
+      inter_theta <- array(inter_theta, dim = c(theta_dim[1],1,K))
+      
+      inter_P <- array(P, dim = c(S,1,1,K))
+      inter_P <- four_recycle(inter_P, 2, theta_dim[1])
+      
+      inter_mat <- array(mat[i,,], dim = c(1,3,K))
+      inter_mat <- three_recycle(inter_mat, 1, theta_dim[1])
+      
+      temp <- sweep(inter_P,MARGIN=c(2,3,4),inter_theta, `*`)
+      temp <- four_recycle(temp, 3, 3)
+      temp <- sweep(temp,MARGIN=c(2,3,4),inter_mat, `*`)
+      temp <- four_colsum(temp, 4)
+      
+      inter_bg <- array(bg[unlist(type[[mid]][i])], dim = c(1,theta_dim[1],1))
+      inter_bg <- three_recycle(inter_bg, 3, 3)
+      inter_bg <- three_recycle(inter_bg, 1, 10)
+      
+      temp <- log(sweep(temp,MARGIN=c(1,2,3),inter_bg, `*`))
+      
+      LOSS = LOSS - sum(sweep(temp,MARGIN=c(1,2,3),X[,unlist(type[[mid]][i]),], `*`))
+      
+    }
+    LOSS = 0.5 * reg * sum((theta - as.matrix(conv))^2)
     
+    old_LOSS = LOSS + 1
+    new_LOSS = LOSS
     
   }
   
