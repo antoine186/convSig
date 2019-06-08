@@ -316,6 +316,18 @@ hidden_create <- function(S, N, K) {
   invisible(res)
 }
 
+#' Solves the |T * Feature - theta|^2 = 0 linear regression problem
+#' 
+#' @importFrom MASS ginv
+linreg_solver <- function(T, theta) {
+  
+  T_inv <- ginv((t(T) %*% T))
+  Multi_F = T_inv %*% t(T)
+  feat = Multi_F %*% theta
+  
+  invisible(feat)
+}
+
 #' Performs the ReLU transform on the mutational data
 #' 
 #' @export
@@ -363,6 +375,11 @@ relu_transform <- function(mut_obj, five = FALSE, K = 5) {
   mat <- array(runif(2*3*K), dim = c(2, 3, K))
   summed_mat <- three_colsum(mat, 2)
   mat <- sweep(mat,MARGIN=c(1,3),summed_mat, `/`)
+  
+  type <- fragbase_indexer(numbase, N)
+  T <- tencode(numbase, N)
+  
+  
   
   invisible(mat)
 }
