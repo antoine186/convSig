@@ -27,7 +27,7 @@ conv_create <- function(N, K, numbase) {
   
   recon_conv[recon_conv < 0] <- 0
   
-  invisible(recon_conv)
+  invisible(as.matrix(recon_conv))
 }
 
 # Recycles a 3D array at the index specified by the user
@@ -469,10 +469,20 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K, type, mid) {
       LOSS = LOSS - sum(sweep(temp,MARGIN=c(1,2,3),X[,unlist(type[[mid]][i]),], `*`))
       
     }
-    LOSS = 0.5 * reg * sum((theta - as.matrix(conv))^2)
+    LOSS = 0.5 * reg * sum((theta - conv)^2)
     
     old_LOSS = LOSS + 1
     new_LOSS = LOSS
+    
+    while(abs(new_LOSS - old_LOSS) > (1.0/(2*r+1))) {
+      
+      for (i in 1:K) {
+        
+        C = reg * conv[,i] - bg * sum(P[,i])
+        
+      }
+      
+    }
     
   }
   
