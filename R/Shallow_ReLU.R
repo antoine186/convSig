@@ -314,7 +314,7 @@ four_colsum <- function(X, ax) {
   invisible(X_ar)
 }
 
-# Sums a 3D matrix at the 2nd axis
+# Sums a 3D matrix at the 2nd or 3rd axis
 three_colsum <- function(X, ax) {
   
   dims <- dim(X)
@@ -336,6 +336,17 @@ three_colsum <- function(X, ax) {
         }
         
         X_ar[i,1,k] = sum(acc)
+      }
+    }
+  } else if (ax == 3) {
+    for (i in 1:i_final) {
+      for (j in 1:j_final) {
+        acc <- array(0, dim = k_final)
+        for (k in 1:k_final) {
+          acc[k] = X[i,j,k] 
+        }
+        
+        X_ar[i,j,1] = sum(acc)
       }
     }
   }
@@ -436,15 +447,16 @@ init_LOSS <- function(bg, theta, P) {
 }
 
 # Loop function, which increments lambda (burden of the loss function) iteratively
-regularizer <- function(X, bg, conv, theta, P, mat, N, S, K, type, mid) {
+regularizer <- function(X, bg, conv, theta, P, mat, N, S, K, type, mid, beta_ar) {
   
   for (r in 1:6) {
     
-    reg = (10^r) - 1
+    reg = (10^(r - 1)) - 1
     
     LOSS <- init_LOSS(bg, theta, P)
     for (i in 1:2) {
       
+      #
       inter_theta <- theta[unlist(type[[mid]][i]),]
       theta_dim <- dim(inter_theta)
       inter_theta <- array(inter_theta, dim = c(theta_dim[1],1,K))
@@ -459,6 +471,7 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K, type, mid) {
       temp <- four_recycle(temp, 3, 3)
       temp <- sweep(temp,MARGIN=c(2,3,4),inter_mat, `*`)
       temp <- four_colsum(temp, 4)
+      #
       
       inter_bg <- array(bg[unlist(type[[mid]][i])], dim = c(1,theta_dim[1],1))
       inter_bg <- three_recycle(inter_bg, 3, 3)
@@ -479,6 +492,61 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K, type, mid) {
       for (i in 1:K) {
         
         C = reg * conv[,i] - bg * sum(P[,i])
+        temp2 <- array(0, dim = c(S, N, 3))
+        
+        for (j in 1:2) {
+          
+          inter_theta <- theta[unlist(type[[mid]][j]),]
+          theta_dim <- dim(inter_theta)
+          inter_theta <- array(inter_theta, dim = c(theta_dim[1],1,K))
+          
+          inter_P <- array(P, dim = c(S,1,1,K))
+          inter_P <- four_recycle(inter_P, 2, theta_dim[1])
+          
+          inter_mat <- array(mat[j,,], dim = c(1,3,K))
+          inter_mat <- three_recycle(inter_mat, 1, theta_dim[1])
+          
+          temp <- sweep(inter_P,MARGIN=c(2,3,4),inter_theta, `*`)
+          temp <- four_recycle(temp, 3, 3)
+          temp <- sweep(temp,MARGIN=c(2,3,4),inter_mat, `*`)
+          temp <- four_colsum(temp, 4)
+          
+          temp2[,unlist(type[[mid]][j]),] <- temp
+          
+        }
+        alpha_array <- temp2
+        
+        #r
+        for (j in 1:2) {
+          
+          inter_theta <- theta[unlist(type[[mid]][j]),i]
+          theta_len <- length(inter_theta)
+          inter_theta <- array(inter_theta, dim = c(theta_len,1))
+          
+          inter_P <- array(P[,i], dim = c(S,1,1))
+          inter_P <- three_recycle(inter_P, 2, theta_len)
+          
+          inter_mat <- array(mat[j,,i], dim = c(3))
+          
+          temp <- sweep(inter_P,MARGIN=c(2,3),inter_theta, `*`)
+          temp <- three_recycle(temp, 3, 3)
+          temp <- sweep(temp,MARGIN=c(3),inter_mat, `*`)
+          
+          inter_P <- array(P[,i], dim = c(S,1,1))
+          inter_P <- three_recycle(inter_P, 3, 3)
+          
+          temp2 <- sweep(inter_P,MARGIN=c(3),inter_mat, `*`)
+          
+          alpha_array[,unlist(type[[mid]][j]),] = 
+            alpha_array[,unlist(type[[mid]][j]),] - temp
+          alpha_array[,unlist(type[[mid]][j]),] = 
+            alpha_array[,unlist(type[[mid]][j]),] / three_recycle(temp2, 2, theta_len)
+          
+        }
+        
+        # sum(0,2)
+        inter_upper = three_colsum((beta_ar / alpha_array), 3)
+        upper = colSums(inter_upper, 1)
         
       }
       
