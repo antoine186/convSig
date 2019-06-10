@@ -535,7 +535,8 @@ relu_transform <- function(mut_obj, five = FALSE, K = 5) {
   type <- fragbase_indexer(numbase, N)
   T <- tencode(numbase, N)
   
-  reg_res <- regularizer()
+  reg_res <- regularizer(X, bg, conv, theta_array, P, mat, N, S, K, type,
+                         mid, beta_array, Z)
   
   invisible(reg_res)
 }
@@ -689,7 +690,7 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K, type, mid, beta_ar,
             
             inter <- three_colsum((beta_ar / sweep(alpha_array,
                                                    MARGIN=c(2),x_new, `+`)), 3)
-            b_array = (colSums(inter, 1) - reg * x_new + C) > v_new
+            b_array = (array(colSums(inter, 1), dim = N) - reg * x_new + C) > v_new
             x_new_min[b_array] = x_new[b_array]
             
             x_new_max[!b_array] = x_new[!b_array]
@@ -724,7 +725,7 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K, type, mid, beta_ar,
           
           inter <- three_colsum((beta_ar / sweep(alpha_array,
                                                  MARGIN=c(2),x_new, `+`)), 3)
-          b_array = (colSums(inter, 1) - reg * x_new + C) > v_new
+          b_array = (array(colSums(inter, 1), dim = N) - reg * x_new + C) > v_new
           
           x_new_min[b_array] = x_new[b_array]
           x_new_max[!b_array] = x_new[!b_array]
@@ -777,11 +778,11 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K, type, mid, beta_ar,
       F_gradient = array(1, dim = c(N, K))
       alpha = 1
       
-      while () {
-        
-        
-        
-      }
+      # while () {
+      #   
+      #   
+      #   
+      # }
       
     }
     
