@@ -282,7 +282,7 @@ Xsplitter <- function(count_nb) {
   invisible(test_X)
 }
 
-# Sums a 4D matrix at the 4th axis
+# Sums a 4D matrix at the 3rd and 4th axis
 four_colsum <- function(X, ax) {
   
   dims <- dim(X)
@@ -296,7 +296,20 @@ four_colsum <- function(X, ax) {
   
   X_ar <- array(0, dim = dims)
   
-  if (ax == 4) {
+  if (ax == 3) {
+    for (i in 1:i_final) {
+      for (j in 1:j_final) {
+        for (q in 1:q_final) {
+          acc <- array(0, dim = k_final)
+          for (k in 1:k_final) {
+            acc[k] = X[i,j,k,q]
+          }
+          
+          X_ar[i,j,1,q] = sum(acc)
+        }
+      }
+    }
+  } else if (ax == 4) {
     for (i in 1:i_final) {
       for (j in 1:j_final) {
         for (k in 1:k_final) {
@@ -377,6 +390,50 @@ linreg_solver <- function(T, theta) {
   invisible(feat)
 }
 
+# A function which helps indexing a 3D matrix using complex list indexing
+list_indexer <- function(ar, type, mid, N, K, X = TRUE) {
+  
+  dims <- dim(ar)
+  list1 <- unlist(type[[mid]][1])
+  list2 <- unlist(type[[mid]][2])
+  
+  mut_nb <- N/2
+  
+  if (X == TRUE) {
+    new_ar <- array(0, dim = c(dims[1], 2, mut_nb, 3))
+    
+    for (i in 1:dims[1]) {
+      for (j in 1:2) {
+        list_mut <- unlist(type[[mid]][j])
+        for (k in 1:mut_nb) {
+          fancy_ind = list_mut[k]
+          for (q in 1:3) {
+            new_ar[i,j,k,q] = ar[i, fancy_ind, q]
+          }
+        }
+      }
+    }
+  } else {
+    new_ar <- array(0, dim = c(dims[1], 2, mut_nb, 3, K))
+    
+    for (i in 1:dims[1]) {
+      for (j in 1:2) {
+        list_mut <- unlist(type[[mid]][j])
+        for (k in 1:mut_nb) {
+          fancy_ind = list_mut[k]
+          for (q in 1:3) {
+            for (y in 1:K) {
+              new_ar[i,j,k,q,y] = ar[i, fancy_ind, q, y]
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  invisible(new_ar)
+}
+
 #' Performs the ReLU transform on the mutational data
 #' 
 #' @export
@@ -447,7 +504,7 @@ init_LOSS <- function(bg, theta, P) {
 }
 
 # Loop function, which increments lambda (burden of the loss function) iteratively
-regularizer <- function(X, bg, conv, theta, P, mat, N, S, K, type, mid, beta_ar) {
+regularizer <- function(X, bg, conv, theta, P, mat, N, S, K, type, mid, beta_ar, Z) {
   
   for (r in 1:6) {
     
@@ -547,8 +604,120 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K, type, mid, beta_ar)
         # sum(0,2)
         inter_upper = three_colsum((beta_ar / alpha_array), 3)
         upper = colSums(inter_upper, 1)
+        upper = upper + C
+        
+        v_max = max(upper)
+        x_max_max = array(0, dim = c(N))
+        x_max_min = array(0, dim = c(N))
+        
+        inter_upper = three_colsum((beta_ar / (alpha_array + 1)), 3)
+        upper2 = colSums(inter_upper, 1) - reg + C
+        
+        v_min = max(upper2)
+        
+        x_min_max = array(1, dim = c(N))
+        x_min_min = array(0, dim = c(N))
+        x_min_min[which(upper2 == max(upper2))] = 1
+        
+        while ((v_max - v_min) > 0.0001) {
+          
+          v_new = (1 / 2) * (v_max + v_min)
+          x_new_max = (1 / 2) * (x_min_max + x_max_max)
+          
+          if (!is.finite(v_max)) {
+            
+            v_new = 2 * abs(v_min)
+            x_new_max = x_min_max
+          
+          }
+          
+          x_new_max[v_new > upper] = 0 
+          x_new_min = x_max_min
+          x_new_min[v_new > upper] = 0 
+          
+          while ((sum(x_new_min) - 1) * (sum(x_new_max) - 1) < 0) {
+            
+            x_new = (1 / 2) * (x_new_min + x_new_max)
+            
+            inter <- three_colsum((beta_ar / sweep(alpha_array,
+                                                   MARGIN=c(2),x_new, `+`)), 3)
+            b_array = (colSums(inter, 1) - reg * x_new + C) > v_new
+            x_new_min[b_array] = x_new[b_array]
+            
+            x_new_max[!b_array] = x_new[!b_array]
+            
+          }
+          
+          if (sum(x_new_min) - 1 >= 0 & sum(x_new_max) - 1 >= 0) {
+            
+            v_min = v_new
+            x_min_min = x_new_min
+            x_min_max = x_new_max
+            
+          } else {
+            
+            v_max = v_new
+            x_max_min = x_new_min
+            x_max_max = x_new_max
+            
+          }
+          
+        }
+        
+        v_new = (1 / 2) * (v_max + v_min)
+        x_new_max = (1 / 2) * (x_min_max + x_max_max)
+        x_new_max[v_new > upper] = 0
+        x_new_min = x_max_min
+        x_new_min[v_new > upper] = 0
+        
+        while (sum((x_new_min - x_new_max)^2) > 0.001) {
+          
+          x_new = 1 / 2 * (x_new_min + x_new_max)
+          
+          inter <- three_colsum((beta_ar / sweep(alpha_array,
+                                                 MARGIN=c(2),x_new, `+`)), 3)
+          b_array = (colSums(inter, 1) - reg * x_new + C) > v_new
+          
+          x_new_min[b_array] = x_new[b_array]
+          x_new_max[!b_array] = x_new[!b_array]
+          
+        }
+        
+        theta[,i] = (1 / 2) * (x_new_max + x_new_min)
         
       }
+      
+      theta = theta / colSums(theta)
+      
+      for (i in 1:2) {
+        
+        inter_theta <- theta[unlist(type[[mid]][i]),]
+        theta_dim <- dim(inter_theta)
+        inter_theta <- array(inter_theta, dim = c(theta_dim[1],1,K))
+        
+        inter_P <- array(P, dim = c(S,1,1,K))
+        inter_P <- four_recycle(inter_P, 2, theta_dim[1])
+        
+        inter_mat <- array(mat[i,,], dim = c(1,3,K))
+        inter_mat <- three_recycle(inter_mat, 1, theta_dim[1])
+        
+        temp <- sweep(inter_P,MARGIN=c(2,3,4),inter_theta, `*`)
+        temp <- four_recycle(temp, 3, 3)
+        temp <- sweep(temp,MARGIN=c(2,3,4),inter_mat, `*`)
+        
+        Z[,unlist(type[[mid]][i]),,] = temp
+
+      }
+      
+      Z = Z + (1e-4 * sum(Z) / (K*N*3*S))
+      Z = sweep(Z,MARGIN=c(1,2,3),four_colsum(Z, 4), `/`)
+      
+      inter_X = list_indexer(X, type, mid, N, K)
+      inter_mat = sweep(Z,MARGIN=c(1,2,3),inter_X, `*`)
+      inter_mat = four_colsum(inter_mat, 3)
+      mat = colSums(inter_mat) + 0.01
+      
+      #Matrix/=Matrix.sum(1)[:,np.newaxis,:]
       
     }
     
