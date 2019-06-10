@@ -282,7 +282,7 @@ Xsplitter <- function(count_nb) {
   invisible(test_X)
 }
 
-# Sums a 4D matrix at the 3rd and 4th axis
+# Sums a 4D matrix at the 2nd, 3rd and 4th axis
 four_colsum <- function(X, ax) {
   
   dims <- dim(X)
@@ -296,7 +296,20 @@ four_colsum <- function(X, ax) {
   
   X_ar <- array(0, dim = dims)
   
-  if (ax == 3) {
+  if (ax == 2) {
+    for (i in 1:i_final) {
+      for (k in 1:k_final) {
+        for (q in 1:q_final) {
+          acc <- array(0, dim = j_final)
+          for (j in 1:j_final) {
+            acc[j] = X[i,j,k,q]
+          }
+          
+          X_ar[i,1,k,q] = sum(acc)
+        }
+      }
+    }
+  } else if (ax == 3) {
     for (i in 1:i_final) {
       for (j in 1:j_final) {
         for (q in 1:q_final) {
@@ -319,6 +332,41 @@ four_colsum <- function(X, ax) {
           }
           
           X_ar[i,j,k,1] = sum(acc)
+        }
+      }
+    }
+  }
+  
+  invisible(X_ar)
+}
+
+# Sums a 5D matrix at the 3rd axis
+five_colsum <- function(X, ax) {
+  
+  dims <- dim(X)
+  
+  i_final <- dim(X)[1]
+  j_final <- dim(X)[2]
+  k_final <- dim(X)[3]
+  q_final <- dim(X)[4]
+  y_final <- dim(X)[5]
+  
+  dims[ax] = 1
+  
+  X_ar <- array(0, dim = dims)
+  
+  if (ax == 3) {
+    for (i in 1:i_final) {
+      for (j in 1:j_final) {
+        for (y in 1:y_final) {
+          for (q in 1:q_final) {
+            acc <- array(0, dim = k_final)
+            for (k in 1:k_final) {
+              acc[k] = X[i,j,k,q,y]
+            }
+            
+            X_ar[i,j,1,q,y] = sum(acc)
+          }
         }
       }
     }
@@ -713,11 +761,15 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K, type, mid, beta_ar,
       Z = sweep(Z,MARGIN=c(1,2,3),four_colsum(Z, 4), `/`)
       
       inter_X = list_indexer(X, type, mid, N, K)
-      inter_mat = sweep(Z,MARGIN=c(1,2,3),inter_X, `*`)
-      inter_mat = four_colsum(inter_mat, 3)
-      mat = colSums(inter_mat) + 0.01
+      inter_Z = list_indexer(Z, type, mid, N, K, X = FALSE)
+        
+      inter_mat = five_colsum(sweep(inter_Z,MARGIN=c(1,2,3,4),inter_X, `*`), 3)
+      mat = array((colSums(inter_mat) + 0.01), dim = c(2,3,K))
+      summed_mat <- three_colsum(mat, 2)
+      mat <- sweep(mat,MARGIN=c(1,3),summed_mat, `/`)
       
-      #Matrix/=Matrix.sum(1)[:,np.newaxis,:]
+      inter_P = sweep(Z,MARGIN=c(1,2,3),X, `*`)
+      
       
     }
     
