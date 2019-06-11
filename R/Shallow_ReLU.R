@@ -551,7 +551,8 @@ relu_transform <- function(mut_obj, five = FALSE, K = 5) {
   feat_o <- linreg_solver(T, theta_array)
   
   reg_res <- regularizer(X, bg, conv, theta_array, P, mat, N, S, K, type,
-                         mid, beta_array, Z, feat_o@Multi_F, feat_o@feat, numbase)
+                         mid, beta_array, Z,
+                         feat_o@Multi_F, feat_o@feat, numbase, bg_test, X_test, T)
   
   invisible(reg_res)
 }
@@ -569,7 +570,7 @@ init_LOSS <- function(bg, theta, P) {
 
 # Loop function, which increments lambda (burden of the loss function) iteratively
 regularizer <- function(X, bg, conv, theta, P, mat, N, S, K,
-                        type, mid, beta_ar, Z, Multi_F, feat, numbase) {
+                        type, mid, beta_ar, Z, Multi_F, feat, numbase, bg_test, X_test, T) {
   
   for (r in 1:6) {
     
@@ -809,9 +810,46 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K,
 
       }
       
+      LOSS = sum(sweep(P,MARGIN=c(2),colSums(sweep(theta,MARGIN=c(1),bg, `*`)), `*`))
+      
+      for (i in 1:2) {
+        
+        inter_theta <- theta[unlist(type[[mid]][i]),]
+        theta_dim <- dim(inter_theta)
+        inter_theta <- array(inter_theta, dim = c(theta_dim[1],1,K))
+        
+        inter_P <- array(P, dim = c(S,1,1,K))
+        inter_P <- four_recycle(inter_P, 2, theta_dim[1])
+        
+        inter_mat <- array(mat[i,,], dim = c(1,3,K))
+        inter_mat <- three_recycle(inter_mat, 1, theta_dim[1])
+        
+        temp <- sweep(inter_P,MARGIN=c(2,3,4),inter_theta, `*`)
+        temp <- four_recycle(temp, 3, 3)
+        temp <- sweep(temp,MARGIN=c(2,3,4),inter_mat, `*`)
+        
+        inter_bg <- array(bg[unlist(type[[mid]][i])],
+                               dim = c(1, length(unlist(type[[mid]][i])), 1))
+        inter_bg <- three_recycle(inter_bg, 1, S)
+        inter_bg <- three_recycle(inter_bg, 3, 3)
+        
+        temp <- array(log(sweep(four_colsum(temp, 4),MARGIN=c(1,2,3),inter_bg, `*`)),
+                      dim = c(S, length(unlist(type[[mid]][i])), 3))
+        
+        LOSS = LOSS - sum(temp * X[,unlist(type[[mid]][i]),])
+        
+      }
+      
+      LOSS = LOSS + 0.5 * reg * sum((theta - conv)^2)
+      
+      old_LOSS = new_LOSS
+      new_LOSS = LOSS
+      
     }
     
   }
+  
+  return("Done")
   
 }
 
