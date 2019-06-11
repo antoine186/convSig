@@ -2,6 +2,17 @@
 #' @importFrom Rcpp sourceCpp
 NULL
 
+setClass (
+  # Class name
+  "feat_obj",
+  
+  # Defining slot type
+  representation (
+    feat = "matrix",
+    Multi_F = "matrix"
+  )
+)
+
 #' Constructs the sparse approximation of h(T_i * F_i)
 #' 
 #' @importFrom data.table fread data.table as.data.table
@@ -435,7 +446,9 @@ linreg_solver <- function(T, theta) {
   Multi_F = T_inv %*% t(T)
   feat = Multi_F %*% theta
   
-  invisible(feat)
+  feat_o <- new("feat_obj", feat = feat, Multi_F = Multi_F)
+  
+  invisible(feat_o)
 }
 
 # A function which helps indexing a 3D matrix using complex list indexing
@@ -535,8 +548,10 @@ relu_transform <- function(mut_obj, five = FALSE, K = 5) {
   type <- fragbase_indexer(numbase, N)
   T <- tencode(numbase, N)
   
+  feat_o <- linreg_solver(T, theta_array)
+  
   reg_res <- regularizer(X, bg, conv, theta_array, P, mat, N, S, K, type,
-                         mid, beta_array, Z)
+                         mid, beta_array, Z, feat_o@Multi_F, feat_o@feat, numbase)
   
   invisible(reg_res)
 }
@@ -553,7 +568,8 @@ init_LOSS <- function(bg, theta, P) {
 }
 
 # Loop function, which increments lambda (burden of the loss function) iteratively
-regularizer <- function(X, bg, conv, theta, P, mat, N, S, K, type, mid, beta_ar, Z) {
+regularizer <- function(X, bg, conv, theta, P, mat, N, S, K,
+                        type, mid, beta_ar, Z, Multi_F, feat, numbase) {
   
   for (r in 1:6) {
     
@@ -778,11 +794,20 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K, type, mid, beta_ar,
       F_gradient = array(1, dim = c(N, K))
       alpha = 1
       
-      # while () {
-      #   
-      #   
-      #   
-      # }
+      while (sum((alpha * F_gradient)^2) > 0.01) {
+
+        F_gradient = (theta - conv) * sign(conv)
+        F_gradient = Multi_F %*% F_gradient
+        conv_change = T %*% F_gradient
+        temp = T %*% feat / conv_change
+        
+        alpha = alpha - max(temp[temp<0])
+        alpha = min(1, alpha * 1.0001)
+
+        feat = feat + (alpha * F_gradient)
+        conv = conv_create(N, K, numbase)
+
+      }
       
     }
     
