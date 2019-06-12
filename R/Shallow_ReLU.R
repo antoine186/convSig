@@ -13,6 +13,21 @@ setClass (
   )
 )
 
+setClass (
+  # Class name
+  "relu_obj",
+  
+  # Defining slot type
+  representation (
+    feat = "matrix",
+    mat = "array",
+    P = "matrix",
+    LOSS = "numeric",
+    test_LOSS = "numeric"
+    
+  )
+)
+
 #' Constructs the sparse approximation of h(T_i * F_i)
 #' 
 #' @importFrom data.table fread data.table as.data.table
@@ -495,7 +510,29 @@ list_indexer <- function(ar, type, mid, N, K, X = TRUE) {
   invisible(new_ar)
 }
 
-#' Performs the ReLU transform on the mutational data
+#' Performs the ReLU transform on mutational count data
+#' 
+#' @param mut_obj An object of class 'Shallowres' as produced by the function 
+#' \link[=mut_count]{mut_count()}
+#' 
+#' @param five A boolean or a variable referring to a boolean, which specifies
+#'  whether you want to apply a transformation based on a 5-nucleotide 
+#'  convolution window
+#' 
+#' @param K An integer or a variable specifying an integer. This indicates the number
+#' of mutational processes you want to detect in your mutational count data via
+#'  the transformation.
+#'  
+#' @return A Feature matrix (\code{feat}), which contains the convolution weights 
+#' associated with each mutational processes. An M matrix (\code{mat}), which 
+#' contains the probability for all mutation types. A P matrix (\code{P}), which 
+#' contains the mutational intensity/activity of each mutational process. A LOSS
+#' variable (\code{LOSS}), which displays the LOSS value achieved by the ReLU optimisation.
+#' A testing LOSS variable (\code{test_LOSS}), which displays the LOSS value achieved
+#' on the testing samples.
+#' 
+#' @examples
+#' relu_res <- relu_transform(EMu_prepped, five = TRUE, K = 6)
 #' 
 #' @export
 relu_transform <- function(mut_obj, five = FALSE, K = 5) {
@@ -809,7 +846,12 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K,
         conv_change = T %*% F_gradient
         temp = T %*% feat / conv_change
         
+        if (is.finite(max(temp[temp<0]))) {
         alpha = -(max(temp[temp<0]))
+        } else {
+          alpha = 1
+        }
+        
         alpha = min(1, alpha * 1.0001)
 
         feat = feat + (alpha * F_gradient)
@@ -857,7 +899,41 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K,
     
   }
   
-  return("Done")
+  test_LOSS = sum(sweep(P,MARGIN=c(2),colSums(sweep(theta,MARGIN=c(1),
+                                                    bg_test, `*`)), `*` ))
+  
+  for (i in 1:2) {
+    
+    inter_theta <- theta[unlist(type[[mid]][i]),]
+    theta_dim <- dim(inter_theta)
+    inter_theta <- array(inter_theta, dim = c(theta_dim[1],1,K))
+    
+    inter_P <- array(P, dim = c(S,1,1,K))
+    inter_P <- four_recycle(inter_P, 2, theta_dim[1])
+    
+    inter_mat <- array(mat[i,,], dim = c(1,3,K))
+    inter_mat <- three_recycle(inter_mat, 1, theta_dim[1])
+    
+    temp <- sweep(inter_P,MARGIN=c(2,3,4),inter_theta, `*`)
+    temp <- four_recycle(temp, 3, 3)
+    temp <- sweep(temp,MARGIN=c(2,3,4),inter_mat, `*`)
+    
+    inter_bg <- array(bg_test[unlist(type[[mid]][i])],
+                      dim = c(1, length(unlist(type[[mid]][i])), 1))
+    inter_bg <- three_recycle(inter_bg, 1, S)
+    inter_bg <- three_recycle(inter_bg, 3, 3)
+    
+    temp <- array(log(sweep(four_colsum(temp, 4),MARGIN=c(1,2,3),inter_bg, `*`)),
+                  dim = c(S, length(unlist(type[[mid]][i])), 3))
+    
+    temp[is.infinite(temp)] <- NA
+    test_LOSS = test_LOSS - sum(temp * X_test[,unlist(type[[mid]][i]),], na.rm = TRUE)
+    
+  }
+  
+  relu_o <- new("relu_obj", feat = feat, mat = mat, P = P,
+                LOSS = LOSS, test_LOSS = test_LOSS)
+  return(relu_o)
   
 }
 

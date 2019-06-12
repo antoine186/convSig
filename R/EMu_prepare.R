@@ -97,8 +97,6 @@ readmut <- function(datapath) {
 #' containing the mutational rate of each signature for each sample in your supplied mutation
 #' input file.
 #' 
-#' @section Details: Explain the return value a bit more
-#' 
 #' @examples 
 #' assembly <- "Homo_sapiens.GRCh37.dna.primary_assembly.fa"
 #' mut_file <- "mutation_file_input.tsv"
