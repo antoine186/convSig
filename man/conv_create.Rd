@@ -4,7 +4,7 @@
 \alias{conv_create}
 \title{Constructs the sparse approximation of h(T_i * F_i)}
 \usage{
-conv_create(N, K, numbase)
+conv_create(N, K, numbase, feat)
 }
 \description{
 Constructs the sparse approximation of h(T_i * F_i)

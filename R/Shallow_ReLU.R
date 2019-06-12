@@ -17,11 +17,11 @@ setClass (
 #' 
 #' @importFrom data.table fread data.table as.data.table
 #' @importFrom dplyr bind_cols
-conv_create <- function(N, K, numbase) {
+conv_create <- function(N, K, numbase, feat) {
   #conv = as.data.table(matrix(0L, nrow = N, ncol = K))
   
-  poss = (numbase * 4) - 2
-  feat <- matrix(runif(poss*K), nrow = poss, ncol = K)
+  # poss = (numbase * 4) - 2
+  # feat <- matrix(runif(poss*K), nrow = poss, ncol = K)
   
   # Call the mapping function
   ind_map <- conv_bimap(N, numbase)
@@ -534,7 +534,10 @@ relu_transform <- function(mut_obj, five = FALSE, K = 5) {
   
   P <- array(runif(S*K), dim = c(S, K))
   
-  conv <- conv_create(N, K, numbase)
+  poss = (numbase * 4) - 2
+  feat <- matrix(runif(poss*K), nrow = poss, ncol = K)
+  
+  conv <- conv_create(N, K, numbase, feat)
   
   theta_array = array(runif(N*K), dim = c(N, K))
   theta_array <- sweep(theta_array,MARGIN=c(2),colSums(theta_array),`/`)
@@ -576,6 +579,10 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K,
     
     reg = (10^(r - 1)) - 1
     
+    cat("Using lambda value: ")
+    cat(reg)
+    cat("\n")
+    
     LOSS <- init_LOSS(bg, theta, P)
     for (i in 1:2) {
       
@@ -611,7 +618,7 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K,
     new_LOSS = LOSS
     
     while(abs(new_LOSS - old_LOSS) > (1.0/(2*r+1))) {
-      
+      cat("Optimising on the loss function \n")
       for (i in 1:K) {
         
         C = reg * conv[,i] - bg * sum(P[,i])
@@ -802,11 +809,11 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K,
         conv_change = T %*% F_gradient
         temp = T %*% feat / conv_change
         
-        alpha = alpha - max(temp[temp<0])
+        alpha = -(max(temp[temp<0]))
         alpha = min(1, alpha * 1.0001)
 
         feat = feat + (alpha * F_gradient)
-        conv = conv_create(N, K, numbase)
+        conv = conv_create(N, K, numbase, feat)
 
       }
       
@@ -836,7 +843,8 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K,
         temp <- array(log(sweep(four_colsum(temp, 4),MARGIN=c(1,2,3),inter_bg, `*`)),
                       dim = c(S, length(unlist(type[[mid]][i])), 3))
         
-        LOSS = LOSS - sum(temp * X[,unlist(type[[mid]][i]),])
+        temp[is.infinite(temp)] <- NA
+        LOSS = LOSS - sum(temp * X[,unlist(type[[mid]][i]),], na.rm = TRUE)
         
       }
       
