@@ -25,9 +25,9 @@ complexconv_create <- function(N, K, numbase, feat, mid) {
 }
 
 exp_operation <- function(X, bg, conv, P, mat, N, S, K, 
-                          type, numbase, bg_test, X_test) {
+                          type, numbase, bg_test, X_test, mid) {
   
-  LOSS = sweep(P,MARGIN=c(2),colSums(sweep(conv,MARGIN=c(1),bg, `*`)), `*`)
+  LOSS = sum(sweep(P,MARGIN=c(2),colSums(sweep(conv,MARGIN=c(1),bg, `*`)), `*`))
   
   for (i in 1:2) {
     
@@ -48,15 +48,25 @@ exp_operation <- function(X, bg, conv, P, mat, N, S, K,
     
     inter_bg <- array(bg[unlist(type[[mid]][i])], dim = c(1,conv_dim[1],1))
     inter_bg <- three_recycle(inter_bg, 3, 3)
-    inter_bg <- three_recycle(inter_bg, 1, 10)
+    inter_bg <- three_recycle(inter_bg, 1, S)
     
     temp <- log(sweep(temp,MARGIN=c(1,2,3),inter_bg, `*`))
     
-    #temp=np.log(Genome_BG[np.newaxis,type[mid][i],np.newaxis]*temp.sum(3))
-    #LOSS-=(temp*X[:,type[mid][i],:]).sum()
+    LOSS = LOSS - sum(sweep(temp,MARGIN=c(1,2,3),X[,unlist(type[[mid]][i]),], `*`))
+
+  }
+  
+  complete_loss = sum(sweep(P,MARGIN=c(2),colSums(sweep(conv,MARGIN=c(1),bg, `*`)), `*`))
+  complete_loss = complete_loss + sum(array(four_colsum((Z * log(Z)), 4),
+                                            dim = c(S,N,3)) * X)
+  
+  for (i in 1:2) {
+    
+    
     
   }
   
+  return("Done")
 }
 
 exp_transform <- function(mut_obj, five = FALSE, K = 5) {
@@ -108,7 +118,7 @@ exp_transform <- function(mut_obj, five = FALSE, K = 5) {
   type <- fragbase_indexer(numbase, N)
   
   exp_res <- exp_operation(X, bg, conv, P, mat, N, S, K, 
-                         type, numbase, bg_test, X_test)
+                         type, numbase, bg_test, X_test, mid)
   
   invisible(exp_res)
   
