@@ -642,7 +642,7 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K,
       
       inter_bg <- array(bg[unlist(type[[mid]][i])], dim = c(1,theta_dim[1],1))
       inter_bg <- three_recycle(inter_bg, 3, 3)
-      inter_bg <- three_recycle(inter_bg, 1, 10)
+      inter_bg <- three_recycle(inter_bg, 1, S)
       
       temp <- log(sweep(temp,MARGIN=c(1,2,3),inter_bg, `*`))
       

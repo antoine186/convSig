@@ -2,10 +2,35 @@
 % Please edit documentation in R/Shallow_ReLU.R
 \name{relu_transform}
 \alias{relu_transform}
-\title{Performs the ReLU transform on the mutational data}
+\title{Performs the ReLU transform on mutational count data}
 \usage{
 relu_transform(mut_obj, five = FALSE, K = 5)
 }
+\arguments{
+\item{mut_obj}{An object of class 'Shallowres' as produced by the function
+\link[=mut_count]{mut_count()}}
+
+\item{five}{A boolean or a variable referring to a boolean, which specifies
+whether you want to apply a transformation based on a 5-nucleotide
+convolution window}
+
+\item{K}{An integer or a variable specifying an integer. This indicates the number
+of mutational processes you want to detect in your mutational count data via
+the transformation.}
+}
+\value{
+A Feature matrix (\code{feat}), which contains the convolution weights
+associated with each mutational processes. An M matrix (\code{mat}), which
+contains the probability for all mutation types. A P matrix (\code{P}), which
+contains the mutational intensity/activity of each mutational process. A LOSS
+variable (\code{LOSS}), which displays the LOSS value achieved by the ReLU optimisation.
+A testing LOSS variable (\code{test_LOSS}), which displays the LOSS value achieved
+on the testing samples.
+}
 \description{
-Performs the ReLU transform on the mutational data
+Performs the ReLU transform on mutational count data
+}
+\examples{
+relu_res <- relu_transform(EMu_prepped, five = TRUE, K = 6)
+
 }
