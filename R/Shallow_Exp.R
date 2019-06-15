@@ -62,7 +62,53 @@ exp_operation <- function(X, bg, conv, P, mat, N, S, K,
   
   for (i in 1:2) {
     
+    inter_conv <- conv[unlist(type[[mid]][i]),]
+    conv_dim <- dim(inter_conv)
+    inter_conv <- array(inter_conv, dim = c(conv_dim[1],1,K))
     
+    inter_P <- array(P, dim = c(S,1,1,K))
+    inter_P <- four_recycle(inter_P, 2, conv_dim[1])
+    
+    inter_mat <- array(mat[i,,], dim = c(1,3,K))
+    inter_mat <- three_recycle(inter_mat, 1, conv_dim[1])
+    
+    temp <- sweep(inter_P,MARGIN=c(2,3,4),inter_conv, `*`)
+    temp <- four_recycle(temp, 3, 3)
+    temp <- sweep(temp,MARGIN=c(2,3,4),inter_mat, `*`)
+    
+    complete_loss = complete_loss - sum(array(four_colsum(Z[,unlist(type[[mid]][i]),,]
+    * log(four_recycle(temp, 4, K)), 4),
+    dim = c(S, length(unlist(type[[mid]][i])), 3)) * X[,unlist(type[[mid]][i]),])
+    
+  }
+  
+  old_LOSS = 0
+  new_LOSS = LOSS
+  
+  test_LOSS = sum(sweep(P,MARGIN=c(2),
+                    colSums(sweep(conv,MARGIN=c(1),bg_test, `*`)), `*`))
+  for (i in 1:2) {
+    
+    inter_conv <- conv[unlist(type[[mid]][i]),]
+    conv_dim <- dim(inter_conv)
+    inter_conv <- array(inter_conv, dim = c(conv_dim[1],1,K))
+    
+    inter_P <- array(P, dim = c(S,1,1,K))
+    inter_P <- four_recycle(inter_P, 2, conv_dim[1])
+    
+    inter_mat <- array(mat[i,,], dim = c(1,3,K))
+    inter_mat <- three_recycle(inter_mat, 1, conv_dim[1])
+    
+    temp <- sweep(inter_P,MARGIN=c(2,3,4),inter_conv, `*`)
+    temp <- four_recycle(temp, 3, 3)
+    temp <- sweep(temp,MARGIN=c(2,3,4),inter_mat, `*`)
+    temp_ar <- three_recycle(array(bg_test[unlist(type[[mid]][i])],
+                     dim = c(1,length(unlist(type[[mid]][i])),1)), 1, S)
+    temp <- log(sweep(four_colsum(temp, 4),MARGIN=c(1,2,3),
+                three_recycle(temp_ar, 3, 3), `*`))
+    
+    test_LOSS = test_LOSS - sum(sweep(temp,MARGIN=c(1,2,3),
+                                      X_test[,unlist(type[[mid]][i]),], `*`))
     
   }
   
