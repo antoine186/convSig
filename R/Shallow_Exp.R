@@ -146,7 +146,7 @@ exp_operation <- function(X, bg, conv, P, mat, N, S, K,
     mat = array(colSums(five_colsum(inter_mat, 3)), dim = c(2,3,K))
     mat = sweep(mat,MARGIN=c(1,3),three_colsum(mat, 2), `/`)
     
-    Matrix/=Matrix.sum(1)[:,np.newaxis,:]
+    
     
   }
   
