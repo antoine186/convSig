@@ -112,6 +112,44 @@ exp_operation <- function(X, bg, conv, P, mat, N, S, K,
     
   }
   
+  while (abs(new_LOSS - old_LOSS) > 10^(-3)) {
+    
+    for (i in 1:2) {
+      
+      inter_conv <- conv[unlist(type[[mid]][i]),]
+      conv_dim <- dim(inter_conv)
+      inter_conv <- array(inter_conv, dim = c(conv_dim[1],1,K))
+      
+      inter_P <- array(P, dim = c(S,1,1,K))
+      inter_P <- four_recycle(inter_P, 2, conv_dim[1])
+      
+      inter_mat <- array(mat[i,,], dim = c(1,3,K))
+      inter_mat <- three_recycle(inter_mat, 1, conv_dim[1])
+      
+      temp <- sweep(inter_P,MARGIN=c(2,3,4),inter_conv, `*`)
+      temp <- four_recycle(temp, 3, 3)
+      temp <- sweep(temp,MARGIN=c(2,3,4),inter_mat, `*`)
+      
+      Z[,unlist(type[[mid]][i]),,] = temp
+      
+    }
+    
+    Z = Z / array(four_colsum(Z, 4), dim = c(S, N, 3, K))
+    
+    list_indexer(X, type, mid, N, K)
+    list_indexer(Z, type, mid, N, K, X = FALSE)
+    
+    inter_mat = sweep(list_indexer(Z, type, mid, N, K, X = FALSE),
+                      MARGIN=c(1,2,3,4),
+                      array(list_indexer(X, type, mid, N, K),
+                            dim = c(S,2,length(unlist(type[[mid]][1])),3,1)), `*`)
+    mat = array(colSums(five_colsum(inter_mat, 3)), dim = c(2,3,K))
+    mat = sweep(mat,MARGIN=c(1,3),three_colsum(mat, 2), `/`)
+    
+    Matrix/=Matrix.sum(1)[:,np.newaxis,:]
+    
+  }
+  
   return("Done")
 }
 
