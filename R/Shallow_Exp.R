@@ -2,13 +2,27 @@
 #' @importFrom Rcpp sourceCpp
 NULL
 
+setClass (
+  # Class name
+  "exp_obj",
+  
+  # Defining slot type
+  representation (
+    feat = "array",
+    mat = "array",
+    P = "matrix",
+    LOSS = "numeric",
+    test_LOSS = "numeric"
+  )
+)
+
 #' Constructs the sparse approximation of h(T_i * F_i) <- check this is true
 complexconv_create <- function(N, K, numbase, feat, mid) {
   
   conv = matrix(1, nrow = N, ncol = K)
   
   for (i in 1:N) {
-    temp = i
+    temp = i - 1
     for (j in 1:numbase) {
       
       if (j == mid) {
@@ -154,7 +168,7 @@ exp_operation <- function(X, bg, conv, P, mat, N, S, K,
     
   }
   
-  while (abs(new_LOSS - old_LOSS) > 10^(-3)) {
+  while (abs(new_LOSS - old_LOSS) > 10^(1)) {
     
     for (i in 1:2) {
       
@@ -191,38 +205,42 @@ exp_operation <- function(X, bg, conv, P, mat, N, S, K,
     product = array(colSums(four_colsum(sweep(Z,MARGIN=c(1,2,3),
                                               array(X, dim = c(S,N,3,1)), `*`), 3)),
                     dim = c(N,K))
-    
+
     for (i in 1:numbase) {
-      
+
       if (i == mid) {
         feat[i,1:2,] = 1
       } else {
         feat[i,,] = 1
       }
-      
+
       conv <- complexconv_create(N, K, numbase, feat, mid)
-      
+
       w8 <- sweep(sweep(conv,MARGIN=c(1),bg, `*`),MARGIN=c(2),colSums(P), `*`)
-      
+
       if (i != mid) {
         w8_i <- three_colsum(complexlist_indexer(w8, type, i, N, K), 2)
+        w8_i <- array(w8_i, dim = c(4, K))
         product_i = three_colsum(complexlist_indexer(product, type, i, N, K), 2)
+        product_i <- array(product_i, dim = c(4, K))
       } else {
         w8_i <- three_colsum(complexlist_indexer(w8, type, i,
                                                  N, K, mid_w8 = TRUE), 2)
+        w8_i <- array(w8_i, dim = c(2, K))
         product_i = three_colsum(complexlist_indexer(product, type,
                                                      i, N, K, mid_w8 = TRUE), 2)
+        product_i <- array(product_i, dim = c(2, K))
       }
-      
+
       if (i == mid) {
         feat[i,1:2,] = product_i / w8_i
       } else {
         feat[i,,] = product_i / w8_i
       }
-      
+
       feat[i,,] = sweep(feat[i,,],MARGIN=c(2),
                         array(colSums(feat[i,,]), dim = c(1,K)), `/`)
-      
+
     }
     
     conv = complexconv_create(N, K, numbase, feat, mid)
@@ -254,22 +272,20 @@ exp_operation <- function(X, bg, conv, P, mat, N, S, K,
                                      dim = c(1,length(unlist(type[[mid]][i])),1)), 1, S)
       temp <- log(sweep(four_colsum(temp, 4),MARGIN=c(1,2,3),
                         three_recycle(temp_ar, 3, 3), `*`))
+      temp[is.infinite(temp)] <- NA
       
       LOSS = LOSS - sum(sweep(temp,MARGIN=c(1,2,3),
-                                        X[,unlist(type[[mid]][i]),], `*`))
+                                        X[,unlist(type[[mid]][i]),], `*`), na.rm = TRUE)
       
     }
     
     new_LOSS = LOSS
     
-    cat(new_LOSS)
-    cat("\n")
-    cat(old_LOSS)
+    cat(new_LOSS - old_LOSS)
     cat("\n")
     
     if (new_LOSS > old_LOSS) {
-      stop("Something went wrong during optimization.
-           Probably not something you can solve")
+      stop("Something went wrong during optimization. Probably not something you can solve")
     }
     
     test_LOSS = sum(sweep(P,MARGIN=c(2),
@@ -301,7 +317,10 @@ exp_operation <- function(X, bg, conv, P, mat, N, S, K,
     
   }
   
-  return("Done")
+  exp_o <- new("exp_obj", feat = feat, mat = mat, P = P, LOSS = LOSS,
+               test_LOSS = test_LOSS)
+  
+  return(exp_o)
 }
 
 exp_transform <- function(mut_obj, five = FALSE, K = 5) {
