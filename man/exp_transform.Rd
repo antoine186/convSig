@@ -30,6 +30,14 @@ on the testing samples.
 \description{
 Performs the exponential transform on mutational count data
 }
+\section{Important}{
+
+This tranformation will typically fail if your count input data contains too
+small frequencies for each mutational signature (i.e. hundreds). This situation
+can arise if you have only processed a small portion of the reference genome or
+a small mutational input file during the data processing stages.
+}
+
 \examples{
 exp_res <- exp_transform(EMu_prepped, five = TRUE, K = 6)
 
