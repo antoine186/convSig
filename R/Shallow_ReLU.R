@@ -86,8 +86,8 @@ relu_transform <- function(mut_obj, five = FALSE, K = 5) {
                          mid, beta_array, Z,
                          feat_o@Multi_F, feat_o@feat, numbase, bg_test, X_test, T)
   
-  cat("Please ignore a potential warning about -Inf.\n")
-  cat("This is normal and expected, and is handled internally.\n")
+  #cat("Please ignore a potential warning about -Inf.\n")
+  #cat("This is normal and expected, and is handled internally.\n")
   invisible(reg_res)
 }
 
@@ -99,9 +99,10 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K,
     
     reg = (10^(r - 1)) - 1
     
-    cat("Using lambda value: ")
+    cat("Computing using lambda value: ")
     cat(reg)
     cat("\n")
+    cat("Optimising/Iterating on the loss function (may take a while)... \n")
     
     LOSS <- init_LOSS(bg, theta, P)
     for (i in 1:2) {
@@ -138,7 +139,7 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K,
     new_LOSS = LOSS
     
     while(abs(new_LOSS - old_LOSS) > (1.0/(2*r+1))) {
-      cat("Optimising on the loss function \n")
+      #cat("Optimising on the loss function \n")
       for (i in 1:K) {
         
         C = reg * conv[,i] - bg * sum(P[,i])
