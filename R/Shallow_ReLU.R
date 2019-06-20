@@ -327,7 +327,8 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K,
       inter_P = four_colsum(inter_P, 2)
       inter_P = array(four_colsum(inter_P, 3), dim = c(S, K))
       
-      P = inter_P / colSums(sweep(theta,MARGIN=c(1),bg, `*`))
+      #P = inter_P / colSums(sweep(theta,MARGIN=c(1),bg, `*`))
+      P = sweep(inter_P,MARGIN=c(2),colSums(sweep(theta,MARGIN=c(1),bg, `*`)), `/`)
       
       F_gradient = array(1, dim = c(N, K))
       alpha = 1
