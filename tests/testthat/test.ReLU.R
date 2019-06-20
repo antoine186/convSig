@@ -86,12 +86,70 @@ test_that("four_recycle produces the correct format at any designated axis",
           }
 )
 
-# test_that("",
-#           {
-#             expect_equal(, )      
-#           }
-# )
+ar <- array(runif(10*3*5), dim = c(10,3,5))
+ar_summed1 <- apply(ar,c(1,3),sum)
+ar_summed2 <- apply(ar,c(1,2),sum)
 
+test_that("three_colsum produces the correct result",
+          {
+            expect_equal(array(three_colsum(ar, 2), dim = c(10,5)), ar_summed1)
+            expect_equal(array(three_colsum(ar, 3), dim = c(10,3)), ar_summed2)
+          }
+)
+
+ar <- array(runif(10*3*5*8), dim = c(10,3,5,8))
+ar_summed1 <- apply(ar,c(1,2,3),sum)
+ar_summed2 <- apply(ar,c(1,2,4),sum)
+ar_summed3 <- apply(ar,c(1,3,4),sum)
+
+test_that("four_colsum produces the correct format",
+          {
+            expect_equal(array(four_colsum(ar, 4), dim = c(10,3,5)), ar_summed1)
+            expect_equal(array(four_colsum(ar, 3), dim = c(10,3,8)), ar_summed2)
+            expect_equal(array(four_colsum(ar, 2), dim = c(10,5,8)), ar_summed3)
+          }
+)
+
+ar <- array(runif(10*3*5*8), dim = c(10,3,5,8,12))
+ar_summed1 <- apply(ar,c(1,2,4,5),sum)
+
+test_that("five_colsum produces the correct format",
+          {
+            expect_equal(array(five_colsum(ar, 3), dim = c(10,3,8,12)), ar_summed1)
+          }
+)
+
+X <- array(runif(10*32*3), dim = c(10,32,3))
+Z <- array(runif(10*32*3*5), dim = c(10,32,3,5))
+type <- fragbase_indexer(5, 32)
+mid = 2
+N = 32
+
+inter_X = list_indexer(X, type, mid, N, K)
+inter_Z = list_indexer(Z, type, mid, N, K, X = FALSE)
+
+test_that("list_indexer works properly for 3 bases for both input types",
+          {
+            expect_equal(dim(inter_X), c(10,2,16,3))
+            expect_equal(dim(inter_Z), c(10,2,16,3, 5))
+          }
+)
+
+X <- array(runif(10*512*3), dim = c(10,512,3))
+Z <- array(runif(10*512*3*5), dim = c(10,512,3,5))
+type <- fragbase_indexer(5, 512)
+mid = 3
+N = 512
+
+inter_X = list_indexer(X, type, mid, N, K)
+inter_Z = list_indexer(Z, type, mid, N, K, X = FALSE)
+
+test_that("list_indexer works properly for 5 bases for both input types",
+          {
+            expect_equal(dim(inter_X), c(10,2,256,3))
+            expect_equal(dim(inter_Z), c(10,2,256,3, 5))
+          }
+)
 
 
 
