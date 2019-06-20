@@ -86,6 +86,8 @@ relu_transform <- function(mut_obj, five = FALSE, K = 5) {
                          mid, beta_array, Z,
                          feat_o@Multi_F, feat_o@feat, numbase, bg_test, X_test, T)
   
+  cat("Please ignore a potential warning about -Inf.\n")
+  cat("This is normal and expected, and is handled internally.\n")
   invisible(reg_res)
 }
 
