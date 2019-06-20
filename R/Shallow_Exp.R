@@ -245,6 +245,31 @@ exp_operation <- function(X, bg, conv, P, mat, N, S, K,
   return(exp_o)
 }
 
+#' Performs the exponential transform on mutational count data
+#' 
+#' @param mut_obj An object of class 'Shallowres' as produced by the function 
+#' \link[=mut_count]{mut_count()}
+#' 
+#' @param five A boolean or a variable referring to a boolean, which specifies
+#'  whether you want to apply a transformation based on a 5-nucleotide 
+#'  convolution window
+#' 
+#' @param K An integer or a variable specifying an integer. This indicates the number
+#' of mutational processes you want to detect in your mutational count data via
+#'  the transformation.
+#'  
+#' @return A Feature matrix (\code{feat}), which contains the convolution weights 
+#' associated with each mutational processes. An M matrix (\code{mat}), which 
+#' contains the probability for all mutation types. A P matrix (\code{P}), which 
+#' contains the mutational intensity/activity of each mutational process. A LOSS
+#' variable (\code{LOSS}), which displays the LOSS value achieved by the exponential optimisation.
+#' A testing LOSS variable (\code{test_LOSS}), which displays the LOSS value achieved
+#' on the testing samples.
+#' 
+#' @examples
+#' exp_res <- exp_transform(EMu_prepped, five = TRUE, K = 6)
+#' 
+#' @export
 exp_transform <- function(mut_obj, five = FALSE, K = 5) {
   
   if (K == 0) {
