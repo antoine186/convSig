@@ -230,8 +230,13 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K,
             
             x_new = (1 / 2) * (x_new_min + x_new_max)
             
-            inter <- three_colsum((beta_ar / sweep(alpha_array,
-                                                   MARGIN=c(2),x_new, `+`)), 3)
+            #inter <- three_colsum((beta_ar / sweep(alpha_array,
+                                                   #MARGIN=c(2),x_new, `+`)), 3)
+            
+            inter <- array(rowSums((beta_ar / 
+                                      sweep(alpha_array,MARGIN=c(2),x_new, `+`)),
+                                   dims = 2), dim = c(S,N))
+            
             b_array = (array(colSums(inter, 1), dim = N) - reg * x_new + C) > v_new
             x_new_min[b_array] = x_new[b_array]
             
@@ -265,8 +270,13 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K,
           
           x_new = 1 / 2 * (x_new_min + x_new_max)
           
-          inter <- three_colsum((beta_ar / sweep(alpha_array,
-                                                 MARGIN=c(2),x_new, `+`)), 3)
+          #inter <- three_colsum((beta_ar / sweep(alpha_array,
+                                                 #MARGIN=c(2),x_new, `+`)), 3)
+          
+          inter <- array(rowSums((beta_ar / 
+                                    sweep(alpha_array,MARGIN=c(2),x_new, `+`)),
+                                 dims = 2), dim = c(S,N))
+          
           b_array = (array(colSums(inter, 1), dim = N) - reg * x_new + C) > v_new
           
           x_new_min[b_array] = x_new[b_array]
