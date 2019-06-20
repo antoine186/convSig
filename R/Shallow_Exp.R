@@ -203,8 +203,8 @@ exp_operation <- function(X, bg, conv, P, mat, N, S, K,
     
     new_LOSS = LOSS
     
-    cat(new_LOSS - old_LOSS)
-    cat("\n")
+    #cat(new_LOSS - old_LOSS)
+    cat("Optimising/Iterating on the loss function (may take a while)... \n")
     
     if (new_LOSS > old_LOSS) {
       stop("Something went wrong during optimization. Probably not something you can solve")
