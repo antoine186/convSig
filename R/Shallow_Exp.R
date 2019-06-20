@@ -90,7 +90,7 @@ exp_operation <- function(X, bg, conv, P, mat, N, S, K,
     
   }
   
-  while (abs(new_LOSS - old_LOSS) > 10^(1)) {
+  while (abs(new_LOSS - old_LOSS) > 10^(-3)) {
     
     for (i in 1:2) {
       

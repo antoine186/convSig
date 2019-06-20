@@ -9,3 +9,8 @@ readfast(datapath)
 \description{
 Read in the reference genome fasta file
 }
+\section{Details}{
+
+This is an auxiliary function.
+}
+

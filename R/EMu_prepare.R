@@ -4,6 +4,9 @@ NULL
 
 #' Read in the reference genome fasta file
 #'
+#' @section Details:
+#' This is an auxiliary function.
+#'
 #' @importFrom data.table fread data.table as.data.table
 readfast <- function(datapath) {
   tryCatch(
@@ -31,6 +34,9 @@ readfast <- function(datapath) {
 }
 
 #' Read in the mutation input file
+#' 
+#' @section Details:
+#' This is an auxiliary function.
 #'
 #' @importFrom data.table fread data.table as.data.table
 readmut <- function(datapath) {
@@ -136,6 +142,9 @@ mut_count <- function(reference, mut_file, five = FALSE) {
 
 #' A function that treats the mutation input file and reorders its columns
 #' 
+#' @section Details:
+#' This is an auxiliary function.
+#' 
 #' @importFrom data.table data.table as.data.table
 #' @importFrom purrr map
 mut_process35 <- function(datapath) {
@@ -203,6 +212,9 @@ mut_process35 <- function(datapath) {
   invisible(datapath)
 }
 
+#' @section Details:
+#' This is an auxiliary function.
+#' 
 #' @importFrom data.table data.table as.data.table
 alt_reverse <- function(datapath, from_allele) {
   alleles = data.table(from_allele = from_allele, to_allele = 
@@ -221,9 +233,5 @@ alt_reverse <- function(datapath, from_allele) {
   
   invisible(alleles)
 }
-
-#chrom_separate <- function() {
-  
-#}
 
 

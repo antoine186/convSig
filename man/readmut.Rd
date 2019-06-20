@@ -9,3 +9,8 @@ readmut(datapath)
 \description{
 Read in the mutation input file
 }
+\section{Details}{
+
+This is an auxiliary function.
+}
+

@@ -1,5 +1,8 @@
 #' Constructs the sparse approximation of h(T_i * F_i)
 #' 
+#' @section Details:
+#' This is an auxiliary function.
+#' 
 #' @importFrom data.table fread data.table as.data.table
 #' @importFrom dplyr bind_cols
 conv_create <- function(N, K, numbase, feat) {
@@ -424,6 +427,9 @@ hidden_create <- function(S, N, K) {
 
 #' Solves the |T * Feature - theta|^2 = 0 linear regression problem
 #' 
+#' @section Details:
+#' This is an auxiliary function.
+#' 
 #' @importFrom MASS ginv
 linreg_solver <- function(T, theta) {
   
@@ -491,7 +497,7 @@ init_LOSS <- function(bg, theta, P) {
   invisible(LOSS) 
 }
 
-#' Constructs the sparse approximation of h(T_i * F_i) <- check this is true
+# Constructs the sparse approximation of h(T_i * F_i)
 complexconv_create <- function(N, K, numbase, feat, mid) {
   
   conv = matrix(1, nrow = N, ncol = K)

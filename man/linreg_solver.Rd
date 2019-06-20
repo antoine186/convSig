@@ -9,3 +9,8 @@ linreg_solver(T, theta)
 \description{
 Solves the |T * Feature - theta|^2 = 0 linear regression problem
 }
+\section{Details}{
+
+This is an auxiliary function.
+}
+

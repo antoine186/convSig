@@ -188,7 +188,7 @@ icgc2mut <- function(datapath, assembly = NULL, Seq = NULL) {
   invisible(x)
 }
 
-#' Base to number conversion
+# Base to number conversion
 Base2Num <- function(letter) {
   switch(toupper(letter),
     A = 0,
@@ -212,7 +212,7 @@ loadICGCexample <- function() {
   load("./data/example_mutation_dataset.Rda", envir = parent.frame())
 }
 
-#' Sorts the mutation file
+# Sorts the mutation file
 icgc_sort <- function(mut_file) {
   cat("Sorting the mutation file\n")
   
@@ -245,7 +245,7 @@ icgc_sort <- function(mut_file) {
   invisible(mut_file)
 }
 
-#' Remove non-single nucleotide polymorphisms
+# Remove non-single nucleotide polymorphisms
 icgc_snp <- function(mut_file) {
   cat("Removing non-single nucleotide polymorphisms\n")
   tryCatch(

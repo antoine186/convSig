@@ -9,3 +9,8 @@ mut_process35(datapath)
 \description{
 A function that treats the mutation input file and reorders its columns
 }
+\section{Details}{
+
+This is an auxiliary function.
+}
+
