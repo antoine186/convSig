@@ -2,17 +2,6 @@
 #' @importFrom Rcpp sourceCpp
 NULL
 
-setClass (
-  # Class name
-  "Shallowres",
-  
-  # Defining slot type
-  representation (
-    mut_mat = "matrix",
-    wt = "numeric"
-  )
-)
-
 #' Read in the reference genome fasta file
 #'
 #' @importFrom data.table fread data.table as.data.table
