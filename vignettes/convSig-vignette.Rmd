@@ -1,5 +1,7 @@
 ---
 title: "convSig-vignette"
+author: "Antoine Yi-Cheng Tian"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{convSig-vignette}
@@ -13,6 +15,23 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+
+<center><h2> Abstract </h2></center>
+
+This package implements an entirely novel approach for the detection and extraction
+of mutational processes that is based on Yun Feng's work 
+(convSig project, Oxford University PhD). <br />
+Every cancer-affected patient has specific mutational patterns in their genome,
+hence detecting, extracting, and characterising such patterns can provide a useful
+source of information for the personalisation of cancer treatment.  The methods 
+implemented in this package make use of the convolutional filtering techniques found
+in computer vision. Our model is centred around the concept of each mutational process 
+being represented as a filter, which slides over the entire genome of interest and 
+probabilistically induces mutations in sequences that it has a strong rapport with. Our
+methods extract and characterise these processes by solving for variables in this 
+model using expectation maximisation (either using the ReLU transform or the exponential
+transform).
+
 
 ```{r setup}
 library(convSig)
