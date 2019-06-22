@@ -148,7 +148,12 @@ processes as indicated by the user. <br />
 The P matrix has as many rows as the number of samples present in your input data.
 It also contains the same number of columns as the number of mutational processes 
 as indicated by the user. <br />
-The below function call runs the ReLU transformation. It requires in a first instance
+The mat result is a 3 dimensional matrix with dimensions (2,3,number of mutational processes).
+The first dimension is 2 because there are only two distinct original bases possible
+pre-mutation; That is because of the reverse complementarity nature of the genome.
+The second dimension is 3 because there are only three possible mutated bases per
+each of the 2 original bases. <br />
+The below function call runs the ReLU transformation. It requires
 the data output by the previous function call [i.e. mut_count()], a parameter specifying
 whether the transformation should consider a 3-base long window vs a 5-base long window, and 
 a parameter indicating the number of mutational processes to extract from the input data. <br />
