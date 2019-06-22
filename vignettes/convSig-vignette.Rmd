@@ -134,22 +134,40 @@ EMu_prepped <- mut_count(assembly, cur_mut_file, five = FALSE)
 <h2> ReLU Transformation </h2>
 
 Our first approach for learning the parameters of interest, subject to a negative 
-log-likelihood function as a loss function, is the ReLU transformation. The parameters
-whose estimation are sought are a Feature matrix (contains the weights in the 
-mutational filters for their corresponding mutational processes), a P matrix (contains
-the mutational rate of each mutational process in each sample), and a mat matrix
-(contains the probabilities for all mutation types; Take T mutating to C as an 
-instance of a mutation type). <br />
+log-likelihood function as a loss function, via a novel expectation maximisation
+technique (EMu), is the ReLU transformation. The parameters whose estimation are sought for 
+are a Feature matrix (contains the weights in the mutational filters for their 
+corresponding mutational processes), a P matrix (contains the mutational rate of 
+each mutational process in each sample), and a mat matrix (contains the probabilities 
+for all mutation types; Take T mutating to C as an instance of a mutation type). <br />
+The Feature matrix has $(numbase \times 4) - 2$ rows. This number covers and lays out all 
+possible bases at each base index in a particular trimer fragment - 4 possible bases
+that pertain to a single base index are represented as 4 contiguous rows in the matrix. 
+The Feature matrix also has the same number of columns as the number of mutational
+processes as indicated by the user. <br />
+The P matrix has as many rows as the number of samples present in your input data.
+It also contains the same number of columns as the number of mutational processes 
+as indicated by the user. <br />
 The below function call runs the ReLU transformation. It requires in a first instance
-the data output by the previous function call (i.e. mut_count()), a parameter specifying
+the data output by the previous function call [i.e. mut_count()], a parameter specifying
 whether the transformation should consider a 3-base long window vs a 5-base long window, and 
-a parameter indicating the number of mutational processes to extract from the input data.
+a parameter indicating the number of mutational processes to extract from the input data. <br />
 
 ```{r, eval = FALSE}
 relu_res <- relu_transform(EMu_prepped, five = TRUE, K = 5)
 ```
 
 <h2> Exponential Transformation </h2>
+
+The second approach for learning the parameters is the exponential transformation.
+The same parameters are sought for, albeit with a different approach, which involves a
+different loss function and a different optimisation procedure.
+
+```{r, eval = FALSE}
+exp_res <- exp_transform(EMu_prepped, five = TRUE, K = 5)
+```
+
+<h2> Differences between both approaches </h2>
 
 
 
