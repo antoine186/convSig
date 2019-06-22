@@ -96,7 +96,7 @@ readmut <- function(datapath) {
 #' assembly <- "Homo_sapiens.GRCh37.dna.primary_assembly.fa"
 #' mut_file <- "mutation_file_input.tsv"
 #' 
-#' mut_sign <- mut_count3(assembly, mut_file)
+#' mut_sign <- mut_count(assembly, mut_file)
 #'
 #' @export
 mut_count <- function(reference, mut_file, five = FALSE) {
