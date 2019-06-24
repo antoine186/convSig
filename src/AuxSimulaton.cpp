@@ -16,8 +16,8 @@ StringMatrix simu_prep(CharacterMatrix ref, int tot_len, int omit) {
   int cur_line_len;
   string temp;
   string cur_char;
-  //CharacterMatrix res_mat(tot_len - omti * 60, 3);
-  StringMatrix res_mat(tot_len - 60, 3);
+  StringMatrix res_mat(tot_len - omit * 60, 3);
+  //StringMatrix res_mat(tot_len - 60, 3);
   
   for (int i = 0; i < nb_line; ++i) {
     
