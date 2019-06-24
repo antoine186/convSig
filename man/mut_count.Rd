@@ -41,6 +41,6 @@ Computes the frequency of each possible trinucleotide or 5-nucleotide mutation s
 assembly <- "Homo_sapiens.GRCh37.dna.primary_assembly.fa"
 mut_file <- "mutation_file_input.tsv"
 
-mut_sign <- mut_count3(assembly, mut_file)
+mut_sign <- mut_count(assembly, mut_file)
 
 }
