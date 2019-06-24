@@ -6,14 +6,15 @@
 using namespace Rcpp;
 
 // simu_prep
-CharacterMatrix simu_prep(CharacterMatrix ref, int tot_len);
-RcppExport SEXP _convSig_simu_prep(SEXP refSEXP, SEXP tot_lenSEXP) {
+StringMatrix simu_prep(CharacterMatrix ref, int tot_len, int omit);
+RcppExport SEXP _convSig_simu_prep(SEXP refSEXP, SEXP tot_lenSEXP, SEXP omitSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< CharacterMatrix >::type ref(refSEXP);
     Rcpp::traits::input_parameter< int >::type tot_len(tot_lenSEXP);
-    rcpp_result_gen = Rcpp::wrap(simu_prep(ref, tot_len));
+    Rcpp::traits::input_parameter< int >::type omit(omitSEXP);
+    rcpp_result_gen = Rcpp::wrap(simu_prep(ref, tot_len, omit));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -167,7 +168,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_convSig_simu_prep", (DL_FUNC) &_convSig_simu_prep, 2},
+    {"_convSig_simu_prep", (DL_FUNC) &_convSig_simu_prep, 3},
     {"_convSig_feat2table3", (DL_FUNC) &_convSig_feat2table3, 3},
     {"_convSig_feat2table5", (DL_FUNC) &_convSig_feat2table5, 5},
     {"_convSig_reverse_transform", (DL_FUNC) &_convSig_reverse_transform, 1},
