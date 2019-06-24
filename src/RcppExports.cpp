@@ -6,7 +6,7 @@
 using namespace Rcpp;
 
 // simu_prep
-int simu_prep(CharacterMatrix ref, int tot_len);
+CharacterMatrix simu_prep(CharacterMatrix ref, int tot_len);
 RcppExport SEXP _convSig_simu_prep(SEXP refSEXP, SEXP tot_lenSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

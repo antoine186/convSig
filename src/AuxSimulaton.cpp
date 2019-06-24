@@ -5,17 +5,18 @@ using namespace std;
 // This is a simple example of exporting a C++ function to R. You can
 
 // [[Rcpp::export]]
-int simu_prep(CharacterMatrix ref, int tot_len) {
+CharacterMatrix simu_prep(CharacterMatrix ref, int tot_len) {
   
   int nb_line = ref.nrow();
   
   int nb_chrom = 0;
   int local_count = 0;
   int global_count = 0;
+  int all_count = 0;
   int cur_line_len;
   string temp;
-  //string cur_line;
-  CharacterMatrix res_mat(tot_len - 84, 3);
+  //CharacterMatrix res_mat(tot_len - 84, 3);
+  CharacterMatrix res_mat(tot_len - 60, 3);
   
   for (int i = 0; i < nb_line; ++i) {
     
@@ -33,15 +34,18 @@ int simu_prep(CharacterMatrix ref, int tot_len) {
     }
     
     for (int j = 0; j < cur_line_len; ++j) {
-      res_mat(global_count, 0) = cur_line[j] 
+      res_mat(global_count, 0) = cur_line[j];
       res_mat(global_count, 1) = local_count + 1; 
       res_mat(global_count, 2) = nb_chrom; 
       
+      ++all_count;
+      
       ++global_count;
+      ++local_count;
     }
     
   }
   
-  //return cur_line_len;
-  return nb_chrom;
+  //return all_count;
+  return res_mat;
 }
