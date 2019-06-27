@@ -1,25 +1,39 @@
 Package: convSig
 Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
-    person(given = "First",
-           family = "Last",
-           role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+Version: 0.1
+Authors@R:
+  c(person(given = "Antoine",
+      family = "Tian",
+      role = c("aut", "trl"),
+      email = "AYT881@student.bham.ac.uk"),
+    person(given = "Yun",
+      family = " Feng",
+      role = c("aut"),
+      comment = "Original code and algorithm in Python and Perl",
+      email = "ted@well.ox.ac.uk"),
+    person(given = "Anas",
+      middle = "Ahmad",
+      family = "Rana",
+      role = c("ths", "cre"),
+      comment = "Maintainer",
+      email = "a.a.rana@bham.ac.uk"),
+    person(given = "Christopher",
+      family = "Yau",
+      role = "ths",
+      email = "c.yau@bham.ac.uk"))
 Description: What the package does (one paragraph).
-License: What license it uses
+License: GPL (>=3)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.1
-Suggests: 
+RoxygenNote: 6.1.1.9000
+Suggests:
     testthat,
     knitr,
     rmarkdown
-LinkingTo: 
+LinkingTo:
     Rcpp
-Imports: 
+Imports:
     Rcpp,
     data.table,
     purrr,
