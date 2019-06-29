@@ -4,7 +4,7 @@
 \alias{mut_count}
 \title{Computes the frequency of each possible trinucleotide or 5-nucleotide mutation signature}
 \usage{
-mut_count(reference, mut_file, five = FALSE)
+mut_count(reference, mut_file, five = FALSE, slice = FALSE)
 }
 \arguments{
 \item{reference}{A string or a variable referencing a string object. This is
