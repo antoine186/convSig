@@ -38,5 +38,6 @@ Imports:
     data.table,
     purrr,
     methods,
-    dplyr
+    dplyr,
+    roxygen2
 VignetteBuilder: knitr

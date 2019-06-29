@@ -114,12 +114,12 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
   NumericVector startpos_ar = mut_file[2];
   CharacterVector ref_ar = mut_file[3];
   NumericVector mut_ar = mut_file[4];
-
+  
   int loop1 = fasta.nrow();
   int mut_file_length = mut_file.nrow();
-
+  
   CharacterVector f = as<CharacterVector>(fasta[0]);
-
+  
   int chrom = 0;
   int ref_pos = -1;
   int mut_pos = 0;
@@ -132,7 +132,7 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
   //int line_stat = 0;
   //int feature_stat = 0;
   //int free_stat = 0;
-   
+  
   std::regex chrompattern ("^>");
   // For loop 1
   for (int i = 0; i < loop1; i = i + 1) {
@@ -176,7 +176,7 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
       }
       
       ++ref_pos;
-
+      
       // Here is the second while loop - startpos_ar[mut_pos] is generally
       // larger than ref_pos
       if (mut_pos < mut_file_length && !(chromid_ar[mut_pos] > chrom ||
@@ -186,7 +186,7 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
           //++free_stat;
           if(ref_ar[mut_pos] != base2) {
             stop("It seems that your supplied assembly input does not " 
-                    "correspond to the one in your mutation input file");
+                   "correspond to the one in your mutation input file");
             //mut_pos = ++mut_pos;
             //continue;
           }
@@ -195,7 +195,7 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
           
           for(CharacterVector::iterator it = uniq_samples.begin(); 
               it != uniq_samples.end(); ++it) {
-
+            
             if (*it == sampleid_ar[mut_pos]) {
               //++free_stat;
               index = it - uniq_samples.begin();
@@ -208,13 +208,13 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
           
           mut_pos = ++mut_pos;
           
-          if (mut_pos > mut_file_length || (chromid_ar[mut_pos] > chrom ||
+          if (mut_pos >= mut_file_length || (chromid_ar[mut_pos] > chrom ||
               startpos_ar[mut_pos] > ref_pos)) {
             break;
           }
         }
       } 
-
+      
       base1 = base2;
       base2 = base3;
       
@@ -230,9 +230,9 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
   //mat.slot("perline_status") = line_stat;
   //mat.slot("feature_status") = feature_stat;
   //mat.slot("free_status") = free_stat;
-
+  
   return mat;
-
+  
 }
 
 // [[Rcpp::export]]
@@ -344,7 +344,7 @@ S4 shallow_loop5(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
           
           mut_pos = ++mut_pos;
           
-          if (mut_pos > mut_file_length || (chromid_ar[mut_pos] > chrom ||
+          if (mut_pos >= mut_file_length || (chromid_ar[mut_pos] > chrom ||
               startpos_ar[mut_pos] > ref_pos)) {
             break;
           }
@@ -372,4 +372,3 @@ S4 shallow_loop5(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
   return mat;
   
 }
-

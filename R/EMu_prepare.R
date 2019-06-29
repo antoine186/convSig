@@ -110,6 +110,13 @@ mut_count <- function(reference, mut_file, five = FALSE) {
   # Read in the mutation input file
   datapath <- readmut(mut_file)
   
+  # cat("Counting the number of chromosomes\n")
+  # uniq_chrom <- unique(datapath$chromosome)
+  # max_chrom <- max(uniq_chrom)
+  # cutoff_ind <- reference_gen[grepl(paste('>', max_chrom + 1, " ", sep = ""), V1)
+  #                             , which = TRUE]
+  # reference_gen <- reference_gen[1:(cutoff_ind-1),]
+  
   cat("Miscellaneous processing...\n")
   nb_uniq = length(unique(as.character(datapath$icgc_sample_id)))
   # This is the row names of init_mut_mat
