@@ -90,6 +90,7 @@ exp_operation <- function(X, bg, conv, P, mat, N, S, K,
     
   }
   
+  cat("Optimising/Iterating on the loss function (may take a while)... \n")
   while (abs(new_LOSS - old_LOSS) > 10^(-3)) {
     
     for (i in 1:2) {
@@ -204,7 +205,7 @@ exp_operation <- function(X, bg, conv, P, mat, N, S, K,
     new_LOSS = LOSS
     
     #cat(new_LOSS - old_LOSS)
-    cat("Optimising/Iterating on the loss function (may take a while)... \n")
+    #cat("Optimising/Iterating on the loss function (may take a while)... \n")
     
     if (new_LOSS > old_LOSS) {
       stop("Something went wrong during optimization. Probably not something you can solve")
