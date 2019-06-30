@@ -19,7 +19,8 @@ setClass (
     mat = "array",
     P = "matrix",
     LOSS = "numeric",
-    test_LOSS = "numeric"
+    test_LOSS = "numeric",
+    conv = "matrix"
     
   )
 )
