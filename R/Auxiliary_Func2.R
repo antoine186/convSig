@@ -1,6 +1,11 @@
-relu_conv_all <- function(bg, mat, N, K, type, numbase, feat, mid) {
+reluexp_conv_all <- function(bg, mat, N, K, type, numbase, feat, mid, relu = TRUE) {
   
-  conv <- conv_create(N, K, numbase, feat)
+  if (relu == TRUE) {
+    conv <- conv_create(N, K, numbase, feat)
+  } else {
+    conv <- conv_reverse(N, K, numbase, feat, mid)
+  }
+  
   conv_all <- array(0, dim = c(N, 3, K))
   
   list_len <- length(unlist(type[[mid]][1]))
@@ -36,8 +41,31 @@ relu_conv_all <- function(bg, mat, N, K, type, numbase, feat, mid) {
   
 }
 
-# exp_conv_all <- function(bg, mat, N, K, type, numbase, feat, mid) {
-#   
-#   
-#   
-# }
+conv_reverse <- function(N, K, numbase, feat, mid) {
+  
+  conv <- matrix(1, nrow = N, ncol = K)
+  
+  for (i in 1:N) {
+    temp = i - 1
+    
+    for (j in 1:numbase) {
+      if (j == mid) {
+        
+        conv[i,] = conv[i,] * feat[j,((temp %% 2) + 1),]
+        temp = floor(temp/2)
+        
+        #conv[i,:]*=Feature[j,temp%2,:];
+        #temp/=2;
+      } else {
+        
+        conv[i,] = conv[i,] * feat[(numbase - (j - 1) - 1 + 1),((temp %% 4) + 1),]
+        temp = floor(temp/4)
+        
+      }
+    }
+    
+  }
+  
+  invisible(conv)
+  
+}

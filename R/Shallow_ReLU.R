@@ -426,8 +426,10 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K,
     
   }
   
+  conv_all <- reluexp_conv_all(bg, mat, N, K, type, numbase, feat, mid)
+  
   relu_o <- new("relu_obj", feat = feat, mat = mat, P = P,
-                LOSS = LOSS, test_LOSS = test_LOSS)
+                LOSS = LOSS, test_LOSS = test_LOSS, conv = conv_all)
   return(relu_o)
   
 }
