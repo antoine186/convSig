@@ -239,8 +239,10 @@ exp_operation <- function(X, bg, conv, P, mat, N, S, K,
     
   }
   
+  conv_all <- reluexp_conv_all(bg, mat, N, K, type, numbase, feat, mid, relu = FALSE)
+  
   exp_o <- new("exp_obj", feat = feat, mat = mat, P = P, LOSS = LOSS,
-               test_LOSS = test_LOSS)
+               test_LOSS = test_LOSS, conv = conv_all)
   
   return(exp_o)
 }
