@@ -98,6 +98,8 @@ readmut <- function(datapath) {
 #'
 #' mut_sign <- mut_count(assembly, mut_file)
 #'
+#' @importFrom data.table like
+#'
 #' @export
 mut_count <- function(reference, mut_file, five = FALSE, slice = FALSE) {
   # Make sure mutation input is a data.table
