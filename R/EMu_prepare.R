@@ -119,11 +119,13 @@ mut_count <- function(reference, mut_file, five = FALSE, slice = FALSE) {
     max_chrom <- max(uniq_chrom)
     min_chrom <- min(uniq_chrom)
     if (min_chrom > 1) {
-      low_cut <- reference_gen[like(V1, paste0(">", min_chrom)), which = T]
+      low_cut <-
+        reference_gen[like(V1, paste0(">", min_chrom, " ")), which = T]
     } else {
       low_cut <- 2
     }
-    high_cut <- reference_gen[like(V1, paste0(">", max_chrom + 1)), which = T]
+    high_cut <-
+      reference_gen[like(V1, paste0(">", max_chrom + 1, " ")), which = T]
     reference_gen <- reference_gen[(low_cut - 1):(high_cut - 1),]
 
   }
