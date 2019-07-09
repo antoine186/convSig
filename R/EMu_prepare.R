@@ -150,11 +150,13 @@ mut_count <- function(reference, mut_file, five = FALSE, slice = FALSE) {
 
   cat("Counting the frequency of mutation fragment types. This could take a few minutes...\n")
   shallowres <- new("Shallowres", mut_mat = init_mut_mat, wt = init_wt)
+  
+  start_chrom = datapath$chromosome[1]
 
   if (five == FALSE) {
-    shallowres = shallow_loop3(shallowres, reference_gen, treated_mut, uniq_sample)
+    shallowres = shallow_loop3(shallowres, reference_gen, treated_mut, uniq_sample, start_chrom)
   } else if (five == TRUE) {
-    shallowres = shallow_loop5(shallowres, reference_gen, treated_mut, uniq_sample)
+    shallowres = shallow_loop5(shallowres, reference_gen, treated_mut, uniq_sample, start_chrom)
   }
 
   invisible(shallowres)

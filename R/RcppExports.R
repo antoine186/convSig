@@ -17,12 +17,12 @@ reverse_transform <- function(alleles) {
     .Call('_convSig_reverse_transform', PACKAGE = 'convSig', alleles)
 }
 
-shallow_loop3 <- function(mat, fasta, mut_file, uniq_samples) {
-    .Call('_convSig_shallow_loop3', PACKAGE = 'convSig', mat, fasta, mut_file, uniq_samples)
+shallow_loop3 <- function(mat, fasta, mut_file, uniq_samples, chro) {
+    .Call('_convSig_shallow_loop3', PACKAGE = 'convSig', mat, fasta, mut_file, uniq_samples, chro)
 }
 
-shallow_loop5 <- function(mat, fasta, mut_file, uniq_samples) {
-    .Call('_convSig_shallow_loop5', PACKAGE = 'convSig', mat, fasta, mut_file, uniq_samples)
+shallow_loop5 <- function(mat, fasta, mut_file, uniq_samples, chro) {
+    .Call('_convSig_shallow_loop5', PACKAGE = 'convSig', mat, fasta, mut_file, uniq_samples, chro)
 }
 
 conv_bimap <- function(N, numbase) {

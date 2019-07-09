@@ -104,7 +104,7 @@ DataFrame reverse_transform(DataFrame alleles) {
 }
 
 // [[Rcpp::export]]
-S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector uniq_samples) {
+S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector uniq_samples, int chro) {
   
   NumericMatrix mut_mat = mat.slot("mut_mat");
   NumericVector wt_ar = mat.slot("wt");
@@ -120,7 +120,7 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
   
   CharacterVector f = as<CharacterVector>(fasta[0]);
   
-  int chrom = 0;
+  int chrom = chro - 1;
   int ref_pos = -1;
   int mut_pos = 0;
   std::string base1;
@@ -236,7 +236,7 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
 }
 
 // [[Rcpp::export]]
-S4 shallow_loop5(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector uniq_samples) {
+S4 shallow_loop5(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector uniq_samples, int chro) {
   
   NumericMatrix mut_mat = mat.slot("mut_mat");
   NumericVector wt_ar = mat.slot("wt");
@@ -252,7 +252,7 @@ S4 shallow_loop5(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
   
   CharacterVector f = as<CharacterVector>(fasta[0]);
   
-  int chrom = 0;
+  int chrom = chro - 1;
   int ref_pos = -2;
   int mut_pos = 0;
   std::string base1;
