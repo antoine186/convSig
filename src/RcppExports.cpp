@@ -58,8 +58,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // shallow_loop3
-S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector uniq_samples, int chro);
-RcppExport SEXP _convSig_shallow_loop3(SEXP matSEXP, SEXP fastaSEXP, SEXP mut_fileSEXP, SEXP uniq_samplesSEXP, SEXP chroSEXP) {
+S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector uniq_samples);
+RcppExport SEXP _convSig_shallow_loop3(SEXP matSEXP, SEXP fastaSEXP, SEXP mut_fileSEXP, SEXP uniq_samplesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -67,14 +67,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< DataFrame >::type fasta(fastaSEXP);
     Rcpp::traits::input_parameter< DataFrame >::type mut_file(mut_fileSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type uniq_samples(uniq_samplesSEXP);
-    Rcpp::traits::input_parameter< int >::type chro(chroSEXP);
-    rcpp_result_gen = Rcpp::wrap(shallow_loop3(mat, fasta, mut_file, uniq_samples, chro));
+    rcpp_result_gen = Rcpp::wrap(shallow_loop3(mat, fasta, mut_file, uniq_samples));
     return rcpp_result_gen;
 END_RCPP
 }
 // shallow_loop5
-S4 shallow_loop5(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector uniq_samples, int chro);
-RcppExport SEXP _convSig_shallow_loop5(SEXP matSEXP, SEXP fastaSEXP, SEXP mut_fileSEXP, SEXP uniq_samplesSEXP, SEXP chroSEXP) {
+S4 shallow_loop5(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector uniq_samples);
+RcppExport SEXP _convSig_shallow_loop5(SEXP matSEXP, SEXP fastaSEXP, SEXP mut_fileSEXP, SEXP uniq_samplesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -82,8 +81,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< DataFrame >::type fasta(fastaSEXP);
     Rcpp::traits::input_parameter< DataFrame >::type mut_file(mut_fileSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type uniq_samples(uniq_samplesSEXP);
-    Rcpp::traits::input_parameter< int >::type chro(chroSEXP);
-    rcpp_result_gen = Rcpp::wrap(shallow_loop5(mat, fasta, mut_file, uniq_samples, chro));
+    rcpp_result_gen = Rcpp::wrap(shallow_loop5(mat, fasta, mut_file, uniq_samples));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -174,8 +172,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_convSig_feat2table3", (DL_FUNC) &_convSig_feat2table3, 3},
     {"_convSig_feat2table5", (DL_FUNC) &_convSig_feat2table5, 5},
     {"_convSig_reverse_transform", (DL_FUNC) &_convSig_reverse_transform, 1},
-    {"_convSig_shallow_loop3", (DL_FUNC) &_convSig_shallow_loop3, 5},
-    {"_convSig_shallow_loop5", (DL_FUNC) &_convSig_shallow_loop5, 5},
+    {"_convSig_shallow_loop3", (DL_FUNC) &_convSig_shallow_loop3, 4},
+    {"_convSig_shallow_loop5", (DL_FUNC) &_convSig_shallow_loop5, 4},
     {"_convSig_conv_bimap", (DL_FUNC) &_convSig_conv_bimap, 2},
     {"_convSig_RM_nonSNP", (DL_FUNC) &_convSig_RM_nonSNP, 2},
     {"_convSig_timesTwo", (DL_FUNC) &_convSig_timesTwo, 1},
