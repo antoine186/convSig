@@ -127,8 +127,6 @@ mut_count <- function(reference, mut_file, five = FALSE, slice = FALSE) {
     high_cut <-
       reference_gen[like(V1, paste0(">", max_chrom + 1, " ")), which = T]
     reference_gen <- reference_gen[(low_cut - 1):(high_cut - 1),]
-    
-    start_chrom = low_cut
 
   }
 
@@ -153,9 +151,7 @@ mut_count <- function(reference, mut_file, five = FALSE, slice = FALSE) {
   cat("Counting the frequency of mutation fragment types. This could take a few minutes...\n")
   shallowres <- new("Shallowres", mut_mat = init_mut_mat, wt = init_wt)
   
-  if (slice == FALSE) {
-    start_chrom = datapath$chromosome[1]
-  }
+  start_chrom = datapath$chromosome[1]
 
   if (five == FALSE) {
     shallowres = shallow_loop3(shallowres, reference_gen, treated_mut, uniq_sample, start_chrom)
