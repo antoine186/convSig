@@ -41,3 +41,4 @@ Imports:
     dplyr,
     roxygen2
 VignetteBuilder: knitr
+SystemRequirements: C++11
