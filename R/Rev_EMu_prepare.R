@@ -5,6 +5,8 @@
 #' Pending
 #'
 #' @importFrom Biostrings readDNAStringSet countPattern
+#' 
+#' @export
 mut_count_fast <- function(genome_path, mut_file, numbase, nb_chrom) {
   
   genome <- readDNAStringSet(genome_path, format = "fasta")
@@ -65,6 +67,8 @@ mut_count_fast <- function(genome_path, mut_file, numbase, nb_chrom) {
       cat("Currently Working on Chromosome ")
       cat(i)
       cat("\n")
+      cat("Updating the Genome Background")
+      cat("\n")
       
       for (j in 1:length(patterns)) {
         
@@ -85,6 +89,9 @@ mut_count_fast <- function(genome_path, mut_file, numbase, nb_chrom) {
         background[temp_inds[3]] = background[temp_inds[3]] + found_nb
         
       }
+      
+      cat("Updating the Mutation Matrix")
+      cat("\n")
       
       if (chrom_start < dim(mut_file)[1]) {
         
