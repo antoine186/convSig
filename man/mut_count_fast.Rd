@@ -4,7 +4,7 @@
 \alias{mut_count_fast}
 \title{Function Doc Pending}
 \usage{
-mut_count_fast(genome_path, mut_file, numbase, nb_chrom)
+mut_count_fast(assembly, mut_file, numbase, nb_chrom)
 }
 \description{
 Function Doc Pending

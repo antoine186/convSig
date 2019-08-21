@@ -7,9 +7,35 @@
 #' @importFrom Biostrings readDNAStringSet countPattern
 #' 
 #' @export
-mut_count_fast <- function(genome_path, mut_file, numbase, nb_chrom) {
+mut_count_fast <- function(assembly, mut_file, numbase, nb_chrom) {
   
-  genome <- readDNAStringSet(genome_path, format = "fasta")
+  if(!is.null(assembly) && !is.character(assembly)) {
+    stop("Assembly supplied is not a string.")
+  }
+  
+  genome <- readDNAStringSet(assembly, format = "fasta")
+  
+  if (!is.data.table(mut_file)) {
+    if (!is.data.frame(mut_file) && !is.matrix(mut_file)) {
+      stop("Your input is neither a data.frame or a matrix")
+    }
+    
+    mut_file <- as.data.table(mut_file)
+    
+    mut_file <- mut_file[, chromosome := as.numeric(as.character(chromosome))]
+    mut_file <- mut_file[, chromosome_start := as.numeric(as.character(chromosome_start))]
+    mut_file <- mut_file[, chromosome_end := as.numeric(as.character(chromosome_end))]
+    mut_file <- mut_file[, mutated_from_allele := as.character(mutated_from_allele)]
+    mut_file <- mut_file[, mutated_to_allele := as.character(mutated_to_allele)]
+  }
+  
+  if (numbase != 3 && numbase != 5) {
+    stop("Your specified fragment size is invalid. It should either be 3 or 5")
+  }
+  
+  if (nb_chrom < 1 || nb_chrom > 22) {
+    stop("You specified too little or too many chromosomes for processing")
+  }
   
   # Handle mut_matrix sample numbers
   sample_ids <- unique(mut_file$icgc_sample_id)
