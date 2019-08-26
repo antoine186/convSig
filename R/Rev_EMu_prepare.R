@@ -120,15 +120,15 @@ mut_count_fast <- function(assembly, mut_file, numbase, nb_chrom) {
       cat("\n")
       
       if (chrom_start < dim(mut_file)[1]) {
-        cat("mut_file dimension is:")
-        cat("\n")
-        cat(dim(mut_file)[1])
-        cat("\n")
+        # cat("mut_file dimension is:")
+        # cat("\n")
+        # cat(dim(mut_file)[1])
+        # cat("\n")
         for (k in chrom_start:dim(mut_file)[1]) {
-          cat("k index is")
-          cat("\n")
-          cat(k)
-          cat("\n")
+          # cat("k index is")
+          # cat("\n")
+          # cat(k)
+          # cat("\n")
           if (mut_file[k]$chromosome > i) {
             chrom_start = k
             break
@@ -180,23 +180,23 @@ mut_count_fast <- function(assembly, mut_file, numbase, nb_chrom) {
             rm(trueornot)
             rm(pasted_wind)
             
-            cat("mut_mat dimension is:")
-            cat("\n")
-            cat(dim(mut_mat))
-            cat("\n")
+            # cat("mut_mat dimension is:")
+            # cat("\n")
+            # cat(dim(mut_mat))
+            # cat("\n")
             
             incr_loc <- which(sample_ids == mut_file[k]$icgc_sample_id)
             
             mut_mat[incr_loc, temp_thisinds[mut_file[k]$mutated_to_allele + 1]] = mut_mat[incr_loc, temp_thisinds[mut_file[k]$mutated_to_allele + 1]] + 1
             
-            cat("incr_loc is")
-            cat("\n")
-            cat(incr_loc)
-            cat("\n")
-            cat("column accessor ir")
-            cat("\n")
-            cat(temp_thisinds[mut_file[k]$mutated_to_allele + 1])
-            cat("\n")
+            # cat("incr_loc is")
+            # cat("\n")
+            # cat(incr_loc)
+            # cat("\n")
+            # cat("column accessor ir")
+            # cat("\n")
+            # cat(temp_thisinds[mut_file[k]$mutated_to_allele + 1])
+            # cat("\n")
             
             rm(incr_loc)
             
