@@ -27,7 +27,7 @@ NULL
 #' relu_res <- relu_transform(EMu_prepped, five = TRUE, K = 6)
 #' 
 #' @export
-relu_transform <- function(mut_obj, five = FALSE, K = 5) {
+relu_transform <- function(mut_obj, five = FALSE, K = 5, iter_num = 1000) {
   
   if (K == 0) {
     stop("Your specified number of mutational processes cannot be zero")
@@ -84,7 +84,8 @@ relu_transform <- function(mut_obj, five = FALSE, K = 5) {
   
   reg_res <- regularizer(X, bg, conv, theta_array, P, mat, N, S, K, type,
                          mid, beta_array, Z,
-                         feat_o@Multi_F, feat_o@feat, numbase, bg_test, X_test, T)
+                         feat_o@Multi_F, feat_o@feat, numbase,
+                         bg_test, X_test, T, iter_num)
   
   #cat("Please ignore a potential warning about -Inf.\n")
   #cat("This is normal and expected, and is handled internally.\n")
@@ -93,9 +94,12 @@ relu_transform <- function(mut_obj, five = FALSE, K = 5) {
 
 # Loop function, which increments lambda (burden of the loss function) iteratively
 regularizer <- function(X, bg, conv, theta, P, mat, N, S, K,
-                        type, mid, beta_ar, Z, Multi_F, feat, numbase, bg_test, X_test, T) {
+                        type, mid, beta_ar, Z, Multi_F, feat, numbase,
+                        bg_test, X_test, T, iter_num) {
   
   for (r in 1:6) {
+    
+    count_accu = 0
     
     reg = (10^(r - 1)) - 1
     
@@ -140,6 +144,17 @@ regularizer <- function(X, bg, conv, theta, P, mat, N, S, K,
     
     while(abs(new_LOSS - old_LOSS) > (1.0/(2*r+1))) {
       #cat("Optimising on the loss function \n")
+      
+      count_accu = count_accu + 1
+      
+      if (count_accu > iter_num) {
+        cat("Reached the limit of iteration numbers")
+        cat("\n")
+        cat("The transformation operation has not fully converged")
+        cat("\n")
+        break
+      }
+      
       for (i in 1:K) {
         
         C = reg * conv[,i] - bg * sum(P[,i])
