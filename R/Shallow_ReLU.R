@@ -27,7 +27,7 @@ NULL
 #' relu_res <- relu_transform(EMu_prepped, five = TRUE, K = 6)
 #' 
 #' @export
-relu_transform <- function(mut_obj, five = FALSE, K = 5, iter_num = 1000) {
+relu_transform <- function(mut_obj, five = FALSE, K = 5, iter_num = 5000) {
   
   if (K == 0) {
     stop("Your specified number of mutational processes cannot be zero")

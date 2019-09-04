@@ -3,7 +3,7 @@
 NULL
 
 exp_operation <- function(X, bg, conv, P, mat, N, S, K, 
-                          type, numbase, bg_test, X_test, mid, Z, feat) {
+                          type, numbase, bg_test, X_test, mid, Z, feat, iter_num) {
   
   LOSS = sum(sweep(P,MARGIN=c(2),colSums(sweep(conv,MARGIN=c(1),bg, `*`)), `*`))
   
@@ -90,8 +90,20 @@ exp_operation <- function(X, bg, conv, P, mat, N, S, K,
     
   }
   
+  count_accu = 0
+  
   cat("Optimising/Iterating on the loss function (may take a while)... \n")
   while (abs(new_LOSS - old_LOSS) > 10^(-3)) {
+    
+    count_accu = count_accu + 1
+    
+    if (count_accu > iter_num) {
+      cat("Reached the limit of iteration numbers")
+      cat("\n")
+      cat("The transformation operation has not fully converged")
+      cat("\n")
+      break
+    }
     
     for (i in 1:2) {
       
@@ -279,7 +291,7 @@ exp_operation <- function(X, bg, conv, P, mat, N, S, K,
 #' exp_res <- exp_transform(EMu_prepped, five = TRUE, K = 6)
 #' 
 #' @export
-exp_transform <- function(mut_obj, five = FALSE, K = 5) {
+exp_transform <- function(mut_obj, five = FALSE, K = 5, iter_num = 5000) {
   
   if (K == 0) {
     stop("Your specified number of mutational processes cannot be zero")
@@ -328,7 +340,7 @@ exp_transform <- function(mut_obj, five = FALSE, K = 5) {
   type <- fragbase_indexer(numbase, N)
   
   exp_res <- exp_operation(X, bg, conv, P, mat, N, S, K, 
-                         type, numbase, bg_test, X_test, mid, Z, feat)
+                         type, numbase, bg_test, X_test, mid, Z, feat, iter_num)
   
   invisible(exp_res)
   
