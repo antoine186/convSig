@@ -19,3 +19,43 @@ loadICGCexample()
 ```
 
 This input ICGC mutation data can either be a path leading to a mutation file on your workstation or data previously loaded into your R global environment. In the latter case, the data has to either be in the form of a data.frame or a matrix. This data preparation stage imposes an additional format requirement for this data. Namely, the following headers must be present in the input file (Note: this requirement is easily fulfilled if you have an input file that conforms to the ICGC format):
+- icgc_sample_id
+- chromosome
+- chromosome_start
+- chromosome_end
+- mutated_from_allele
+- mutated_to_allele
+- assembly_version
+- sequencing_strategy
+
+The below block of code designates the reference genome file that corresponds to the relevant experiment and the sequencing strategy used to obtain it.
+This function call skips all of the X and Y chromosomes (i.e. sex chromosomes), gathers all of the mutations that pertain to experiments run with your specified assembly version and sequencing strategy, and applies a base to number conversion to help filter out invalid types of mutations (e.g. insertions or deletions).
+
+```
+datapath <- "simple_somatic_mutation.open.COCA-CN.tsv"
+mut_file <- icgc2mut(datapath, "GRCh37", "WGS")
+```
+
+The below function, in a first instance, sorts your input in ascending order by chromosome number first and then by the mutation chromosome start position. This sorting is required as the downstream convolution operation can only scan the reference genome in an ordered manner.
+In a second instance (optional: depending on user parameter specification), it removes all non-single nucleotide polymorphisms as our methods are only valid for single nucleotide substitutions.
+In a third instance, it removes all duplicate mutations present in the input mutation data.
+
+```
+cur_mut_file <- icgc_curate(mut_file, remove.nonSNP = TRUE)
+```
+
+The mut_count() function constructs two essential count tables: the mutation and the genome background count tables.
+The mutation count table is a matrix, which records the frequency of each mutation types for each sample present in your supplied mutation input data. Each of its rows therefore represents a sample and each of its columns represents a distinct mutation type/possibility. The number of possible mutation types is calculated in accordance to the length of the mutation signature window (i.e. 3 or 5 bases only for our methods). The formula used is: 4<sup>numbase−1</sup>×2×3 (where numbase is equal to the length of the window). We first perform 4<sup>numbase−1</sup>×2 because all flanking bases in the window (i.e. non-middle bases) have exactly 4 base possibilities and the middle base only has 2 possibilities. The latter is due to the reverse complementarity nature of the genome; This is to avoid double counting the mutations that have actually occurred. We furthermore multiply the intermediate result by 3 here because of the three possibilities for the middle base substitution.
+The genome background count table is a vector with length equal to the total possible number of mutation types as calculated above. It also records the frequency that we could expect from each mutation under circumstances of equal probability for the occurrence of such mutations.
+Please note that this function call requires you to supply it with the correct corresponding reference genome.
+The function call can also take a parameter that helps indicate whether you wish to construct the count tables for a 3-base long or a 5-base long mutation signature window. By default, the call is set to run for a 3-base long window.
+
+```
+assembly <- "Homo_sapiens.GRCh37.dna.primary_assembly.fa"
+EMu_prepped <- mut_count(assembly, cur_mut_file, five = FALSE)
+```
+
+## Expectation Maximisation Using ReLU or the Exponential Transformation
+
+### Expectation Maximisation Parameters and Results
+### ReLU or Exponential Transformation
