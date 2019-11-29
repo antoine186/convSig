@@ -72,6 +72,7 @@ The below function calls require the data output by the previous function call [
 relu_res <- relu_transform(EMu_prepped, five = TRUE, K = 5)
 
 ```
-exp_res <- exp_transform(EMu_prepped, five = TRUE, K = 5)
+
 ```
+exp_res <- exp_transform(EMu_prepped, five = TRUE, K = 5)
 ```
