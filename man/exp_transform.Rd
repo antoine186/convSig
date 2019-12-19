@@ -4,7 +4,7 @@
 \alias{exp_transform}
 \title{Performs the exponential transform on mutational count data}
 \usage{
-exp_transform(mut_obj, five = FALSE, K = 5)
+exp_transform(mut_obj, five = FALSE, K = 5, iter_num = 5000)
 }
 \arguments{
 \item{mut_obj}{An object of class 'Shallowres' as produced by the function

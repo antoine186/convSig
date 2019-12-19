@@ -4,7 +4,7 @@
 \alias{relu_transform}
 \title{Performs the ReLU transform on mutational count data}
 \usage{
-relu_transform(mut_obj, five = FALSE, K = 5)
+relu_transform(mut_obj, five = FALSE, K = 5, iter_num = 5000)
 }
 \arguments{
 \item{mut_obj}{An object of class 'Shallowres' as produced by the function
