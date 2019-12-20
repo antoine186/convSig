@@ -13,18 +13,31 @@
 #' @importFrom data.table fread
 #' @importFrom dplyr if_else %>%
 #' @importFrom stringr str_c str_sub str_detect str_replace str_extract
-read_vcf <- function(vcf_file, well_id = NULL, region = NULL,
-                     drop_col = FALSE) {
+read_vcf <- function(vcf_file) {
   
   # Reading in the vcf file
   variant_dt <- fread(vcf_file, sep = "\t", skip = "CHROM", fill = TRUE)
   
-  # Hidden option to drop columns beyond the mandatory columns
-  if (drop_col) {
-    cat("\nDropping additional columns found in .vcf file\n")
-    variant_dt <- variant_dt[, 1:(9 + length(well_id))]
+  # Deleting spurrious columns
+  cnames = colnames(variant_dt)
+  rm_col = character()
+  
+  for (i in c(1:length(cnames))) {
+    
+    if (grepl("^V", cnames[i])) {
+      
+      rm_col = c(rm_col, cnames[i])
+      
+    }
+    
   }
   
+  for (i in c(1:length(rm_col))) {
+    
+    variant_dt[, rm_col[i] := NULL]
+    
+  }
+   
   rename_vec <- c("Chrom", "Pos", "ID", "REF", "ALT", "Qual", "Filter", "Info")
   for (i in c(1:8)) {
     

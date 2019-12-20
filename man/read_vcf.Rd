@@ -4,7 +4,7 @@
 \alias{read_vcf}
 \title{Read vcf files}
 \usage{
-read_vcf(vcf_file, well_id = NULL, region = NULL, drop_col = FALSE)
+read_vcf(vcf_file)
 }
 \arguments{
 \item{drop_col}{}
