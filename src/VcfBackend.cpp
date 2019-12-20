@@ -10,7 +10,7 @@ DataFrame icgc_creater(DataFrame vcf_data, CharacterVector cnames, int height,
   
   NumericVector num_vec(height);
   CharacterVector char_vec(height);
-  
+
   // When giving names to columns
   DataFrame df = DataFrame::create( Named("icgc_sample_id") = char_vec , 
                                     Named("chromosome") = num_vec, 
@@ -20,12 +20,14 @@ DataFrame icgc_creater(DataFrame vcf_data, CharacterVector cnames, int height,
                                     Named("mutated_to_allele") = char_vec);
   
   int df_count = 0;
+  int cur_val = 0;
   
   for (int i = start_it; i < end_it + 1; i = i + 1) {
 
     for (int j = 0; j < height; j = j + 1) {
-
-      if (vcf_data[j, i] == 1) {
+      
+      cur_val = vcf_data[j, i];
+      if (cur_val == 1) {
 
         df[df_count, 0] = cnames[i];
         df[df_count, 1] = vcf_data[j, 0];
