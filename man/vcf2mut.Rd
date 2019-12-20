@@ -4,7 +4,7 @@
 \alias{vcf2mut}
 \title{Read vcf files and processes them / User correct assembly}
 \usage{
-vcf2mut(datapath)
+vcf2mut(datapath, geno = "GT")
 }
 \arguments{
 \item{datapath}{}

@@ -109,6 +109,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// icgc_creater
+DataFrame icgc_creater(DataFrame vcf_data, CharacterVector cnames, int height, int start_it, int end_it);
+RcppExport SEXP _convSig_icgc_creater(SEXP vcf_dataSEXP, SEXP cnamesSEXP, SEXP heightSEXP, SEXP start_itSEXP, SEXP end_itSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< DataFrame >::type vcf_data(vcf_dataSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type cnames(cnamesSEXP);
+    Rcpp::traits::input_parameter< int >::type height(heightSEXP);
+    Rcpp::traits::input_parameter< int >::type start_it(start_itSEXP);
+    Rcpp::traits::input_parameter< int >::type end_it(end_itSEXP);
+    rcpp_result_gen = Rcpp::wrap(icgc_creater(vcf_data, cnames, height, start_it, end_it));
+    return rcpp_result_gen;
+END_RCPP
+}
 // timesTwo
 RcppExport SEXP timesTwo(SEXP x);
 RcppExport SEXP _convSig_timesTwo(SEXP xSEXP) {
@@ -176,6 +191,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_convSig_shallow_loop5", (DL_FUNC) &_convSig_shallow_loop5, 4},
     {"_convSig_conv_bimap", (DL_FUNC) &_convSig_conv_bimap, 2},
     {"_convSig_RM_nonSNP", (DL_FUNC) &_convSig_RM_nonSNP, 2},
+    {"_convSig_icgc_creater", (DL_FUNC) &_convSig_icgc_creater, 5},
     {"_convSig_timesTwo", (DL_FUNC) &_convSig_timesTwo, 1},
     {"_convSig_timesTwoList", (DL_FUNC) &_convSig_timesTwoList, 1},
     {"_convSig_WeirdVector", (DL_FUNC) &_convSig_WeirdVector, 1},
