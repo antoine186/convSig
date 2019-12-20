@@ -28,9 +28,12 @@ vcf2mut <- function(datapath, geno = "GT") {
   for (i in c((minus_start+1):end_point)) {
     
     #cur_colname = cnames[i]
-    vcf_data[, cnames[i] := map2(vcf_data[, FORMAT], as.list(vcf_data[, c(i)]), format_user)] 
+    vcf_data[, cnames[i] := map2(vcf_data[, FORMAT], vcf_data[[i]], format_user)] 
     
   }
+  
+  sum_names <- cnames[c((minus_start+1):end_point)]
+  icgc_height <- sum(unlist(vcf_data[, sum_names, with = FALSE]))
   
   ### Under development
   vcf_data <- vcf_data[, c("Chrom", "Pos", "ID", "REF", "ALT"), with=FALSE]
