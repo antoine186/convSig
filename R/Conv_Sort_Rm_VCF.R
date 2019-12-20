@@ -8,9 +8,32 @@
 #' @examples
 #' 
 #' @importFrom data.table setnames setcolorder
-vcf2mut <- function(datapath) {
+#' @importFrom purrr map2
+vcf2mut <- function(datapath, geno = "GT") {
   
+  # Reading in the vcf file and keep only the SNP
   vcf_data <- read_vcf(datapath)
+  
+  vcf_data[, `:=` (name = NULL, Vartype = NULL, Qual = NULL, Filter = NULL, Info = NULL)]
+  
+  # Genotype discovery
+  simp_format <- map2(vcf_data[, FORMAT], geno, format_comprehend)
+  vcf_data[, FORMAT := simp_format]
+  rm(simp_format)
+  
+  cnames = colnames(vcf_data)
+  minus_start <- grep("FORMAT", cnames)
+  end_point <- dim(vcf_data)[2]
+  
+  for (i in c((minus_start+1):end_point)) {
+    
+    new_sample <- map2(vcf_data[, FORMAT], vcf_data[, eval(i)], format_user)
+    vcf_data[, cnames[i] := new_sample] 
+    
+  }
+  rm(new)
+  
+  ### Under development
   vcf_data <- vcf_data[, c("Chrom", "Pos", "ID", "REF", "ALT"), with=FALSE]
   
   setnames(vcf_data, c("chromosome", "chromosome_start", "ID",
@@ -28,3 +51,41 @@ vcf2mut <- function(datapath) {
   return(vcf_data)
   
 }
+
+format_comprehend <- function(format_str, geno) {
+  
+  which_ind = 0
+  split_ar <- unlist(strsplit(format_str, ":"))
+  
+  for (i in c(1:length(split_ar))) {
+    
+    if (split_ar[i] == geno) {
+      
+      which_ind = i
+      break
+    }
+    
+  }
+  
+  return(which_ind)
+  
+}
+
+format_user <- function(pos, sample_inf) {
+  
+  split_ar <- unlist(strsplit(sample_inf, ":"))
+  
+  if (grepl("1", split_ar[pos])) {
+    
+    return(1)
+    
+  } else {
+    
+    return(0)
+    
+  }
+  
+}
+
+
+
