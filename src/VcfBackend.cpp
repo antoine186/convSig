@@ -34,6 +34,8 @@ DataFrame icgc_creater(DataFrame vcf_data, CharacterVector cnames, int height,
         df[df_count, 2] = vcf_data[j, 1];
         df[df_count, 4] = vcf_data[j, 3];
         df[df_count, 5] = vcf_data[j, 4];
+        
+        ++df_count;
 
       }
 
