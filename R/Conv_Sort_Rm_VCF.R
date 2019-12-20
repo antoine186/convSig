@@ -27,11 +27,10 @@ vcf2mut <- function(datapath, geno = "GT") {
   
   for (i in c((minus_start+1):end_point)) {
     
-    new_sample <- map2(vcf_data[, FORMAT], vcf_data[, eval(i)], format_user)
-    vcf_data[, cnames[i] := new_sample] 
+    #cur_colname = cnames[i]
+    vcf_data[, cnames[i] := map2(vcf_data[, FORMAT], as.list(vcf_data[, c(i)]), format_user)] 
     
   }
-  rm(new)
   
   ### Under development
   vcf_data <- vcf_data[, c("Chrom", "Pos", "ID", "REF", "ALT"), with=FALSE]
