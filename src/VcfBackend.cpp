@@ -21,7 +21,7 @@ DataFrame icgc_creater(DataFrame vcf_data, NumericMatrix sample_data,
   
   int df_count = 0;
   int cur_val = 0;
-  int end_it = sample_data.ncols();
+  int end_it = sample_data.ncol();
   
   for (int i = 0; i < end_it; i = i + 1) {
 

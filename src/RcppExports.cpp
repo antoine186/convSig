@@ -110,17 +110,17 @@ BEGIN_RCPP
 END_RCPP
 }
 // icgc_creater
-DataFrame icgc_creater(DataFrame vcf_data, CharacterVector cnames, int height, int start_it, int end_it);
-RcppExport SEXP _convSig_icgc_creater(SEXP vcf_dataSEXP, SEXP cnamesSEXP, SEXP heightSEXP, SEXP start_itSEXP, SEXP end_itSEXP) {
+DataFrame icgc_creater(DataFrame vcf_data, NumericMatrix sample_data, CharacterVector sample_names, int height, int old_height);
+RcppExport SEXP _convSig_icgc_creater(SEXP vcf_dataSEXP, SEXP sample_dataSEXP, SEXP sample_namesSEXP, SEXP heightSEXP, SEXP old_heightSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< DataFrame >::type vcf_data(vcf_dataSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type cnames(cnamesSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type sample_data(sample_dataSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type sample_names(sample_namesSEXP);
     Rcpp::traits::input_parameter< int >::type height(heightSEXP);
-    Rcpp::traits::input_parameter< int >::type start_it(start_itSEXP);
-    Rcpp::traits::input_parameter< int >::type end_it(end_itSEXP);
-    rcpp_result_gen = Rcpp::wrap(icgc_creater(vcf_data, cnames, height, start_it, end_it));
+    Rcpp::traits::input_parameter< int >::type old_height(old_heightSEXP);
+    rcpp_result_gen = Rcpp::wrap(icgc_creater(vcf_data, sample_data, sample_names, height, old_height));
     return rcpp_result_gen;
 END_RCPP
 }

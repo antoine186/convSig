@@ -33,8 +33,8 @@ RM_nonSNP <- function(startend, ar) {
     .Call('_convSig_RM_nonSNP', PACKAGE = 'convSig', startend, ar)
 }
 
-icgc_creater <- function(vcf_data, cnames, height, start_it, end_it) {
-    .Call('_convSig_icgc_creater', PACKAGE = 'convSig', vcf_data, cnames, height, start_it, end_it)
+icgc_creater <- function(vcf_data, sample_data, sample_names, height, old_height) {
+    .Call('_convSig_icgc_creater', PACKAGE = 'convSig', vcf_data, sample_data, sample_names, height, old_height)
 }
 
 timesTwo <- function(x) {
