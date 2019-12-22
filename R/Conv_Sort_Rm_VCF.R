@@ -37,7 +37,7 @@ vcf2mut <- function(datapath, geno = "GT") {
   icgc_height <- sum(unlist(vcf_data[, sum_names, with = FALSE]))
   
   raw_icgc_form <- icgc_creater(vcf_data[, c(1,2,4,5), with = FALSE], chopped_samples,
-                                sum_names, icgc_height)
+                                sum_names, icgc_height, dim(vcf_data)[1])
   
   ### Under development
   vcf_data <- vcf_data[, c("Chrom", "Pos", "ID", "REF", "ALT"), with=FALSE]
