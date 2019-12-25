@@ -4,7 +4,7 @@
 \alias{icgc2mut}
 \title{Converts an ICGC file into a mutation file}
 \usage{
-icgc2mut(datapath, assembly = NULL, Seq = NULL)
+icgc2mut(datapath, assembly = NULL, Seq = NULL, using.vcf = FALSE)
 }
 \arguments{
 \item{datapath}{A string or a variable referencing a string object. This is

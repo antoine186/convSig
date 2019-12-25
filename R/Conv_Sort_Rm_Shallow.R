@@ -48,7 +48,7 @@ NULL
 #' 
 #' @importFrom data.table fread data.table as.data.table
 #' @importFrom purrr map
-icgc2mut <- function(datapath, assembly = NULL, Seq = NULL) {
+icgc2mut <- function(datapath, assembly = NULL, Seq = NULL, using.vcf = FALSE) {
   
   if(!is.null(assembly) && !is.character(assembly)) {
     stop("Assembly supplied is not a string.")
@@ -60,8 +60,10 @@ icgc2mut <- function(datapath, assembly = NULL, Seq = NULL) {
   # Set data.loaded accordingly to flag the need for column conversion
   data.loaded = FALSE
   
+  if (using.vcf == FALSE) {
   # Import ICGC file as a data.table to improve performance
   cat("Loading ICGC file\n")
+  }
   tryCatch(
     {
       if ("character" %in% class(datapath)) {
@@ -79,56 +81,61 @@ icgc2mut <- function(datapath, assembly = NULL, Seq = NULL) {
     }
   )
   
-  cat("Checking arguments supplied with call\n")
-  # Checking for assembly_version
-  if (!any(colnames(x) == "assembly_version")) {
-    stop("Cannot find a header variable corresponding to assembly_version.\n
+  if (using.vcf == FALSE) {
+    
+    cat("Checking arguments supplied with call\n")
+    # Checking for assembly_version
+    if (!any(colnames(x) == "assembly_version")) {
+      stop("Cannot find a header variable corresponding to assembly_version.\n
           No way to tell which column refers to assembly version.")
+    }
+    
+    if (!is.null(assembly)) {
+      x <- x[assembly_version == assembly]
+      if (dim(x)[1] == 0) {
+        stop("Specified assembly_version does not exist in the data.")
+      }
+    } else {
+      warning("You should supply a valid assembly version.")
+      assembly_stat <- x[, .(.N), by = .(assembly_version)]
+      assembly_stat <- assembly_stat[order(-N)]
+      assembly_stat$assembly_version <- as.character(assembly_stat$assembly_version)
+      assembly <- as.character(assembly_stat[1,1])
+      
+      cat(paste("We have chosen the following assembly:", assembly, "\n", sep = " "))
+      cat("\n")
+      print(assembly_stat)
+      cat("\n")
+      
+      x <- x[assembly_version == assembly]
+    }
+    # Checking for sequencing_strategy
+    if (!is.null(Seq)) {
+      if (!any(colnames(x) == "sequencing_strategy")) {
+        stop("Cannot find a header variable corresponding to sequencing_strategy.\n
+          No way to tell which column refers to sequencing strategy.")
+      }
+      x <- x[sequencing_strategy == Seq]
+      if (dim(x)[1] == 0) {
+        stop("Specified sequencing_strategy does not exist in the data.")
+      }
+    } else {
+      warning("You should supply a valid sequencing strategy.")
+      seq_stat <- x[, .(.N), by = .(sequencing_strategy)]
+      seq_stat <- seq_stat[order(-N)]
+      seq_stat$sequencing_strategy <- as.character(seq_stat$sequencing_strategy)
+      Seq <- as.character(seq_stat[1,1])
+      
+      cat(paste("We have chosen the following sequencing strategy:", Seq, "\n", sep = " "))
+      cat("\n")
+      print(seq_stat)
+      cat("\n")
+      
+      x <- x[sequencing_strategy == Seq]
+    } 
+    
   }
   
-  if (!is.null(assembly)) {
-    x <- x[assembly_version == assembly]
-    if (dim(x)[1] == 0) {
-      stop("Specified assembly_version does not exist in the data.")
-    }
-  } else {
-    warning("You should supply a valid assembly version.")
-    assembly_stat <- x[, .(.N), by = .(assembly_version)]
-    assembly_stat <- assembly_stat[order(-N)]
-    assembly_stat$assembly_version <- as.character(assembly_stat$assembly_version)
-    assembly <- as.character(assembly_stat[1,1])
-    
-    cat(paste("We have chosen the following assembly:", assembly, "\n", sep = " "))
-    cat("\n")
-    print(assembly_stat)
-    cat("\n")
-    
-    x <- x[assembly_version == assembly]
-  }
-  # Checking for sequencing_strategy
-  if (!is.null(Seq)) {
-    if (!any(colnames(x) == "sequencing_strategy")) {
-      stop("Cannot find a header variable corresponding to sequencing_strategy.\n
-          No way to tell which column refers to sequencing strategy.")
-    }
-    x <- x[sequencing_strategy == Seq]
-    if (dim(x)[1] == 0) {
-      stop("Specified sequencing_strategy does not exist in the data.")
-    }
-  } else {
-    warning("You should supply a valid sequencing strategy.")
-    seq_stat <- x[, .(.N), by = .(sequencing_strategy)]
-    seq_stat <- seq_stat[order(-N)]
-    seq_stat$sequencing_strategy <- as.character(seq_stat$sequencing_strategy)
-    Seq <- as.character(seq_stat[1,1])
-    
-    cat(paste("We have chosen the following sequencing strategy:", Seq, "\n", sep = " "))
-    cat("\n")
-    print(seq_stat)
-    cat("\n")
-    
-    x <- x[sequencing_strategy == Seq]
-  } 
   # Processing chromosome
   tryCatch(
     {
