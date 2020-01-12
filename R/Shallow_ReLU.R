@@ -7,11 +7,11 @@ NULL
 #' @param mut_obj An object of class 'Shallowres' as produced by the function 
 #' \link[=mut_count]{mut_count()}
 #' 
-#' @param five A boolean or a variable referring to a boolean, which specifies
+#' @param five A boolean that specifies
 #'  whether you want to apply a transformation based on a 5-nucleotide 
 #'  convolution window
 #' 
-#' @param K An integer or a variable specifying an integer. This indicates the number
+#' @param K An integer that indicates the number
 #' of mutational processes you want to detect in your mutational count data via
 #'  the transformation.
 #'  
