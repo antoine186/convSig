@@ -31,6 +31,7 @@ Suggests:
     testthat,
     knitr,
     rmarkdown
+bioc_packages: BiocInstaller
 use_bioc: true
 biocViews: Biostrings
 LinkingTo:
