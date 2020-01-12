@@ -4,25 +4,18 @@ NULL
 
 #' Converts an ICGC file into a mutation file
 #' 
-#' @param datapath A string or a variable referencing a string object. This is 
-#' the path leading to your ICGC file (tsv or csv only). Alternatively, this 
+#' @param datapath The path leading to your ICGC file (tsv or csv only). Alternatively, this 
 #' is your mutation data if you supplied either a \code{data.frame} or a \code{matrix}.
 #' Please make sure that your input data is not malformed; 
 #' See \link[=loadICGCexample]{loadICGCexample()} for an example of an 
-#' acceptable input. Please note that the function is slower with either a supplied
-#' \code{data.frame} or \code{matrix}.
-#' @param assembly A string or a variable referencing a string object. This 
-#' indicates the assembly version used in your experiment. Default is 
-#' set to \code{NULL}, but you really should specify this. \emph{If unspecified,
-#' the function will process the most represented assembly version present in your
-#' input file}.
+#' acceptable input.
+#' @param assembly This indicates the assembly version used in your experiment. Default is 
+#' set to \code{NULL}.
 #' @param Seq A string or a variable referencing a string. This indicates the 
 #' sequencing strategy/approach used in your genome experiment. Default is set 
-#' to \code{NULL}, but you really should specify this. \emph{If unspecified, 
-#' the function will process the most represented sequencing strategy present in your
-#' input file}.
+#' to \code{NULL}.
 #'
-#' @return A mutation file containing 6 fields/variables: The ICGC sample ID, 
+#' @return A mutation file containing 6 fields: The ICGC sample ID, 
 #' the chromosome ID, the chromosome start position, the chromosome end 
 #' position, the reference allele, and the alternate allele.
 #' 
@@ -288,17 +281,12 @@ icgc_dedup <- function(mut_file) {
 #' Sorts and removes duplicate entries in a mutation file output 
 #' by \code{icgc2mut()}
 #' 
-#' @param mut_file A string or a variable referencing a mutation file output 
-#' by \link[=icgc2mut]{icgc2mut()}. You can specify a file you created, however
-#'  you have to make sure that it has the correct format (i.e. please view 
-#'  \emph{Details}). Your input should either be a \code{data.frame}, a 
-#'  \code{matrix}, or a \code{data.table}.
+#' @param mut_file A mutation file output 
+#' by \link[=icgc2mut]{icgc2mut()}.
 #' @param remove.nonSNP A boolean variable indicating whether the function 
 #' should remove non-single nucleotide changes. This is set by default 
 #' to \code{TRUE} as our downstream filtering method only handles single 
-#' nucleotide changes. You can toggle this parameter to \code{FALSE} for your 
-#' own purposes, although it should remain \code{TRUE} if you want to utilize 
-#' our entire pipeline for your analysis.
+#' nucleotide changes.
 #'
 #' @return A sorted mutation file with duplicate entries removed and, depending 
 #' on user specification, non-single nucleotide changes removed.
