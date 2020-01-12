@@ -31,9 +31,9 @@ Suggests:
     testthat,
     knitr,
     rmarkdown
+biocViews:
 LinkingTo:
     Rcpp
-biocViews:
 Imports:
     Rcpp,
     data.table,
