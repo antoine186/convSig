@@ -1,8 +1,12 @@
 #' Read vcf files and processes them / User correct assembly
 #'
-#' @param datapath
+#' @param datapath The path leading to your vcf file.
+#' 
+#' @param geno An ID Format string in your vcf file indicating the index of the 
+#' genotype information.
 #'
-#' @return
+#' @return Write this after testing.
+#' 
 #' @export
 #'
 #' @examples
@@ -17,6 +21,8 @@ vcf2mut <- function(datapath, geno = "GT") {
   vcf_data[, `:=` (name = NULL, Vartype = NULL, Qual = NULL, Filter = NULL, Info = NULL)]
   
   # Genotype discovery
+  cat("Collecting genotype data from entries in the vcf file")
+  cat("\n")
   simp_format <- map2(vcf_data[, FORMAT], geno, format_comprehend)
   vcf_data[, FORMAT := simp_format]
   rm(simp_format)
@@ -25,12 +31,22 @@ vcf2mut <- function(datapath, geno = "GT") {
   minus_start <- grep("FORMAT", cnames)
   end_point <- dim(vcf_data)[2]
   
+  cat("Counting the number of mutations for each sample")
+  cat("\n")
+  cat("This could take a long while")
+  cat("\n")
+  
   for (i in c((minus_start+1):end_point)) {
     
     #cur_colname = cnames[i]
     vcf_data[, cnames[i] := map2(vcf_data[, FORMAT], vcf_data[[i]], format_user)] 
     
   }
+  
+  cat("Mutation count completed")
+  cat("\n")
+  cat("Formatting intermediate structure")
+  cat("\n")
   
   sum_names <- cnames[c((minus_start+1):end_point)]
   chopped_samples <- vcf_data[, sum_names, with = FALSE]
@@ -39,6 +55,9 @@ vcf2mut <- function(datapath, geno = "GT") {
   
   raw_icgc_form <- icgc_creater(vcf_data[, c(1,2,4,5), with = FALSE], chopped_samples,
                                 sum_names, icgc_height, dim(vcf_data)[1])
+  
+  cat("Filtering and cleaning intermediate structure")
+  cat("\n")
   
   proc_icgc_form <- icgc2mut(raw_icgc_form, using.vcf = TRUE)
   

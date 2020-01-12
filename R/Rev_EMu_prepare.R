@@ -10,10 +10,6 @@
 #' (i.e. the Chromosome ID), chromosome_start (i.e. the chromosome start position),
 #' mutated_from_allele (i.e. the reference allele), and mutated_to_allele
 #' (i.e. alternate allele).
-#' Your input file must also be sorted and must only contain single nucleotide
-#' changes (see \link[=icgc_curate]{icgc_curate()}).
-#' \emph{Such files can be produced by some of our functions
-#' like \link[=icgc2mut]{icgc2mut()}}.
 #'
 #' @param numbase An integer variable. A value of \code{5} will lead to the function
 #' scanning the input files for 5 bases mutation signatures as opposed to 3 bases
