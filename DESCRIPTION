@@ -33,6 +33,7 @@ Suggests:
     rmarkdown
 LinkingTo:
     Rcpp
+biocViews:
 Imports:
     Rcpp,
     data.table,
@@ -43,4 +44,3 @@ Imports:
     Biostrings
 VignetteBuilder: knitr
 SystemRequirements: C++11
-biocViews:
