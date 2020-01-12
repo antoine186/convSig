@@ -39,6 +39,7 @@ Imports:
     purrr,
     methods,
     dplyr,
-    roxygen2
+    roxygen2,
+    Biostrings
 VignetteBuilder: knitr
 SystemRequirements: C++11
