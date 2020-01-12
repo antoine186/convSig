@@ -43,3 +43,4 @@ Imports:
     Biostrings
 VignetteBuilder: knitr
 SystemRequirements: C++11
+biocViews:
