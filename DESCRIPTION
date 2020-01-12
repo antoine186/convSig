@@ -31,8 +31,7 @@ Suggests:
     testthat,
     knitr,
     rmarkdown
-biocViews:
-bioc_packages: BiocInstaller
+biocViews: Biostrings
 LinkingTo:
     Rcpp
 Imports:
@@ -41,7 +40,6 @@ Imports:
     purrr,
     methods,
     dplyr,
-    roxygen2,
-    Biostrings
+    roxygen2
 VignetteBuilder: knitr
 SystemRequirements: C++11
