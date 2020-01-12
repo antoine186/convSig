@@ -32,6 +32,7 @@ Suggests:
     knitr,
     rmarkdown
 biocViews:
+bioc_packages: BiocInstaller
 LinkingTo:
     Rcpp
 Imports:
