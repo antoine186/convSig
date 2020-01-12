@@ -1,14 +1,7 @@
-#' Read vcf files
+#' Read in the vcf file
 #'
-#' @param vcf_file
-#' @param well_id
-#' @param region
-#' @param drop_col
-#'
-#' @return
-#' @export
-#'
-#' @examples
+#' @section Details:
+#' This is an auxiliary function.
 #'
 #' @importFrom data.table fread
 #' @importFrom dplyr if_else %>%
