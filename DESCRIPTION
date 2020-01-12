@@ -31,10 +31,6 @@ Suggests:
     testthat,
     knitr,
     rmarkdown
-bioc_packages: BiocInstaller
-use_bioc: true
-bioc_required: true
-biocViews: Biostrings
 LinkingTo:
     Rcpp
 Imports:
