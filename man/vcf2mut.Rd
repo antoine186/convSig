@@ -7,7 +7,13 @@
 vcf2mut(datapath, geno = "GT")
 }
 \arguments{
-\item{datapath}{}
+\item{datapath}{The path leading to your vcf file.}
+
+\item{geno}{An ID Format string in your vcf file indicating the index of the
+genotype information.}
+}
+\value{
+Write this after testing.
 }
 \description{
 Read vcf files and processes them / User correct assembly
