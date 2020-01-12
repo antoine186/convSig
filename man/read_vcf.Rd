@@ -2,16 +2,15 @@
 % Please edit documentation in R/Read_VCF.R
 \name{read_vcf}
 \alias{read_vcf}
-\title{Read vcf files}
+\title{Read in the vcf file}
 \usage{
 read_vcf(vcf_file)
 }
-\arguments{
-\item{drop_col}{}
-}
 \description{
-Read vcf files
+Read in the vcf file
 }
-\examples{
+\section{Details}{
 
+This is an auxiliary function.
 }
+
