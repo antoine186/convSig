@@ -7,28 +7,21 @@
 icgc2mut(datapath, assembly = NULL, Seq = NULL, using.vcf = FALSE)
 }
 \arguments{
-\item{datapath}{A string or a variable referencing a string object. This is
-the path leading to your ICGC file (tsv or csv only). Alternatively, this
+\item{datapath}{The path leading to your ICGC file (tsv or csv only). Alternatively, this
 is your mutation data if you supplied either a \code{data.frame} or a \code{matrix}.
 Please make sure that your input data is not malformed;
 See \link[=loadICGCexample]{loadICGCexample()} for an example of an
-acceptable input. Please note that the function is slower with either a supplied
-\code{data.frame} or \code{matrix}.}
+acceptable input.}
 
-\item{assembly}{A string or a variable referencing a string object. This
-indicates the assembly version used in your experiment. Default is
-set to \code{NULL}, but you really should specify this. \emph{If unspecified,
-the function will process the most represented assembly version present in your
-input file}.}
+\item{assembly}{This indicates the assembly version used in your experiment. Default is
+set to \code{NULL}.}
 
 \item{Seq}{A string or a variable referencing a string. This indicates the
 sequencing strategy/approach used in your genome experiment. Default is set
-to \code{NULL}, but you really should specify this. \emph{If unspecified,
-the function will process the most represented sequencing strategy present in your
-input file}.}
+to \code{NULL}.}
 }
 \value{
-A mutation file containing 6 fields/variables: The ICGC sample ID,
+A mutation file containing 6 fields: The ICGC sample ID,
 the chromosome ID, the chromosome start position, the chromosome end
 position, the reference allele, and the alternate allele.
 }

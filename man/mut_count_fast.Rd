@@ -2,15 +2,42 @@
 % Please edit documentation in R/Rev_EMu_prepare.R
 \name{mut_count_fast}
 \alias{mut_count_fast}
-\title{Function Doc Pending}
+\title{Computes the frequency of each possible trinucleotide or 5-nucleotide mutation signature}
 \usage{
 mut_count_fast(assembly, mut_file, numbase, nb_chrom)
 }
+\arguments{
+\item{assembly}{The path leading to your assembly file (.fa or .fa.gz).}
+
+\item{mut_file}{The path leading to your mutation input file (tsv or csv only). Alternatively,
+this is your mutation data if you supplied either a \code{data.frame} or a \code{matrix}.
+Please make sure that your input data is not malformed; It should contain
+the following columns: icgc_sample_id (i.e. the ICGC sample ID), chromosome
+(i.e. the Chromosome ID), chromosome_start (i.e. the chromosome start position),
+mutated_from_allele (i.e. the reference allele), and mutated_to_allele
+(i.e. alternate allele).
+Your input file must also be sorted and must only contain single nucleotide
+changes (see \link[=icgc_curate]{icgc_curate()}).
+\emph{Such files can be produced by some of our functions
+like \link[=icgc2mut]{icgc2mut()}}.}
+
+\item{numbase}{An integer variable. A value of \code{5} will lead to the function
+scanning the input files for 5 bases mutation signatures as opposed to 3 bases
+signatures. a value of \code{3} causes the function to scan for 3 bases signatures.}
+}
+\value{
+A background mutation signatures vector (\code{wt}), which provides
+the frequency of each possible signature given an assembly file. A matrix (\code{mut_mat})
+containing the mutational rate of each signature for each sample in your supplied mutation
+input file.
+}
 \description{
-Function Doc Pending
+Computes the frequency of each possible trinucleotide or 5-nucleotide mutation signature
 }
-\section{Details}{
+\examples{
+assembly <- "Homo_sapiens.GRCh37.dna.primary_assembly.fa"
+mut_file <- "mutation_file_input.tsv"
 
-Pending
+mut_sign <- mut_count_fast(assembly, mut_file, 3, 21)
+
 }
-

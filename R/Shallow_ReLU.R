@@ -9,7 +9,7 @@ NULL
 #' 
 #' @param five A boolean that specifies
 #'  whether you want to apply a transformation based on a 5-nucleotide 
-#'  convolution window
+#'  convolution window.
 #' 
 #' @param K An integer that indicates the number
 #' of mutational processes you want to detect in your mutational count data via

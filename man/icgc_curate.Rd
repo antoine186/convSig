@@ -8,18 +8,13 @@ by \code{icgc2mut()}}
 icgc_curate(mut_file, remove.nonSNP = TRUE)
 }
 \arguments{
-\item{mut_file}{A string or a variable referencing a mutation file output
-by \link[=icgc2mut]{icgc2mut()}. You can specify a file you created, however
-you have to make sure that it has the correct format (i.e. please view
-\emph{Details}). Your input should either be a \code{data.frame}, a
-\code{matrix}, or a \code{data.table}.}
+\item{mut_file}{A mutation file output
+by \link[=icgc2mut]{icgc2mut()}.}
 
 \item{remove.nonSNP}{A boolean variable indicating whether the function
 should remove non-single nucleotide changes. This is set by default
 to \code{TRUE} as our downstream filtering method only handles single
-nucleotide changes. You can toggle this parameter to \code{FALSE} for your
-own purposes, although it should remain \code{TRUE} if you want to utilize
-our entire pipeline for your analysis.}
+nucleotide changes.}
 }
 \value{
 A sorted mutation file with duplicate entries removed and, depending

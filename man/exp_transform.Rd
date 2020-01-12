@@ -10,11 +10,11 @@ exp_transform(mut_obj, five = FALSE, K = 5, iter_num = 5000)
 \item{mut_obj}{An object of class 'Shallowres' as produced by the function
 \link[=mut_count]{mut_count()}}
 
-\item{five}{A boolean or a variable referring to a boolean, which specifies
+\item{five}{A boolean that specifies
 whether you want to apply a transformation based on a 5-nucleotide
 convolution window}
 
-\item{K}{An integer or a variable specifying an integer. This indicates the number
+\item{K}{An integer that indicates the number
 of mutational processes you want to detect in your mutational count data via
 the transformation.}
 }
