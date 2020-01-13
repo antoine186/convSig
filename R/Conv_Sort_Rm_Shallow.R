@@ -184,7 +184,11 @@ icgc2mut <- function(datapath, assembly = NULL, Seq = NULL, using.vcf = FALSE) {
     x <- x[, mutated_to_allele := as.character(mutated_to_allele)]
   }
   
+  if (using.vcf == FALSE) {
   cat("Tip: Use data.table::fwrite to write the result to a csv file for example.\n")
+  }
+  
+  
   invisible(x)
 }
 
