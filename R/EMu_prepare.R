@@ -113,14 +113,11 @@ mut_count <- function(reference, mut_file, five = FALSE, slice = FALSE) {
     uniq_chrom <- unique(datapath$chromosome)
     max_chrom <- max(uniq_chrom)
     min_chrom <- min(uniq_chrom)
-    cat("Inner1\n")
     if (min_chrom > 1) {
-      cat("Inner2\n")
       low_cut <-
         reference_gen[like(V1, paste0(">", min_chrom, " ")), which = T]
     } else {
       low_cut <- 2
-      cat("Inner2\n")
     }
     high_cut <-
       reference_gen[like(V1, paste0(">", max_chrom + 1, " ")), which = T]
