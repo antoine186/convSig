@@ -4,13 +4,22 @@
 \alias{vcf2mut}
 \title{Read vcf files and processes them / User correct assembly}
 \usage{
-vcf2mut(datapath, geno = "GT")
+vcf2mut(datapath, geno = "GT", assembly, numbase, nb_chrom)
 }
 \arguments{
 \item{datapath}{The path leading to your vcf file.}
 
 \item{geno}{An ID Format string in your vcf file indicating the index of the
 genotype information.}
+
+\item{assembly}{The path leading to your assembly file (.fa or .fa.gz).}
+
+\item{numbase}{An integer variable. A value of \code{5} will lead to the function
+scanning the input files for 5 bases mutation signatures as opposed to 3 bases
+signatures. a value of \code{3} causes the function to scan for 3 bases signatures.}
+
+\item{nb_chrom}{The number of chromosomes to be processed in the input mutation
+file.}
 }
 \value{
 Write this after testing.
