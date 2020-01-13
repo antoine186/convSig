@@ -72,7 +72,7 @@ vcf2mut <- function(datapath, geno = "GT", assembly, five = FALSE) {
   cat("Mutation signature frequency counting")
   cat("\n")
   
-  res <- mut_count_fast(assembly, mut_file, five = five)
+  res <- mut_count(assembly, mut_file, five = five)
   
   return(res)
   
