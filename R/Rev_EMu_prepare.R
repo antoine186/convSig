@@ -14,6 +14,9 @@
 #' @param numbase An integer variable. A value of \code{5} will lead to the function
 #' scanning the input files for 5 bases mutation signatures as opposed to 3 bases
 #' signatures. a value of \code{3} causes the function to scan for 3 bases signatures.
+#' 
+#' @param nb_chrom The number of chromosomes to be processed in the input mutation
+#' file.
 #'
 #' @return A background mutation signatures vector (\code{wt}), which provides
 #' the frequency of each possible signature given an assembly file. A matrix (\code{mut_mat})

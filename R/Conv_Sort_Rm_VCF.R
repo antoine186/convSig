@@ -4,6 +4,15 @@
 #' 
 #' @param geno An ID Format string in your vcf file indicating the index of the 
 #' genotype information.
+#' 
+#' @param assembly The path leading to your assembly file (.fa or .fa.gz).
+#' 
+#' @param numbase An integer variable. A value of \code{5} will lead to the function
+#' scanning the input files for 5 bases mutation signatures as opposed to 3 bases
+#' signatures. a value of \code{3} causes the function to scan for 3 bases signatures.
+#' 
+#' @param nb_chrom The number of chromosomes to be processed in the input mutation
+#' file.
 #'
 #' @return Write this after testing.
 #' 
@@ -13,7 +22,7 @@
 #' 
 #' @importFrom data.table setnames setcolorder
 #' @importFrom purrr map2
-vcf2mut <- function(datapath, geno = "GT") {
+vcf2mut <- function(datapath, geno = "GT", assembly, numbase, nb_chrom) {
   
   # Reading in the vcf file and keep only the SNP
   vcf_data <- read_vcf(datapath)
@@ -63,7 +72,7 @@ vcf2mut <- function(datapath, geno = "GT") {
   
   proc_icgc_form <- icgc_curate(proc_icgc_form)
   
-  return(vcf_data)
+  return(proc_icgc_form)
   
 }
 

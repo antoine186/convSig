@@ -209,7 +209,7 @@ Base2Num <- function(letter) {
 #' @export 
 loadICGCexample <- function() {
   # Import example input dataset
-  load("./data/example_mutation_dataset.Rda", envir = parent.frame())
+  load("data/example_mutation_dataset.Rda", envir = parent.frame())
 }
 
 # Sorts the mutation file
