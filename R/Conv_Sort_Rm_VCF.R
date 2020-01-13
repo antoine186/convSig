@@ -72,7 +72,12 @@ vcf2mut <- function(datapath, geno = "GT", assembly, numbase, nb_chrom) {
   
   proc_icgc_form <- icgc_curate(proc_icgc_form)
   
-  return(proc_icgc_form)
+  cat("Mutation signature frequency counting")
+  cat("\n")
+  
+  res <- mut_count_fast(assembly, proc_icgc_form, numbase, nb_chrom)
+  
+  return(res)
   
 }
 
