@@ -64,65 +64,94 @@ readmut <- function(datapath) {
   invisible(x)
 }
 
-# If need documentation, grab them from mut_count_fast
-# mut_count <- function(reference, mut_file, five = FALSE, slice = FALSE) {
-#   # Make sure mutation input is a data.table
-# 
-#   cat("Loading the assembly\n")
-#   # Call readfast
-#   reference_gen <- readfast(reference)
-# 
-#   cat("Loading the mutation input file\n")
-#   # Read in the mutation input file
-#   datapath <- readmut(mut_file)
-# 
-#   if (slice == TRUE) {
-# 
-#     cat("Counting the number of chromosomes\n")
-#     uniq_chrom <- unique(datapath$chromosome)
-#     max_chrom <- max(uniq_chrom)
-#     min_chrom <- min(uniq_chrom)
-#     if (min_chrom > 1) {
-#       low_cut <-
-#         reference_gen[like(V1, paste0(">", min_chrom, " ")), which = T]
-#     } else {
-#       low_cut <- 2
-#     }
-#     high_cut <-
-#       reference_gen[like(V1, paste0(">", max_chrom + 1, " ")), which = T]
-#     reference_gen <- reference_gen[(low_cut - 1):(high_cut - 1),]
-# 
-#   }
-# 
-#   cat("Miscellaneous processing...\n")
-#   nb_uniq = length(unique(as.character(datapath$icgc_sample_id)))
-#   # This is the row names of init_mut_mat
-#   uniq_sample <- unique(as.character(datapath$icgc_sample_id))
-# 
-#   if (five == FALSE) {
-#     init_mut_mat <- matrix(0L, nrow = nb_uniq, ncol = 96)
-#     init_wt <- rep(0, 96)
-#   } else if (five == TRUE) {
-#     init_mut_mat <- matrix(0L, nrow = nb_uniq, ncol = 1536)
-#     init_wt <- rep(0, 1536)
-#   }
-# 
-#   # Call mut_process35 here and store result in variable called treated_mut
-#   cat("Processing and encoding the mutation input file\n")
-#   # Order of this file's column is super important <= Here
-#   treated_mut <- mut_process35(datapath)
-# 
-#   cat("Counting the frequency of mutation fragment types. This could take a few minutes...\n")
-#   shallowres <- new("Shallowres", mut_mat = init_mut_mat, wt = init_wt)
-# 
-#   if (five == FALSE) {
-#     shallowres = shallow_loop3(shallowres, reference_gen, treated_mut, uniq_sample)
-#   } else if (five == TRUE) {
-#     shallowres = shallow_loop5(shallowres, reference_gen, treated_mut, uniq_sample)
-#   }
-# 
-#   invisible(shallowres)
-# }
+#' Computes the frequency of each possible trinucleotide or 5-nucleotide mutation signature
+#'
+#' @param reference The path leading to your assembly file (.fa or .fa.gz).
+#'
+#' @param mut_file The path leading to your mutation input file (tsv or csv only). Alternatively,
+#' this is your mutation data if you supplied either a \code{data.frame} or a \code{matrix}.
+#' Please make sure that your input data is not malformed; It should contain
+#' the following columns: icgc_sample_id (i.e. the ICGC sample ID), chromosome
+#' (i.e. the Chromosome ID), chromosome_start (i.e. the chromosome start position),
+#' mutated_from_allele (i.e. the reference allele), and mutated_to_allele
+#' (i.e. alternate allele).
+#'
+#' @param five A boolean variable. A value of \code{TRUE} will lead to the function
+#' scanning the input files for 5 bases mutation signatures as opposed to 3 bases
+#' signatures. a value of \code{FALSE} causes the function to scan for 3 bases signatures.
+#' 
+#' @param slice later
+#'
+#' @return A background mutation signatures vector (\code{wt}), which provides
+#' the frequency of each possible signature given an assembly file. A matrix (\code{mut_mat})
+#' containing the mutational rate of each signature for each sample in your supplied mutation
+#' input file.
+#'
+#' @examples
+#' assembly <- "Homo_sapiens.GRCh37.dna.primary_assembly.fa"
+#' mut_file <- "mutation_file_input.tsv"
+#'
+#' mut_sign <- mut_count(assembly, mut_file)
+#' 
+#' @export
+mut_count <- function(reference, mut_file, five = FALSE, slice = FALSE) {
+  # Make sure mutation input is a data.table
+
+  cat("Loading the assembly\n")
+  # Call readfast
+  reference_gen <- readfast(reference)
+
+  cat("Loading the mutation input file\n")
+  # Read in the mutation input file
+  datapath <- readmut(mut_file)
+
+  if (slice == TRUE) {
+
+    cat("Counting the number of chromosomes\n")
+    uniq_chrom <- unique(datapath$chromosome)
+    max_chrom <- max(uniq_chrom)
+    min_chrom <- min(uniq_chrom)
+    if (min_chrom > 1) {
+      low_cut <-
+        reference_gen[like(V1, paste0(">", min_chrom, " ")), which = T]
+    } else {
+      low_cut <- 2
+    }
+    high_cut <-
+      reference_gen[like(V1, paste0(">", max_chrom + 1, " ")), which = T]
+    reference_gen <- reference_gen[(low_cut - 1):(high_cut - 1),]
+
+  }
+
+  cat("Miscellaneous processing...\n")
+  nb_uniq = length(unique(as.character(datapath$icgc_sample_id)))
+  # This is the row names of init_mut_mat
+  uniq_sample <- unique(as.character(datapath$icgc_sample_id))
+
+  if (five == FALSE) {
+    init_mut_mat <- matrix(0L, nrow = nb_uniq, ncol = 96)
+    init_wt <- rep(0, 96)
+  } else if (five == TRUE) {
+    init_mut_mat <- matrix(0L, nrow = nb_uniq, ncol = 1536)
+    init_wt <- rep(0, 1536)
+  }
+
+  # Call mut_process35 here and store result in variable called treated_mut
+  cat("Processing and encoding the mutation input file\n")
+  # Order of this file's column is super important <= Here
+  treated_mut <- mut_process35(datapath)
+
+  cat("Counting the frequency of mutation fragment types. This could take a few minutes...\n")
+  shallowres <- new("Shallowres", mut_mat = init_mut_mat, wt = init_wt)
+
+  if (five == FALSE) {
+    shallowres = shallow_loop3(shallowres, reference_gen, treated_mut, uniq_sample)
+  } else if (five == TRUE) {
+    shallowres = shallow_loop5(shallowres, reference_gen, treated_mut, uniq_sample)
+  }
+
+  invisible(shallowres)
+}
 
 #' A function that treats the mutation input file and reorders its columns
 #'

@@ -1,247 +1,215 @@
 
-#' Computes the frequency of each possible trinucleotide or 5-nucleotide mutation signature
-#'
-#' @param assembly The path leading to your assembly file (.fa or .fa.gz).
-#'
-#' @param mut_file The path leading to your mutation input file (tsv or csv only). Alternatively,
-#' this is your mutation data if you supplied either a \code{data.frame} or a \code{matrix}.
-#' Please make sure that your input data is not malformed; It should contain
-#' the following columns: icgc_sample_id (i.e. the ICGC sample ID), chromosome
-#' (i.e. the Chromosome ID), chromosome_start (i.e. the chromosome start position),
-#' mutated_from_allele (i.e. the reference allele), and mutated_to_allele
-#' (i.e. alternate allele).
-#'
-#' @param numbase An integer variable. A value of \code{5} will lead to the function
-#' scanning the input files for 5 bases mutation signatures as opposed to 3 bases
-#' signatures. a value of \code{3} causes the function to scan for 3 bases signatures.
-#' 
-#' @param nb_chrom The number of chromosomes to be processed in the input mutation
-#' file.
-#'
-#' @return A background mutation signatures vector (\code{wt}), which provides
-#' the frequency of each possible signature given an assembly file. A matrix (\code{mut_mat})
-#' containing the mutational rate of each signature for each sample in your supplied mutation
-#' input file.
-#'
-#' @examples
-#' assembly <- "Homo_sapiens.GRCh37.dna.primary_assembly.fa"
-#' mut_file <- "mutation_file_input.tsv"
-#'
-#' mut_sign <- mut_count_fast(assembly, mut_file, 3, 21)
-#'
-#' @importFrom Biostrings readDNAStringSet countPattern
-#' 
-#' @export
-mut_count_fast <- function(assembly, mut_file, numbase, nb_chrom) {
-  
-  if(!is.null(assembly) && !is.character(assembly)) {
-    stop("Assembly supplied is not a string.")
-  }
-  
-  genome <- readDNAStringSet(assembly, format = "fasta")
-  
-  if (!is.data.table(mut_file)) {
-    if (!is.data.frame(mut_file) && !is.matrix(mut_file)) {
-      stop("Your input is neither a data.frame or a matrix")
-    }
-    
-    mut_file <- as.data.table(mut_file)
-    
-    mut_file <- mut_file[, chromosome := as.numeric(as.character(chromosome))]
-    mut_file <- mut_file[, chromosome_start := as.numeric(as.character(chromosome_start))]
-    mut_file <- mut_file[, chromosome_end := as.numeric(as.character(chromosome_end))]
-    mut_file <- mut_file[, mutated_from_allele := as.character(mutated_from_allele)]
-    mut_file <- mut_file[, mutated_to_allele := as.character(mutated_to_allele)]
-  }
-  
-  if (numbase != 3 && numbase != 5) {
-    stop("Your specified fragment size is invalid. It should either be 3 or 5")
-  }
-  
-  if (nb_chrom < 1 || nb_chrom > 22) {
-    stop("You specified too little or too many chromosomes for processing")
-  }
-  
-  # Handle mut_matrix sample numbers
-  sample_ids <- unique(mut_file$icgc_sample_id)
-  
-  # How many fragments?
-  if (numbase == 3) {
-    nb_frag = 96
-    background <- rep(0, 96)
-    patterns <- pattern_gen(96)
-    mut_mat <- matrix(0, nrow = length(sample_ids), ncol = 96)
-  } else if (numbase == 5) {
-    nb_frag = 1536
-    background <- rep(0, 1536)
-    patterns <- pattern_gen(1536)
-    mut_mat <- matrix(0, nrow = length(sample_ids), ncol = 1536)
-  }
-  
-  mut_file <- mut_process35(mut_file)
-  
-  # if (fasta == FALSE) {
-  #   
-  #   for (i in 1:nb_chrom) {
-  #     
-  #     chrom_name <- paste("chr", i, sep = "")
-  #     
-  #     for (j in 1:length(patterns)) {
-  #       
-  #       if (length(patterns) == 64) {
-  #         
-  #         temp_inds <- Rfeat2table3(patterns[j]) 
-  #         
-  #       } else if (length(patterns) == 1024) {
-  #         
-  #         temp_inds <- Rfeat2table5(patterns[j]) 
-  #         
-  #       }
-  #       
-  #       found_nb <- countPattern(patterns[j], genome[[chrom_name]])
-  #       
-  #       background[temp_inds[1]] = background[temp_inds[1]] + found_nb
-  #       background[temp_inds[2]] = background[temp_inds[2]] + found_nb
-  #       background[temp_inds[3]] = background[temp_inds[3]] + found_nb
-  #       
-  #     }
-  #     
-  #   }
-  #   
-  # } else if (fasta == TRUE) {
-    
-    chrom_start = 1
-    
-    for (i in 1:nb_chrom) {
-      current_chrom <- genome[[i]]
-      
-      cat("Currently Working on Chromosome ")
-      cat(i)
-      cat("\n")
-      cat("Updating the Genome Background")
-      cat("\n")
-      
-      for (j in 1:length(patterns)) {
-        
-        if (length(patterns) == 64) {
-          
-          temp_inds <- Rfeat2table3(patterns[j]) 
-          
-        } else if (length(patterns) == 1024) {
-          
-          temp_inds <- Rfeat2table5(patterns[j]) 
-          
-        }
-        
-        found_nb <- countPattern(patterns[j], current_chrom)
-        
-        background[temp_inds[1]] = background[temp_inds[1]] + found_nb
-        background[temp_inds[2]] = background[temp_inds[2]] + found_nb
-        background[temp_inds[3]] = background[temp_inds[3]] + found_nb
-        
-      }
-      
-      cat("Updating the Mutation Matrix")
-      cat("\n")
-      
-      if (chrom_start < dim(mut_file)[1]) {
-        # cat("mut_file dimension is:")
-        # cat("\n")
-        # cat(dim(mut_file)[1])
-        # cat("\n")
-        for (k in chrom_start:dim(mut_file)[1]) {
-          # cat("k index is")
-          # cat("\n")
-          # cat(k)
-          # cat("\n")
-          if (mut_file[k]$chromosome > i) {
-            chrom_start = k
-            break
-          } else {
-            
-            if (length(patterns) == 64) {
-              
-              ref_base <- as.character(current_chrom[mut_file[k]$chromosome_start])
-              flankleft_base <- as.character(current_chrom[mut_file[k]$chromosome_start - 1])
-              flankright_base <- as.character(current_chrom[mut_file[k]$chromosome_start + 1])
-              
-              pasted_wind <- paste(flankleft_base, ref_base, flankright_base, sep = "")
-              
-              temp_thisinds <- Rfeat2table3(pasted_wind) 
-              
-              rm(flankleft_base)
-              rm(flankright_base)
-              
-            } else if (length(patterns) == 1024) {
-              
-              ref_base <- as.character(current_chrom[mut_file[k]$chromosome_start])
-              flankleft_base <- as.character(current_chrom[mut_file[k]$chromosome_start - 1])
-              flankleftleft_base <- as.character(current_chrom[mut_file[k]$chromosome_start - 2])
-              flankright_base <- as.character(current_chrom[mut_file[k]$chromosome_start + 1])
-              flankrightright_base <- as.character(current_chrom[mut_file[k]$chromosome_start + 2])
-              
-              pasted_wind <- paste(flankleftleft_base, flankleft_base,
-                                   ref_base, flankright_base, flankrightright_base, sep = "")
-              
-              temp_thisinds <- Rfeat2table5(pasted_wind) 
-              
-              rm(flankleft_base)
-              rm(flankright_base)
-              rm(flankleftleft_base)
-              rm(flankrightright_base)
-              
-            }
-            
-            mut_ref_base <- mut_file[k]$mutated_from_allele
-            
-            trueornot <- ref_base != mut_ref_base
-            
-            if (trueornot) {
-              stop("It seems like the reference genome you supplied is inappropriate")
-            }
-            
-            rm(ref_base)
-            rm(mut_ref_base)
-            rm(trueornot)
-            rm(pasted_wind)
-            
-            # cat("mut_mat dimension is:")
-            # cat("\n")
-            # cat(dim(mut_mat))
-            # cat("\n")
-            
-            incr_loc <- which(sample_ids == mut_file[k]$icgc_sample_id)
-            
-            mut_mat[incr_loc, temp_thisinds[mut_file[k]$mutated_to_allele + 1]] = mut_mat[incr_loc, temp_thisinds[mut_file[k]$mutated_to_allele + 1]] + 1
-            
-            # cat("incr_loc is")
-            # cat("\n")
-            # cat(incr_loc)
-            # cat("\n")
-            # cat("column accessor ir")
-            # cat("\n")
-            # cat(temp_thisinds[mut_file[k]$mutated_to_allele + 1])
-            # cat("\n")
-            
-            rm(incr_loc)
-            
-            chrom_start = k
-          }
-          gc()
-        }
-        
-      }
-    
-      
-    }
-    
-  #}
-  
-  shallowres <- new("Shallowres", mut_mat = mut_mat, wt = background)
-  
-  invisible(shallowres)
-  
-}
+# importFrom Biostrings readDNAStringSet countPattern
+# mut_count_fast <- function(assembly, mut_file, numbase, nb_chrom) {
+#   
+#   if(!is.null(assembly) && !is.character(assembly)) {
+#     stop("Assembly supplied is not a string.")
+#   }
+#   
+#   genome <- readDNAStringSet(assembly, format = "fasta")
+#   
+#   if (!is.data.table(mut_file)) {
+#     if (!is.data.frame(mut_file) && !is.matrix(mut_file)) {
+#       stop("Your input is neither a data.frame or a matrix")
+#     }
+#     
+#     mut_file <- as.data.table(mut_file)
+#     
+#     mut_file <- mut_file[, chromosome := as.numeric(as.character(chromosome))]
+#     mut_file <- mut_file[, chromosome_start := as.numeric(as.character(chromosome_start))]
+#     mut_file <- mut_file[, chromosome_end := as.numeric(as.character(chromosome_end))]
+#     mut_file <- mut_file[, mutated_from_allele := as.character(mutated_from_allele)]
+#     mut_file <- mut_file[, mutated_to_allele := as.character(mutated_to_allele)]
+#   }
+#   
+#   if (numbase != 3 && numbase != 5) {
+#     stop("Your specified fragment size is invalid. It should either be 3 or 5")
+#   }
+#   
+#   if (nb_chrom < 1 || nb_chrom > 22) {
+#     stop("You specified too little or too many chromosomes for processing")
+#   }
+#   
+#   # Handle mut_matrix sample numbers
+#   sample_ids <- unique(mut_file$icgc_sample_id)
+#   
+#   # How many fragments?
+#   if (numbase == 3) {
+#     nb_frag = 96
+#     background <- rep(0, 96)
+#     patterns <- pattern_gen(96)
+#     mut_mat <- matrix(0, nrow = length(sample_ids), ncol = 96)
+#   } else if (numbase == 5) {
+#     nb_frag = 1536
+#     background <- rep(0, 1536)
+#     patterns <- pattern_gen(1536)
+#     mut_mat <- matrix(0, nrow = length(sample_ids), ncol = 1536)
+#   }
+#   
+#   mut_file <- mut_process35(mut_file)
+#   
+#   # if (fasta == FALSE) {
+#   #   
+#   #   for (i in 1:nb_chrom) {
+#   #     
+#   #     chrom_name <- paste("chr", i, sep = "")
+#   #     
+#   #     for (j in 1:length(patterns)) {
+#   #       
+#   #       if (length(patterns) == 64) {
+#   #         
+#   #         temp_inds <- Rfeat2table3(patterns[j]) 
+#   #         
+#   #       } else if (length(patterns) == 1024) {
+#   #         
+#   #         temp_inds <- Rfeat2table5(patterns[j]) 
+#   #         
+#   #       }
+#   #       
+#   #       found_nb <- countPattern(patterns[j], genome[[chrom_name]])
+#   #       
+#   #       background[temp_inds[1]] = background[temp_inds[1]] + found_nb
+#   #       background[temp_inds[2]] = background[temp_inds[2]] + found_nb
+#   #       background[temp_inds[3]] = background[temp_inds[3]] + found_nb
+#   #       
+#   #     }
+#   #     
+#   #   }
+#   #   
+#   # } else if (fasta == TRUE) {
+#     
+#     chrom_start = 1
+#     
+#     for (i in 1:nb_chrom) {
+#       current_chrom <- genome[[i]]
+#       
+#       cat("Currently Working on Chromosome ")
+#       cat(i)
+#       cat("\n")
+#       cat("Updating the Genome Background")
+#       cat("\n")
+#       
+#       for (j in 1:length(patterns)) {
+#         
+#         if (length(patterns) == 64) {
+#           
+#           temp_inds <- Rfeat2table3(patterns[j]) 
+#           
+#         } else if (length(patterns) == 1024) {
+#           
+#           temp_inds <- Rfeat2table5(patterns[j]) 
+#           
+#         }
+#         
+#         found_nb <- countPattern(patterns[j], current_chrom)
+#         
+#         background[temp_inds[1]] = background[temp_inds[1]] + found_nb
+#         background[temp_inds[2]] = background[temp_inds[2]] + found_nb
+#         background[temp_inds[3]] = background[temp_inds[3]] + found_nb
+#         
+#       }
+#       
+#       cat("Updating the Mutation Matrix")
+#       cat("\n")
+#       
+#       if (chrom_start < dim(mut_file)[1]) {
+#         # cat("mut_file dimension is:")
+#         # cat("\n")
+#         # cat(dim(mut_file)[1])
+#         # cat("\n")
+#         for (k in chrom_start:dim(mut_file)[1]) {
+#           # cat("k index is")
+#           # cat("\n")
+#           # cat(k)
+#           # cat("\n")
+#           if (mut_file[k]$chromosome > i) {
+#             chrom_start = k
+#             break
+#           } else {
+#             
+#             if (length(patterns) == 64) {
+#               
+#               ref_base <- as.character(current_chrom[mut_file[k]$chromosome_start])
+#               flankleft_base <- as.character(current_chrom[mut_file[k]$chromosome_start - 1])
+#               flankright_base <- as.character(current_chrom[mut_file[k]$chromosome_start + 1])
+#               
+#               pasted_wind <- paste(flankleft_base, ref_base, flankright_base, sep = "")
+#               
+#               temp_thisinds <- Rfeat2table3(pasted_wind) 
+#               
+#               rm(flankleft_base)
+#               rm(flankright_base)
+#               
+#             } else if (length(patterns) == 1024) {
+#               
+#               ref_base <- as.character(current_chrom[mut_file[k]$chromosome_start])
+#               flankleft_base <- as.character(current_chrom[mut_file[k]$chromosome_start - 1])
+#               flankleftleft_base <- as.character(current_chrom[mut_file[k]$chromosome_start - 2])
+#               flankright_base <- as.character(current_chrom[mut_file[k]$chromosome_start + 1])
+#               flankrightright_base <- as.character(current_chrom[mut_file[k]$chromosome_start + 2])
+#               
+#               pasted_wind <- paste(flankleftleft_base, flankleft_base,
+#                                    ref_base, flankright_base, flankrightright_base, sep = "")
+#               
+#               temp_thisinds <- Rfeat2table5(pasted_wind) 
+#               
+#               rm(flankleft_base)
+#               rm(flankright_base)
+#               rm(flankleftleft_base)
+#               rm(flankrightright_base)
+#               
+#             }
+#             
+#             mut_ref_base <- mut_file[k]$mutated_from_allele
+#             
+#             trueornot <- ref_base != mut_ref_base
+#             
+#             if (trueornot) {
+#               stop("It seems like the reference genome you supplied is inappropriate")
+#             }
+#             
+#             rm(ref_base)
+#             rm(mut_ref_base)
+#             rm(trueornot)
+#             rm(pasted_wind)
+#             
+#             # cat("mut_mat dimension is:")
+#             # cat("\n")
+#             # cat(dim(mut_mat))
+#             # cat("\n")
+#             
+#             incr_loc <- which(sample_ids == mut_file[k]$icgc_sample_id)
+#             
+#             mut_mat[incr_loc, temp_thisinds[mut_file[k]$mutated_to_allele + 1]] = mut_mat[incr_loc, temp_thisinds[mut_file[k]$mutated_to_allele + 1]] + 1
+#             
+#             # cat("incr_loc is")
+#             # cat("\n")
+#             # cat(incr_loc)
+#             # cat("\n")
+#             # cat("column accessor ir")
+#             # cat("\n")
+#             # cat(temp_thisinds[mut_file[k]$mutated_to_allele + 1])
+#             # cat("\n")
+#             
+#             rm(incr_loc)
+#             
+#             chrom_start = k
+#           }
+#           gc()
+#         }
+#         
+#       }
+#     
+#       
+#     }
+#     
+#   #}
+#   
+#   shallowres <- new("Shallowres", mut_mat = mut_mat, wt = background)
+#   
+#   invisible(shallowres)
+#   
+# }
 
 Rfeat2table3 <- function(basestring) {
   

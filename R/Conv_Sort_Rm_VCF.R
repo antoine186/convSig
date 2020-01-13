@@ -7,12 +7,9 @@
 #' 
 #' @param assembly The path leading to your assembly file (.fa or .fa.gz).
 #' 
-#' @param numbase An integer variable. A value of \code{5} will lead to the function
+#' @param five A boolean variable. A value of \code{TRUE} will lead to the function
 #' scanning the input files for 5 bases mutation signatures as opposed to 3 bases
-#' signatures. a value of \code{3} causes the function to scan for 3 bases signatures.
-#' 
-#' @param nb_chrom The number of chromosomes to be processed in the input mutation
-#' file.
+#' signatures. a value of \code{FALSE} causes the function to scan for 3 bases signatures.
 #'
 #' @return Write this after testing.
 #' 
@@ -22,7 +19,7 @@
 #' 
 #' @importFrom data.table setnames setcolorder
 #' @importFrom purrr map2
-vcf2mut <- function(datapath, geno = "GT", assembly, numbase, nb_chrom) {
+vcf2mut <- function(datapath, geno = "GT", assembly, five = FALSE) {
   
   # Reading in the vcf file and keep only the SNP
   vcf_data <- read_vcf(datapath)
@@ -75,7 +72,7 @@ vcf2mut <- function(datapath, geno = "GT", assembly, numbase, nb_chrom) {
   cat("Mutation signature frequency counting")
   cat("\n")
   
-  res <- mut_count_fast(assembly, proc_icgc_form, numbase, nb_chrom)
+  res <- mut_count_fast(assembly, mut_file, five = five)
   
   return(res)
   
