@@ -195,8 +195,8 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
             //std::string err_start = std::to_string(ref_ar[mut_pos]);
             std::string err_ref = std::to_string(ref_pos);
             
-            Rcout << ref_ar[mut_pos] << "\n"
-            Rcout << base2 << "\n"
+            Rcout << ref_ar[mut_pos] << "\n";
+            Rcout << base2 << "\n";
             
             stop("err");
             // stop("It seems that your supplied assembly input does not "
