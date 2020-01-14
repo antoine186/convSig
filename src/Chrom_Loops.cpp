@@ -185,8 +185,10 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
         while (1) {
           //++free_stat;
           if(ref_ar[mut_pos] != base2) {
-            stop("It seems that your supplied assembly input does not " 
-                   "correspond to the one in your mutation input file");
+            std::string err_pos = std::to_string(mut_pos);
+            stop(err_pos);
+            // stop("It seems that your supplied assembly input does not " 
+            //        "correspond to the one in your mutation input file");
             //mut_pos = ++mut_pos;
             //continue;
           }
