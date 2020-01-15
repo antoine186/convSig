@@ -177,12 +177,12 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
       
       ++ref_pos;
       
-      if (ref_pos > startpos_ar[mut_pos]) {
-        std::string err_ref = std::to_string(ref_pos);
-        std::string err_mut = std::to_string(startpos_ar[mut_pos]);
-        
-        stop(err_ref + " " + err_mut);
-      }
+      // if (ref_pos > startpos_ar[mut_pos]) {
+      //   std::string err_ref = std::to_string(ref_pos);
+      //   std::string err_mut = std::to_string(startpos_ar[mut_pos]);
+      //   
+      //   stop(err_ref + " " + err_mut);
+      // }
       
       // Here is the second while loop - startpos_ar[mut_pos] is generally
       // larger than ref_pos
