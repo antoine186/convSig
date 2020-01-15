@@ -14,9 +14,21 @@ To install convSig on your Windows system, please download the convSig package f
 install.packages("convSig-master", repos = NULL, type="source")
 ```
 
-Please note that you may encounter an issue with updating/installing a dependency package stringi during installation. In such case, please manually download [stringi](https://cran.r-project.org/web/packages/stringi/index.html) and install from source.
+Please note that you may encounter an issue with updating/installing a dependency package stringi during installation. In such case, please manually download [stringi](https://cran.r-project.org/web/packages/stringi/index.html) and install from source prior to convSig installation.
 
-## Package Overview
+## Mac OS
+
+To install convSig on your Mac OS system, please run the following command:
+
+```
+library(devtools)
+
+install_github("antoine186/convSig")
+```
+
+Please note that you may encounter an issue with updating/installing a dependency package stringi during installation. In such case, please manually download [stringi](https://cran.r-project.org/web/packages/stringi/index.html) and install from source prior to convSig installation. It is advisable to update all of your R packages prior to convSig installation. Finally, while convSig is building on your system and when prompted to update dependencies, you should choose the option *None*.
+
+# Package Overview
 
 This package implements an entirely novel approach for the detection and extraction of mutational processes that is based on Yun Feng’s work (convSig project, Oxford University PhD).
 Every cancer-affected patient has specific mutational patterns in their genome, hence detecting, extracting, and characterising such patterns can provide a useful source of information for the personalisation of cancer treatment. The methods implemented in this package make use of the convolutional filtering techniques found in computer vision. Our model is centred around the concept of each mutational process being represented as a filter, which slides over the entire genome of interest and probabilistically induces mutations in genetic sequences that it has a strong rapport with. Our methods extract and characterise these processes using two variations of expectation maximisation (i.e. EM).
