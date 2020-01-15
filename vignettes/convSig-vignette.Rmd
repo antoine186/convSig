@@ -1,5 +1,5 @@
 ---
-title: "convSig-vignette"
+title: "R Package convSig"
 author: "Antoine Yi-Cheng Tian"
 date: "`r Sys.Date()`"
 fontsize: 11px
@@ -80,7 +80,7 @@ The `mut_count()` function constructs from the formatted mutation data two essen
 
 ```{r, eval = FALSE}
 assembly <- "Homo_sapiens.GRCh37.dna.primary_assembly.fa"
-EMu_prepped <- mut_count(assembly, cur_mut_file, five = FALSE)
+EMu_prepped <- mut_count(assembly, cur_mut_file, five = TRUE)
 ```
 
 Please note that this function call requires you to supply it with the correct
@@ -88,6 +88,20 @@ corresponding reference genome.
 The function call can also take a parameter that helps indicate whether you wish to construct the result tables for a 3-base long or a 5-base long mutation signature window. By default, the call is set to run for a 3-base long window.
 
 <h2> VCF pipeline </h2>
+
+The mutational genome background counts and the activity rate of mutational processes
+can also be obtained from a multi-sampled VCF file. The `vcf2mut` function call performs complete formatting on user specified vcf input file. It then constructs from the formatted mutation data two essential tables, the mutation rate and genome background count tables.
+
+```{r, eval = FALSE}
+
+assembly <- "Homo_sapiens.GRCh37.dna.primary_assembly.fa"
+mut_file <- "multisampled_mutations.vcf"
+
+EMu_prepped <- vcf2mut(mut_file, geno = "GT", assembly, five = TRUE)
+
+```
+
+Geno is a string indicating the designation of the ID field within the FORMAT column, which specifies the 'Genotype' value. This allows the function to count the number mutations per chromosome location and per samples.
 
 <h2> Details on results (ICGC & VCF pipeline) </h2>
 
@@ -110,7 +124,7 @@ each of the 2 original bases.
 
 <h2> ReLU or Exponential Transformation </h2>
 
-The below function calls require the data output by the previous function call [i.e. mut_count()], a parameter specifying whether the transformation should consider a 3-base long window vs a 5-base long window, and a parameter indicating the number of mutational processes to extract from the pre-processed input data.
+The below function calls require the data output by the previous function call (i.e. `mut_count()`), a parameter specifying whether the transformation should consider a 3-base long window vs a 5-base long window, and a parameter indicating the number of mutational processes to extract from the pre-processed input data.
 
 ```{r, eval = FALSE}
 relu_res <- relu_transform(EMu_prepped, five = TRUE, K = 5)

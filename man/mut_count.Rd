@@ -21,7 +21,8 @@ mutated_from_allele (i.e. the reference allele), and mutated_to_allele
 scanning the input files for 5 bases mutation signatures as opposed to 3 bases
 signatures. a value of \code{FALSE} causes the function to scan for 3 bases signatures.}
 
-\item{slice}{later}
+\item{slice}{A boolean variable. A value of \code{TRUE} will slice the assembly
+provided and only keep the chromosomes that appear in your mutation input file.}
 }
 \value{
 A background mutation signatures vector (\code{wt}), which provides
