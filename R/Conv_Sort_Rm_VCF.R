@@ -1,6 +1,6 @@
 #' Read vcf files and processes them / User correct assembly
 #'
-#' @param datapath The path leading to your vcf file.
+#' @param datapath The path leading to your multisampled vcf file.
 #' 
 #' @param geno An ID Format string in your vcf file indicating the index of the 
 #' genotype information.
@@ -11,11 +11,18 @@
 #' scanning the input files for 5 bases mutation signatures as opposed to 3 bases
 #' signatures. a value of \code{FALSE} causes the function to scan for 3 bases signatures.
 #'
-#' @return Write this after testing.
+#' @return A background mutation signatures vector (\code{wt}), which provides
+#' the frequency of each possible signature given an assembly file. A matrix (\code{mut_mat})
+#' containing the mutational rate of each signature for each sample in your supplied mutation
+#' input file.
+#' 
+#' @examples
+#' assembly <- "Homo_sapiens.GRCh37.dna.primary_assembly.fa"
+#' mut_file <- "multisampled_mutations.vcf"
+#' 
+#' mut_sign <- vcf2mut(mut_file, "GT", assembly)
 #' 
 #' @export
-#'
-#' @examples
 #' 
 #' @importFrom data.table setnames setcolorder
 #' @importFrom purrr map2
