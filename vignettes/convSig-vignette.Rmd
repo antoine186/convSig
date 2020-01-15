@@ -24,7 +24,9 @@ This package implements an entirely novel approach for the detection and extract
 Cancer patients have distinct mutational patterns in their genome, hence detecting, extracting, and characterising such patterns can provide a useful source of information for personalized of cancer treatment.  The methods implemented in this package makes use of convolutional filtering techniques found in computer vision. Our model is centred around the concept of each mutational process being represented as a filter, which slides over the entire genome of interest and probabilistically induces mutations in genetic sequences that it has a strong rapport with. Our methods extract and characterise these processes using two variations of
 expectation maximisation (i.e. EM).
 
-<h1> Data Preparation for Expectation Maximisation (ICGC pipeline) </h1>
+<h1> Data Preparation for Expectation Maximisation </h1>
+
+<h2> ICGC pipeline </h2>
 
 The EM methods (ReLU and exponential transformations) both require mutational genome
 background counts and the activity rate of mutational processes. In order to extract from
@@ -55,8 +57,8 @@ res %>%
 
 To find other such mutation files please visit the online ICGC data portal ([dcc.icgc.org](https://dcc.icgc.org/)), navigate to DCC DATA RELEASE, select a project, and download any file which contains "simple_somatic_mutation"in its name.
 
-The `icgc2mut` function call formats the mutation data for . More precisely, it skips all of the X and Y chromosomes (i.e. sex chromosomes),
-gathers all of the mutations that pertain to experiments run with your specified assembly version and sequencing strategy, and applies a base to number conversion to help filter out invalid types of mutations such as insertions and deletions. 
+The `icgc2mut` function call performs initial formatting of the mutation data for the ICGC pipeline. More precisely, it skips all of the X and Y chromosomes,
+gathers all of the mutations that pertain to experiments run with user specified assembly version and sequencing strategy, and applies a base to number conversion to help filter out invalid types of mutations such as insertions and deletions. 
 
 ```{r, eval = FALSE}
 datapath <- "simple_somatic_mutation.open.COCA-CN.tsv"
@@ -64,33 +66,34 @@ mut_file <- icgc2mut(datapath, assembly = "GRCh37", Seq = "WGS")
 ```
 
 The ICGC mutation file can either be the path to the mutation file on your workstation or data previously loaded into your R global environment (as a `matrix` or `data.frame`).
-The below block of code designates the reference genome file that corresponds to the relevant experiment and the sequencing strategy used to obtain it.
+Assembly is the reference genome file that corresponds to the relevant experiment and the sequencing strategy used to obtain it.
 
-Next we use the `icgc_curate()` function, it performs some prerequisite process for further analysis:
-
-1. **Sorting**. The input is sorted in ascending order by chromosome number first and then by the mutation chromosome start position. This is required as the downstream convolution operation can only scan the reference genome in an ordered manner.
-2. **Remove non-SNPs**. This is an optional step (using `remove.nonSNP = TRUE`), it removes all non-single nucleotide polymorphisms as our methods are only valid for single nucleotide substitutions.
-3. **Remove duplicates**. Finally all duplicate mutations present are removed.
+The `icgc_curate()` function call completes the formatting of the mutation data.
 
 ```{r, eval = FALSE}
 cur_mut_file <- icgc_curate(mut_file, remove.nonSNP = TRUE)
 ```
 
-The `mut_count()` function constructs two essential count tables: the mutation and the genome background count tables.
+The input is first sorted in ascending order by chromosome number first and then by the mutation chromosome start position. As an optional step (using `remove.nonSNP = TRUE`), it removes all non-single nucleotide polymorphisms. And, finally all duplicate mutations present in the data are removed.
 
-The mutation count table is a matrix, which records the frequency of each mutation type for each sample present in supplied mutation input data. Each of its rows therefore represents a sample and each of its columns represents a distinct mutation type/possibility. The number of possible mutation types is calculated in accordance with the length of the mutation signature window (i.e. 3 or 5 bases only for our methods). The formula used is: $4^{numbase - 1} \times 2 \times 3$ (where numbase is equal to the length of the window). We first perform $4^{numbase - 1} \times 2$ because all flanking bases in the window (i.e. non-middle bases) have exactly 4 base possibilities and the middle base only has 2 possibilities. The latter is due to the reverse complementarity nature of the genome; This is to avoid double counting the mutations that have actually occurred. We furthermore multiply the intermediate result by 3 here because of the three possibilities for the middle base substitution.
-
-The genome background count table is a vector with length equal to the total possible number of mutation types as calculated above. It also records the frequency that we could expect from each mutation under circumstances of equal probability for the occurrence of such mutations.
-
-Please note that this function call requires you to supply it with the correct
-corresponding reference genome.
-
-The function call can also take a parameter that helps indicate whether you wish to construct the count tables for a 3-base long or a 5-base long mutation signature window. By default, the call is set to run for a 3-base long window.
+The `mut_count()` function constructs from the formatted mutation data two essential tables, the mutation rate and genome background count tables, which are required for inferrence via expectation maximisation.
 
 ```{r, eval = FALSE}
 assembly <- "Homo_sapiens.GRCh37.dna.primary_assembly.fa"
 EMu_prepped <- mut_count(assembly, cur_mut_file, five = FALSE)
 ```
+
+Please note that this function call requires you to supply it with the correct
+corresponding reference genome.
+The function call can also take a parameter that helps indicate whether you wish to construct the result tables for a 3-base long or a 5-base long mutation signature window. By default, the call is set to run for a 3-base long window.
+
+<h2> VCF pipeline </h2>
+
+<h2> Details on results (ICGC & VCF pipeline) </h2>
+
+The mutation rate table is a matrix, which records the frequency of each mutation type for each sample present in supplied mutation input data. Each of its rows therefore represents a sample and each of its columns represents a distinct mutation type/possibility. The number of possible mutation types is calculated in accordance with the length of the mutation signature window (i.e. 3 or 5 bases only for our methods). The formula used is: $4^{numbase - 1} \times 2 \times 3$ (where numbase is equal to the length of the window). We first perform $4^{numbase - 1} \times 2$ because all flanking bases in the window (i.e. non-middle bases) have exactly 4 base possibilities and the middle base only has 2 possibilities. The latter is due to the reverse complementarity nature of the genome; This is to avoid double counting the mutations that have actually occurred. We furthermore multiply the intermediate result by 3 here because of the three possibilities for the middle base substitution.
+
+The genome background count table is a vector with length equal to the total possible number of mutation types as calculated above. It also records the frequency that we could expect from each mutation under circumstances of equal probability for the occurrence of such mutations.
 
 <h1> Expectation Maximisation Using ReLU or the Exponential Transformation </h1>
 
