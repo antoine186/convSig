@@ -4,6 +4,8 @@ Convolutional Filtering Combined with Expectation Maximisation for the Detection
 
 Implementation Work Based on Novel Method Developed by [Yun Feng](https://github.com/yun-feng)
 
+# Installation
+
 ## Package Overview
 
 This package implements an entirely novel approach for the detection and extraction of mutational processes that is based on Yun Feng’s work (convSig project, Oxford University PhD).
