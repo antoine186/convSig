@@ -43,12 +43,6 @@ Let us start with the ICGC mutation input data:
 datapath <- "simple_somatic_mutation.open.COCA-CN.tsv"
 ```
 
-The following function call provides a good example of the correct ICGC file format (note: we cannot use the example for the pipeline as it is not multi-sampled, for more information please visit coonvSig vignette):
-
-```
-loadICGCexample()
-```
-
 The pre-processing steps required for your input data is followed by the application of the following commands:
 
 ```
