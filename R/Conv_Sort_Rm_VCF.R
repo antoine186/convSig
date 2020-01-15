@@ -1,4 +1,4 @@
-#' Reads a vcf file and processes them for usage in EM transformations
+#' Reads a vcf file and processes it for usage in EM transformations
 #'
 #' @param datapath The path leading to your multi-sampled vcf file.
 #' 
