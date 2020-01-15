@@ -65,6 +65,21 @@ EMu_prepped <- mut_count(assembly, cur_mut_file, five = TRUE)
 
 Please note that the `five` parameter allows us to choose between 3-base and 5-base signatures extraction. If set to **FALSE**, 3-base signatures are extracted, otherwise 5-base signatures are extracted.
 
+## VCF Pipeline Quick Start 
+
+This is a quick guide for the VCF pipeline. For more detailed information, please visit the convSig vignette.
+
+```
+assembly <- "Homo_sapiens.GRCh37.dna.primary_assembly.fa"
+mut_file <- "multisampled_mutations.vcf"
+```
+
+Running the following function call will pre-process our VCF input file and generate assets required for EM simultaneously.
+
+```
+EMu_prepped <- vcf2mut(mut_file, geno = "GT", assembly, five = TRUE)
+```
+
 ### Expectation Maximisation via ReLU or Exponential Transformation
 
 convSig provides us with two different approaches for applying EM. The ReLU transform is applied using the below command:
