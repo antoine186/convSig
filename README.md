@@ -14,7 +14,7 @@ To install convSig on your Windows system, please download the convSig package f
 install.packages("convSig-master", repos = NULL, type="source")
 ```
 
-Please note that you may encounter an issue with updating/installing a dependency package stringi during installation. In such case, please manually download [stringi](https://cran.r-project.org/web/packages/stringi/index.html) and install from source using the following command.
+Please note that you may encounter an issue with updating/installing a dependency package stringi during installation. In such case, please manually download [stringi](https://cran.r-project.org/web/packages/stringi/index.html) and install from source.
 
 ## Package Overview
 
