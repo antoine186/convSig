@@ -1,6 +1,6 @@
 #' Read vcf files and processes them / User correct assembly
 #'
-#' @param datapath The path leading to your multisampled vcf file.
+#' @param datapath The path leading to your multi-sampled vcf file.
 #' 
 #' @param geno An ID Format string in your vcf file indicating the index of the 
 #' genotype information.
@@ -49,6 +49,11 @@ vcf2mut <- function(datapath, geno = "GT", assembly, five = FALSE) {
   cat("This could take a long while")
   cat("\n")
   
+  # Hi Anas, this part consumes a lot of memory
+  # It takes the FORMAT column (which tells us where GT is) and then takes each sample
+  # one column at a time to work on
+  # Reminder: I recall us having a discussion about how map2 is even faster than
+  # C++
   for (i in c((minus_start+1):end_point)) {
     
     #cur_colname = cnames[i]
