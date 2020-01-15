@@ -63,9 +63,11 @@ assembly <- "Homo_sapiens.GRCh37.dna.primary_assembly.fa"
 EMu_prepped <- mut_count(assembly, cur_mut_file, five = TRUE)
 ```
 
+Please note that the `five` parameter allows us to choose between 3-base and 5-base signatures extraction. If set to **FALSE**, 3-base signatures are extracted, otherwise 5-base signatures are extracted.
+
 ### Expectation Maximisation via ReLU or Exponential Transformation
 
-convSig provides us with two different approaches when applying EM. The ReLU transform is applied using the below command:
+convSig provides us with two different approaches for applying EM. The ReLU transform is applied using the below command:
 
 ```
 relu_res <- relu_transform(EMu_prepped, five = TRUE, K = 5)
