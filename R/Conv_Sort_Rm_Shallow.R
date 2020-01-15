@@ -202,18 +202,18 @@ Base2Num <- function(letter) {
   )
 }
 
-#' Loads an example ICGC file
-#' 
-#' @return A valid ICGC input file (that can for example be used for \link[=icgc2mut]{icgc2mut()}).
-#' 
-#' @examples
-#' loadICGCexample()
-#' 
-#' @export 
-loadICGCexample <- function() {
-  # Import example input dataset
-  load("data/example_mutation_dataset.Rda", envir = parent.frame())
-}
+#' #' Loads an example ICGC file
+#' #' 
+#' #' @return A valid ICGC input file (that can for example be used for \link[=icgc2mut]{icgc2mut()}).
+#' #' 
+#' #' @examples
+#' #' loadICGCexample()
+#' #' 
+#' #' @export 
+#' loadICGCexample <- function() {
+#'   # Import example input dataset
+#'   load("data/example_mutation_dataset.Rda", envir = parent.frame())
+#' }
 
 # Sorts the mutation file
 icgc_sort <- function(mut_file) {

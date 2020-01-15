@@ -1,6 +1,6 @@
 Package: convSig
-Title: What the Package Does (One Line, Title Case)
-Version: 0.1
+Title: Mutational Process Inference via Expectation Maximisation
+Version: 1
 Authors@R:
   c(person(given = "Antoine",
       family = "Tian",
