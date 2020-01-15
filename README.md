@@ -6,6 +6,16 @@ Implementation Work Based on Novel Method Developed by [Yun Feng](https://github
 
 # Installation
 
+## Windows System
+
+To install convSig on your Windows system, please download the convSig package folder from the main convSig GitHub page. Once downloaded, running the following code should complete the installation.
+
+```
+install.packages("convSig-master", repos = NULL, type="source")
+```
+
+Please note that you may encounter an issue with updating/installing a dependency package [stringi] during installation. In such case, please manually download [stringi](https://cran.r-project.org/web/packages/stringi/index.html) and install from source using the following command.
+
 ## Package Overview
 
 This package implements an entirely novel approach for the detection and extraction of mutational processes that is based on Yun Feng’s work (convSig project, Oxford University PhD).
