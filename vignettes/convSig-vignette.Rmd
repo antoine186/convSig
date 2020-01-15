@@ -2,6 +2,7 @@
 title: "convSig-vignette"
 author: "Antoine Yi-Cheng Tian"
 date: "`r Sys.Date()`"
+fontsize: 11px
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{convSig-vignette}
@@ -23,46 +24,47 @@ This package implements an entirely novel approach for the detection and extract
 Cancer patients have distinct mutational patterns in their genome, hence detecting, extracting, and characterising such patterns can provide a useful source of information for personalized of cancer treatment.  The methods implemented in this package makes use of convolutional filtering techniques found in computer vision. Our model is centred around the concept of each mutational process being represented as a filter, which slides over the entire genome of interest and probabilistically induces mutations in genetic sequences that it has a strong rapport with. Our methods extract and characterise these processes using two variations of
 expectation maximisation (i.e. EM).
 
-<h1> Data Preparation for Expectation Maximisation </h1>
+<h1> Data Preparation for Expectation Maximisation (ICGC pipeline) </h1>
 
-<!-- The intro to this section is a bit strange. The user doens't care what problems you had. What you need to do is to give the column names. In markdown you can create a table by:
-| Tables        | Are           | Cool  |
-| ------------- |:-------------:| -----:|
-| col 3 is      | right-aligned | $1600 |
+The EM methods (ReLU and exponential transformations) both require mutational genome
+background counts and the activity rate of mutational processes. In order to extract from
+your mutation input file those assets, we need to apply a couple of functions. Please
+note that this section is related to the ICGC pipeline (i.e. International Cancer Genome Consortium), which must be multi-sampled
+and must conform to the following format (use `loadICGCexample()` for more complete
+example):
 
-In this format you can give a name for a column and enter a description of what should be in there. use $\cdots$ to indicate more of the same -->
-
-The EM methods (ReLU and exponential transformations) both require multiple input data that conform to specific data format, therefore the data preparation outlined in this section will certainly be a requisite step in most usages of this analysis pipeline.
-
-
-The earliest upstream data input file is an ICGC (i.e. International Cancer Genome Consortium) mutation file either in the form of a `.csv` file or a `.tsv` file. Please note that there currently exists more than one ICGC format (e.g. donor format), however the one which this pipeline is concerned with is the ICGC mutation file format. To find a typical example, please visit the online ICGC data portal ([dcc.icgc.org](https://dcc.icgc.org/)), navigate to DCC DATA RELEASE, select a project and download any file which contains "simple_somatic_mutation"in its name. Or alternatively you can run the below line to load a suitable data input example into your global R environment:
-
-
-```{r setup, include = FALSE}
+```{r, echo = FALSE, message = FALSE}
 library(convSig)
+library(data.table)
+library(kableExtra)
+library(dplyr)
+setwd("..")
+loadICGCexample()
+res <- as.data.table(example_mutation_dataset)
+res <- res[, c('icgc_sample_id', 'chromosome', 'chromosome_start', 'chromosome_end',
+               'mutated_from_allele', 'mutated_to_allele', 'assembly_version',
+               'sequencing_strategy')]
+
+res <- res[c(1:5),]
+
+res %>%
+  kable("html") %>%
+  kable_styling(font_size = 9)
+
 ```
 
-```{r, eval = FALSE}
-loadICGCexample()
-````
+To find other such mutation files please visit the online ICGC data portal ([dcc.icgc.org](https://dcc.icgc.org/)), navigate to DCC DATA RELEASE, select a project, and download any file which contains "simple_somatic_mutation"in its name.
 
-This input ICGC mutation data can be the path to the mutation file on your workstation or data previously loaded into your R global environment (as a `matrix` or `data.frame`). This data preparation stage imposes an additional format requirement for this data. Namely, the following headers must be present in the input file (*Note*: this requirement is easily fulfilled if you have an input file that conforms to the ICGC format):
-
-|`icgc_sample_id`| `chromosome` | `chromosome_start` | `chromosome_end` | `mutated_from_allele` | `mutated_to_allele` | `assembly_version` | `sequencing_strategy` |
-|  :----: | :----: | :----: | :----: | :----: | :----: | :----: | :----: |
-| col 1 | col 2 | col 3 | col 4 | col 5 | col 6 | col 7 | col 8 |
-
-<!-- This is too verbose, and at the same time I am not sure what it does. Start with what the function does and then what the other two variables are. -->
-
-The below block of code designates the reference genome file that corresponds to the relevant experiment and the sequencing strategy used to obtain it.
-
-This function call skips all of the X and Y chromosomes (i.e. sex chromosomes),
-gathers all of the mutations that pertain to experiments run with your specified assembly version and sequencing strategy, and applies a base to number conversion to help filter out invalid types of mutations (e.g. insertions or deletions).
+The `icgc2mut` function call formats the mutation data for . More precisely, it skips all of the X and Y chromosomes (i.e. sex chromosomes),
+gathers all of the mutations that pertain to experiments run with your specified assembly version and sequencing strategy, and applies a base to number conversion to help filter out invalid types of mutations such as insertions and deletions. 
 
 ```{r, eval = FALSE}
 datapath <- "simple_somatic_mutation.open.COCA-CN.tsv"
 mut_file <- icgc2mut(datapath, assembly = "GRCh37", Seq = "WGS")
 ```
+
+The ICGC mutation file can either be the path to the mutation file on your workstation or data previously loaded into your R global environment (as a `matrix` or `data.frame`).
+The below block of code designates the reference genome file that corresponds to the relevant experiment and the sequencing strategy used to obtain it.
 
 Next we use the `icgc_curate()` function, it performs some prerequisite process for further analysis:
 
