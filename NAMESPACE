@@ -3,7 +3,6 @@
 export(exp_transform)
 export(icgc2mut)
 export(icgc_curate)
-export(loadICGCexample)
 export(mut_count)
 export(relu_transform)
 export(vcf2mut)
