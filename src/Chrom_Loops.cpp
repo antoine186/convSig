@@ -179,7 +179,7 @@ S4 shallow_loop3(S4 mat, DataFrame fasta, DataFrame mut_file, CharacterVector un
       
       if (ref_pos > startpos_ar[mut_pos]) {
         std::string err_ref = std::to_string(ref_pos);
-        std::string err_mut = std::to_string(mut_pos);
+        std::string err_mut = std::to_string(startpos_ar[mut_pos]);
         
         stop(err_ref + " " + err_mut);
       }
