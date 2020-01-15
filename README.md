@@ -14,7 +14,7 @@ To install convSig on your Windows system, please download the convSig package f
 install.packages("convSig-master", repos = NULL, type="source")
 ```
 
-Please note that you may encounter an issue with updating/installing a dependency package stringi during installation. In such case, please manually download [stringi](https://cran.r-project.org/web/packages/stringi/index.html) and install from source prior to convSig installation.
+Please note that you may encounter an issue with updating/installing a dependency package stringi during installation. In such case, please manually download ![stringi](https://img.shields.io/badge/R-stringi-blue)(https://cran.r-project.org/web/packages/stringi/index.html) and install from source prior to convSig installation.
 
 ## Mac OS
 
@@ -26,7 +26,7 @@ library(devtools)
 install_github("antoine186/convSig")
 ```
 
-Please note that you may encounter an issue with updating/installing a dependency package stringi during installation. In such case, please manually download [stringi](https://cran.r-project.org/web/packages/stringi/index.html) and install from source prior to convSig installation. It is advisable to update all of your R packages prior to convSig installation. Finally, while convSig is building on your system and when prompted to update dependencies, you should choose the option *None*.
+Please note that you may encounter an issue with updating/installing a dependency package stringi during installation. In such case, please manually download ![stringi](https://img.shields.io/badge/R-stringi-blue)(https://cran.r-project.org/web/packages/stringi/index.html) and install from source prior to convSig installation. It is advisable to update all of your R packages prior to convSig installation. Finally, while convSig is building on your system and when prompted to update dependencies, you should choose the option *None*.
 
 # Package Overview
 
