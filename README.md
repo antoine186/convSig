@@ -1,4 +1,4 @@
-# convSig R Package ![vers](https://img.shields.io/badge/Version-1-blue) ![CancGen](https://img.shields.io/badge/Made%204-Cancer%20Genomics-red) ![Bioinf](https://img.shields.io/badge/Bio-Informatics-orange) ![Rpack](https://img.shields.io/badge/R-Package-brightgreen)
+# convSig ![Rpack](https://img.shields.io/badge/R-Package-brightgreen) ![vers](https://img.shields.io/badge/Version-1-blue) ![gpllic](https://img.shields.io/badge/GPL-3%20and%20Higher-lightgrey) ![CancGen](https://img.shields.io/badge/Made%204-Cancer%20Genomics-red) ![Bioinf](https://img.shields.io/badge/Bio-Informatics-orange)
 
 Convolutional Filtering Combined with Expectation Maximisation for the Detection of Mutational Processes in the Cancer Genome
 
