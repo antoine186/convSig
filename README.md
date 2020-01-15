@@ -74,7 +74,7 @@ Running the following function call will pre-process our VCF input file and gene
 EMu_prepped <- vcf2mut(mut_file, geno = "GT", assembly, five = TRUE)
 ```
 
-### Expectation Maximisation via ReLU or Exponential Transformation
+## Expectation Maximisation via ReLU or Exponential Transformation
 
 convSig provides us with two different approaches for applying EM. The ReLU transform is applied using the below command:
 
