@@ -43,7 +43,7 @@ Let us start with the ICGC mutation input data:
 datapath <- "simple_somatic_mutation.open.COCA-CN.tsv"
 ```
 
-The following function call provides a good example of the correct ICGC file format:
+The following function call provides a good example of the correct ICGC file format (note: we cannot use the example for the pipeline as it is not multi-sampled, for more information please visit coonvSig vignette):
 
 ```
 loadICGCexample()
@@ -63,22 +63,15 @@ assembly <- "Homo_sapiens.GRCh37.dna.primary_assembly.fa"
 EMu_prepped <- mut_count(assembly, cur_mut_file, five = TRUE)
 ```
 
-## Expectation Maximisation Using ReLU or the Exponential Transformation
+### Expectation Maximisation via ReLU or Exponential Transformation
 
-### Expectation Maximisation Parameters and Results
-
-The ReLU and the Exponential transformations both enable the learning of key parameters via a novel expectation maximisation technique (EM) subject to a negative log-likelihood loss function. The parameters whose estimation are sought for are a Feature matrix (contains the weights of the mutational filters), a P matrix (contains the mutational rate for each mutational process in each sample), and a mat matrix (contains the probabilities for all mutation types; Take T mutating to C as an instance of a mutation type).
-The Feature matrix has (numbase×4)−2 rows. This number covers all possible bases at each base index in a particular trimer fragment - 4 possible bases that pertain to a single base index are represented as 4 contiguous rows in the matrix. The Feature matrix also has the same number of columns as the number of mutational processes as indicated by the user.
-The P matrix has as many rows as the number of samples present in your input data. It also contains the same number of columns as the number of mutational processes specified by the user.
-The mat result is a 3 dimensional matrix with dimensions (2,3,number of mutational processes). The first dimension equals 2 because there are only two distinct original bases possible pre-mutation; That is because of the reverse complementarity nature of the genome. The second dimension equals 3 because there are only three possible mutated bases per each of the 2 original bases.
-
-### ReLU or Exponential Transformation
-
-The below function calls require the data output by the previous function call [i.e. mut_count()], a parameter specifying whether the transformation should consider a 3-base long window vs a 5-base long window, and a parameter indicating the number of mutational processes to extract from the pre-processed input data.
+convSig provides us with two different approaches when applying EM. The ReLU transform is applied using the below command:
 
 ```
 relu_res <- relu_transform(EMu_prepped, five = TRUE, K = 5)
 ```
+
+Followed by the Exponential transform which is applied using the below command here:
 
 ```
 exp_res <- exp_transform(EMu_prepped, five = TRUE, K = 5)
